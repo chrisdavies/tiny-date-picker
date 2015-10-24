@@ -4,7 +4,8 @@
   "description": "A small, dependency-free date picker",
   "main": "tiny-date-picker.js",
   "scripts": {
-    "test": "jasmine-node test/*.spec.js"
+    "test": "jasmine-node test/*.spec.js",
+    "min": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified size' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
     "type": "git",

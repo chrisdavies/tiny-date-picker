@@ -3,7 +3,7 @@
 
   // Construct a new instance of date picker. See initializeOpts for
   // configuration options.
-  function DatePicker(input, opts) {
+  function TinyDatePicker(input, opts) {
     this.input = input;
     this.calendar = undefined;
     this.opts = initializeOpts(opts);
@@ -15,7 +15,7 @@
     on(input, 'click', this.show.bind(this));
   }
 
-  DatePicker.prototype = {
+  TinyDatePicker.prototype = {
     get date () {
       return this._currentDate;
     },
