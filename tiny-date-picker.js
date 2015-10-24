@@ -142,11 +142,13 @@
       var dayOfMonth = iter.getDate();
       var classes = 'dp-day';
       var isSelected = iter.toDateString() == self.date.toDateString();
+      var isToday = iter.toDateString() === new Date().toDateString();
       var isNotInMonth = iter.getMonth() !== self.date.getMonth();
       var tagName = isSelected ? 'a' : 'span';
 
       isSelected && (classes += ' dp-selected');
       isNotInMonth && (classes += ' dp-edge-day');
+      isToday && (classes += ' dp-day-today');
 
       html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
           dayOfMonth +

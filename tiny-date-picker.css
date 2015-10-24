@@ -119,6 +119,7 @@
 }
 
 .dp-day {
+  position: relative;
   cursor: pointer;
   font-size: 1.25em;
   padding: 0.75rem 0;
@@ -165,6 +166,18 @@
   width: 33%;
   background: transparent;
   outline: none;
+}
+
+.dp-day-today:after {
+  content: '';
+  height: 0;
+  width: 0;
+  border: 7px solid #227BD7;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 /* Responsive overrides */
