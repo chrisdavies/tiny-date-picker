@@ -20,10 +20,7 @@ You can also pass in options as an optional second argument:
 ```javascript
 // Initialize a date picker using truncated month names
 new TinyDatePicker(document.querySelector('input'), {
-  getMonthName: function (month) {
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return months[month];
-  }
+  months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 });
 ```
 
@@ -45,19 +42,11 @@ new TinyDatePicker(document.querySelector('input'), {
     return isNaN(date) ? new Date() : date;
   },
 
-  // Convert a number 0-11 to a month name for display in the calendar header
-  getMonthName: function (month) {
-    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  // Names of months, in order
+  months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 
-    return months[month];
-  },
-
-  // Convert a number 0-6 to the name of the day of the week
-  getDayName: function (day) {
-    var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-    return daysOfWeek[day];
-  },
+  // Names of days of week, in order
+  days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
 
   // The text for the button used to set the date to today's date
   today: 'Today',

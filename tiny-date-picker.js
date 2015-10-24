@@ -1,3 +1,5 @@
+// Remove monthName... replace w/ arrays
+// CSS class for "today"
 (function (root) {
   'use strict';
 
@@ -75,18 +77,8 @@
         return isNaN(date) ? new Date() : date;
       },
 
-      getMonthName: function (month) {
-        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        return months[month];
-      },
-
-      getDayName: function (day) {
-        var daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-        return daysOfWeek[day];
-      },
-
+      days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       today: 'Today',
       clear: 'Clear',
       close: 'Close'
@@ -105,7 +97,7 @@
             '<button class="dp-prev"></button>' +
             '<span class="dp-month-year">' +
               '<span class="dp-month">' +
-                opts.getMonthName(self.date.getMonth()) +
+                opts.months[self.date.getMonth()] +
               '</span>' +
               '<span class="dp-year">' +
                 self.date.getFullYear() +
@@ -134,7 +126,7 @@
 
     // Generate headings...
     for (var i = 0; i < 7; ++i) {
-      html += '<span class="dp-day-of-week">' + self.opts.getDayName(i) + '</span>';
+      html += '<span class="dp-day-of-week">' + self.opts.days[i] + '</span>';
     }
 
     return html;
@@ -302,11 +294,11 @@
   var define = root.define;
 
   if (define && define.amd) {
-    define([], function () { return DatePicker; });
+    define([], function () { return TinyDatePicker; });
   } else if (typeof module !== 'undefined' && module.exports) {
-    module.exports = DatePicker;
+    module.exports = TinyDatePicker;
   } else {
-    root.DatePicker = DatePicker;
+    root.TinyDatePicker = TinyDatePicker;
   }
 
 }(this));
