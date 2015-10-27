@@ -4,7 +4,7 @@
   "description": "A small, dependency-free date picker",
   "main": "tiny-date-picker.js",
   "scripts": {
-    "test": "jasmine-node test/*.spec.js",
+    "test": "jest",
     "min": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified size' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
@@ -23,5 +23,9 @@
   "bugs": {
     "url": "https://github.com/chrisdavies/tiny-date-picker/issues"
   },
-  "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme"
+  "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
+  "devDependencies": {
+    "jest-cli": "^0.6.1",
+    "uglify-js": "^2.4.23"
+  }
 }
