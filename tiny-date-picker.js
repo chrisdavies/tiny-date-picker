@@ -1,5 +1,3 @@
-// Remove monthName... replace w/ arrays
-// CSS class for "today"
 (function (root) {
   'use strict';
 
@@ -9,7 +7,6 @@
     this.input = input;
     this.calendar = undefined;
     this.opts = initializeOpts(opts);
-    this._currentDate = this.opts.parse(input.value);
 
     this.input.readOnly = true;
 
@@ -29,24 +26,30 @@
     },
 
     show: function () {
-      if (this.calendar) return;
+      if (this.calendar || this.hiding) return;
 
+      this._currentDate = this.opts.parse(this.input.value);
       this.calendar = buildCalendarElement(this);
 
       handleMouseEvents(this);
       handleKeyEvents(this);
-      handleFocusEvents(this);
 
       animateIntoView(this);
     },
 
     hide: function () {
-      if (!this.calendar) return;
+      var self = this;
+      if (!self.calendar) return;
 
-      this.input.focus();
-      this.input.selectionEnd = this.input.selectionStart;
-      this.calendar.parentNode.removeChild(this.calendar);
-      this.calendar = undefined;
+      self.hiding = 1;
+      self.input.focus();
+      self.input.selectionEnd = self.input.selectionStart;
+      self.calendar.parentNode.removeChild(self.calendar);
+      self.calendar = undefined;
+
+      setTimeout(function() {
+        self.hiding = 0;
+      }, 1);
     },
 
     focus: function () {
@@ -69,7 +72,7 @@
   function initializeOpts(opts) {
     return mergeObj({
       format: function (date) {
-        return date.toLocaleDateString();
+        return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
       },
 
       parse: function (str) {
@@ -160,24 +163,10 @@
     return html;
   }
 
-  // When the calendar loses focus, hide it.
-  // The timeout is required due to the way we handle keyboard
-  // events and redraws, which cause a temporary loss of focus
-  function handleFocusEvents(self) {
-    var cal = self.calendar;
-
-    on(cal, 'blur', function () {
-      setTimeout(function () {
-        if (cal && !cal.contains(document.activeElement)) {
-          self.hide();
-        }
-      }, 1);
-    });
-  }
-
   // Bind mouse events
   function handleMouseEvents(self) {
     var cal = self.calendar;
+    var focusable = ['A', 'BUTTON'];
     var clickActions = {
       'dp-clear': function () { self.pickDate() },
       'dp-close': self.hide.bind(self),
@@ -200,10 +189,20 @@
       });
     });
 
-    // Don't make the calendar lose focus when the mouse is pressed
     on(cal, 'mousedown', function (e) {
-      e.preventDefault();
-      focus();
+      if (!~focusable.indexOf(e.target.tagName)) {
+        e.preventDefault(); // Prevent loss of focus
+      }
+    });
+
+    on(cal, 'blur', function (e) {
+      setTimeout(function () {
+        if (cal.contains(document.activeElement)) {
+          return;
+        }
+
+        self.hide();
+      }, 1);
     });
   }
 
@@ -214,18 +213,16 @@
       '38': function () { shiftDay(-7) }, // Up
       '39': function () { shiftDay(1) }, // Right
       '40': function () { shiftDay(7) }, // Down
-      '13': function () { self.pickDate(self.date) }, // Enter
+      '13': function () { self.pickDate(self.date) }, // Enter,
     };
 
     on(self.calendar, 'keydown', function (e) {
       var action = keyActions[e.which];
 
-      if (!action || !/dp-selected/.test(e.target.className)) {
-        return;
+      if (action && /dp-selected/.test(e.target.className)) {
+        e.preventDefault();
+        action();
       }
-
-      e.preventDefault();
-      action();
     });
 
     // Shift the selected date by the specified days
