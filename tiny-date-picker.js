@@ -1,75 +1,169 @@
-(function (root) {
+// 1635
+// 1466
+// TODO: Insert right after the input, rather than at end of body
+// - Test in IE9
+// - Unit tests
+// - Publish
+// - Explain weird procedural reasoning
+// - Minification tweaks
+function TinyDatePicker(input, options) {
   'use strict';
 
-  // Construct a new instance of date picker. See initializeOpts for
-  // configuration options.
-  function TinyDatePicker(input, opts) {
-    this.input = input;
-    this.calendar = undefined;
-    this.opts = initializeOpts(opts);
+  /////////////////////////////////////////////////////////
+  // Initialization and state variables
+  var opts = initializeOptions(options);
+  var currentDate = opts.parse(input.value);
+  var el = buildCalendarElement(currentDate, opts);
+  var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
 
-    this.input.readOnly = true;
+  input.readOnly = true;
 
-    on(input, 'focus', this.show.bind(this));
-    on(input, 'click', this.show.bind(this));
+  /////////////////////////////////////////////////////////
+  // Event handling/state management
+  on(input, 'focus', show);
+  on(input, 'click', show);
+
+  on(el, 'keydown', mapKeys({
+    '37': shiftDay(-1), // Left
+    '38': shiftDay(-7), // Up
+    '39': shiftDay(1), // Right
+    '40': shiftDay(7), // Down
+    '13': function () { pickDate(currentDate) }, // Enter,
+  }));
+
+  on(el, 'click', mapClick({
+    'dp-clear': function () { pickDate() },
+    'dp-close': hide,
+    'dp-wrapper': hide,
+    'dp-prev': shiftMonth(-1),
+    'dp-next': shiftMonth(1),
+    'dp-today': function () { pickDate(new Date()) },
+    'dp-day': function (e) {
+      var time = e.target.getAttribute('data-dp');
+      time && (pickDate(new Date(parseInt(time))));
+    },
+  }));
+
+  on(el, 'mousedown', function (e) {
+    if (!~['A', 'BUTTON'].indexOf(e.target.tagName)) {
+      e.preventDefault(); // Prevent loss of focus
+    }
+  });
+
+  on(el, 'blur', function (e) {
+    setTimeout(function () {
+      el.contains(document.activeElement) || hide();
+    }, 1);
+  });
+
+
+
+
+  /////////////////////////////////////////////////////////
+  // UI manipulation functions
+  function show() {
+    if (isHiding) return;
+    setDate(opts.parse(input.value));
+    document.body.appendChild(el);
+    setTimeout(function () {
+      el.className += ' dp-visible';
+      focus();
+    }, 1);
   }
 
-  TinyDatePicker.prototype = {
-    get date () {
-      return this._currentDate;
-    },
+  function hide() {
+    if (!document.body.contains(el)) return;
+    isHiding = 1;
+    input.focus();
+    input.selectionEnd = input.selectionStart;
+    el.parentNode.removeChild(el);
+    el.className = el.className.replace(' dp-visible', '');
+    setTimeout(function () { isHiding = 0 }, 1);
+  }
 
-    set date(val) {
-      this._currentDate = val;
-      this.calendar.innerHTML = buildCalendarElement(this).innerHTML;
-      this.focus();
-    },
+  function redraw() {
+    el.innerHTML = buildCalendarElement(currentDate, opts).innerHTML;
+    focus();
+  }
 
-    show: function () {
-      if (this.calendar || this.hiding) return;
+  function focus() {
+    el.querySelector('.dp-selected').focus();
+  }
 
-      this._currentDate = this.opts.parse(this.input.value);
-      this.calendar = buildCalendarElement(this);
 
-      handleMouseEvents(this);
-      handleKeyEvents(this);
 
-      animateIntoView(this);
-    },
 
-    hide: function () {
-      var self = this;
-      if (!self.calendar) return;
+  /////////////////////////////////////////////////////////
+  // Date manipulation functions
+  function pickDate(date) {
+    input.value = date ? opts.format(date) : '';
+    setDate(date);
+    hide();
+  }
 
-      self.hiding = 1;
-      self.input.focus();
-      self.input.selectionEnd = self.input.selectionStart;
-      self.calendar.parentNode.removeChild(self.calendar);
-      self.calendar = undefined;
-
-      setTimeout(function() {
-        self.hiding = 0;
-      }, 1);
-    },
-
-    focus: function () {
-      this.calendar.querySelector('.dp-selected').focus();
-    },
-
-    pickDate: function (date) {
-      if (date) {
-        this.date = date;
-        this.input.value = this.opts.format(date);
-      } else {
-        this.input.value = '';
-      }
-
-      this.hide();
+  function setDate(date) {
+    if (date) {
+      currentDate = date;
+      redraw();
     }
   }
 
-  // Initialize the date picker options w/ default values
-  function initializeOpts(opts) {
+  function shiftDay(amount) {
+    return function () {
+      currentDate.setDate(currentDate.getDate() + amount);
+      setDate(currentDate);
+    }
+  }
+
+  function shiftMonth(direction) {
+    return function () {
+      var dt = new Date(currentDate);
+      dt.setDate(1);
+
+      if (direction > 0) {
+        dt.setMonth(dt.getMonth() + 2);
+      }
+
+      dt.setDate(dt.getDate() - 1);
+
+      if (currentDate.getDate() < dt.getDate()) {
+        dt.setDate(currentDate.getDate());
+      }
+
+      setDate(dt);
+    }
+  }
+
+
+
+
+  /////////////////////////////////////////////////////////
+  // Event mapping helpers
+  function mapKeys(map) {
+    return function (e) {
+      var action = map[e.which];
+
+      if (action && /dp-selected/.test(e.target.className)) {
+        e.preventDefault();
+        action();
+      }
+    }
+  }
+
+  function mapClick(map) {
+    return function (e) {
+      e.target.className.split(/[\s]+/g).forEach(function (key) {
+        map[key] && map[key](e);
+      });
+    }
+  }
+
+
+
+
+  /////////////////////////////////////////////////////////
+  // Default options
+  function initializeOptions(opts) {
     return mergeObj({
       format: function (date) {
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
@@ -88,29 +182,36 @@
     }, opts);
   }
 
-  // Initialize the calendar element
-  function buildCalendarElement(self) {
-    var opts = self.opts;
+
+
+
+  /////////////////////////////////////////////////////////
+  // Helper rendering functions
+  function buildCalendarElement(date, opts) {
     var container = document.createElement('div');
 
-    container.innerHTML =
-      '<div class="dp-wrapper">' +
+    container.innerHTML = renderCalendar();
+
+    return container.firstChild;
+
+    function renderCalendar() {
+      return '<div class="dp-wrapper">' +
         '<div class="dp">' +
           '<header class="dp-header">' +
             '<button class="dp-prev"></button>' +
             '<span class="dp-month-year">' +
               '<span class="dp-month">' +
-                opts.months[self.date.getMonth()] +
+                opts.months[date.getMonth()] +
               '</span>' +
               '<span class="dp-year">' +
-                self.date.getFullYear() +
+                date.getFullYear() +
               '</span>' +
             '</span>' +
             '<button class="dp-next"></button>' +
           '</header>' +
           '<div class="dp-body">' +
-            renderDateHeadings(self) +
-            renderDaysOfMonth(self) +
+            renderDateHeadings() +
+            renderDaysOfMonth() +
           '</div>' +
           '<footer class="dp-footer">' +
             '<button class="dp-today">' + opts.today + '</button>' +
@@ -118,186 +219,78 @@
             '<button class="dp-close">' + opts.close + '</button>' +
           '</footer>' +
         '</div>' +
-      '</div>';
-
-    return container.firstChild;
-  }
-
-  // Render the column headings
-  function renderDateHeadings(self) {
-    var html = '';
-
-    // Generate headings...
-    for (var i = 0; i < 7; ++i) {
-      html += '<span class="dp-day-of-week">' + self.opts.days[i] + '</span>';
+      '</div>'
     }
 
-    return html;
-  }
+    // Render the column headings
+    function renderDateHeadings() {
+      var html = '';
 
-  // Render the list of days in the calendar month
-  function renderDaysOfMonth(self) {
-    var iter = getIteratorDate(self.date);
-    var html = '';
-
-    // We are going to have 6 weeks always displayed to keep a consistent calendar size
-    for (var day = 0; day < (6 * 7); ++day) {
-      var dayOfMonth = iter.getDate();
-      var classes = 'dp-day';
-      var isSelected = iter.toDateString() == self.date.toDateString();
-      var isToday = iter.toDateString() === new Date().toDateString();
-      var isNotInMonth = iter.getMonth() !== self.date.getMonth();
-      var tagName = isSelected ? 'a' : 'span';
-
-      isSelected && (classes += ' dp-selected');
-      isNotInMonth && (classes += ' dp-edge-day');
-      isToday && (classes += ' dp-day-today');
-
-      html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
-          dayOfMonth +
-        '</' + tagName + '>';
-
-      iter.setDate(dayOfMonth + 1);
-    }
-
-    return html;
-  }
-
-  // Bind mouse events
-  function handleMouseEvents(self) {
-    var cal = self.calendar;
-    var focusable = ['A', 'BUTTON'];
-    var clickActions = {
-      'dp-clear': function () { self.pickDate() },
-      'dp-close': self.hide.bind(self),
-      'dp-wrapper': self.hide.bind(self),
-      'dp-prev': shiftMonth.bind(0, self, -1),
-      'dp-next': shiftMonth.bind(0, self, 1),
-      'dp-today': function () { self.pickDate(new Date()) },
-      'dp-day': function (e) {
-        var time = e.target.getAttribute('data-dp');
-        time && (self.pickDate(new Date(parseInt(time))));
-      },
-    };
-
-    // When something in the calendar is clicked, check to
-    // see if any action is associated with any CSS class, and
-    // run the action, if any
-    on(cal, 'click', function (e) {
-      e.target.className.split(/[\s]+/g).forEach(function (key) {
-        clickActions[key] && clickActions[key](e);
-      });
-    });
-
-    on(cal, 'mousedown', function (e) {
-      if (!~focusable.indexOf(e.target.tagName)) {
-        e.preventDefault(); // Prevent loss of focus
+      // Generate headings...
+      for (var i = 0; i < 7; ++i) {
+        html += '<span class="dp-day-of-week">' + opts.days[i] + '</span>';
       }
-    });
 
-    on(cal, 'blur', function (e) {
-      setTimeout(function () {
-        if (cal.contains(document.activeElement)) {
-          return;
-        }
+      return html;
+    }
 
-        self.hide();
-      }, 1);
-    });
-  }
+    // Render the list of days in the calendar month
+    function renderDaysOfMonth() {
+      var iter = new Date(date);
+      var html = '';
 
-  // Bind keyboard events
-  function handleKeyEvents(self) {
-    var keyActions = {
-      '37': function () { shiftDay(-1) }, // Left
-      '38': function () { shiftDay(-7) }, // Up
-      '39': function () { shiftDay(1) }, // Right
-      '40': function () { shiftDay(7) }, // Down
-      '13': function () { self.pickDate(self.date) }, // Enter,
-    };
+      iter.setDate(1); // First of the month
+      iter.setDate(iter.getDate() - iter.getDay()); // Back to Sunday
 
-    on(self.calendar, 'keydown', function (e) {
-      var action = keyActions[e.which];
+      // We are going to have 6 weeks always displayed to keep a consistent calendar size
+      for (var day = 0; day < (6 * 7); ++day) {
+        var dayOfMonth = iter.getDate();
+        var classes = 'dp-day';
+        var isSelected = iter.toDateString() == date.toDateString();
+        var isToday = iter.toDateString() === new Date().toDateString();
+        var isNotInMonth = iter.getMonth() !== date.getMonth();
+        var tagName = isSelected ? 'a' : 'span';
 
-      if (action && /dp-selected/.test(e.target.className)) {
-        e.preventDefault();
-        action();
+        isSelected && (classes += ' dp-selected');
+        isNotInMonth && (classes += ' dp-edge-day');
+        isToday && (classes += ' dp-day-today');
+
+        html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
+            dayOfMonth +
+          '</' + tagName + '>';
+
+        iter.setDate(dayOfMonth + 1);
       }
-    });
 
-    // Shift the selected date by the specified days
-    function shiftDay(amount) {
-      self.date = new Date(self.date.setDate(self.date.getDate() + amount));
+      return html;
     }
   }
 
-  // Add the calendar to the DOM and trigger CSS transitions
-  function animateIntoView(self) {
-    self.input.parentNode.insertBefore(self.calendar, self.input);
-    setTimeout(function () {
-      self.calendar.className += ' dp-visible';
-      self.focus();
-    }, 1);
-  }
 
-  // Merge N objects into obj, with the last object taking prescendence
-  function mergeObj(obj) {
-    for (var i = 1; i < arguments.length; ++i) {
-      var obj2 = arguments[i];
 
-      for (var key in obj2) {
-        obj[key] = obj2[key];
-      }
-    }
 
-    return obj;
-  }
+  /////////////////////////////////////////////////////////
+  // Helper functions
 
   // Shorthand for addEventListener
   function on(el, name, fn) {
     el.addEventListener(name, fn, true);
   }
 
-  // Shift the date backward to the nearest Sunday
-  function getIteratorDate(date) {
-    var iter = new Date(date);
-
-    iter.setDate(1); // First of the month
-    iter.setDate(iter.getDate() - iter.getDay()); // Back to Sunday
-
-    return iter;
-  }
-
-  // Shift the date forward or backward one month, accounting for
-  // when date is 31st and moving to a month that has fewer than 31
-  // days
-  function shiftMonth(self, direction) {
-    var date = self.date;
-    var dt = new Date(date);
-    dt.setDate(1);
-
-    if (direction > 0) {
-      dt.setMonth(dt.getMonth() + 2);
+  // Merge two objects, with the last object overwriting the first
+  // Has side-effects (overwrites o1), but don't care...
+  function mergeObj(o1, o2) {
+    for (var key in o2) {
+      o1[key] = o2[key];
     }
 
-    dt.setDate(dt.getDate() - 1);
-
-    if (date.getDate() < dt.getDate()) {
-      dt.setDate(date.getDate());
-    }
-
-    self.date = dt;
+    return o1;
   }
+}
 
-  // Module exports
-  var define = root.define;
 
-  if (define && define.amd) {
-    define([], function () { return TinyDatePicker; });
-  } else if (typeof module !== 'undefined' && module.exports) {
-    module.exports = TinyDatePicker;
-  } else {
-    root.TinyDatePicker = TinyDatePicker;
-  }
-
-}(this));
+/////////////////////////////////////////////////////////
+// Commonjs support
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = TinyDatePicker;
+}
