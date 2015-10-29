@@ -1,11 +1,3 @@
-// 1635
-// 1466
-// TODO: Insert right after the input, rather than at end of body
-// - Test in IE9
-// - Unit tests
-// - Publish
-// - Explain weird procedural reasoning
-// - Minification tweaks
 function TinyDatePicker(input, options) {
   'use strict';
 
@@ -64,7 +56,7 @@ function TinyDatePicker(input, options) {
   function show() {
     if (isHiding) return;
     setDate(opts.parse(input.value));
-    document.body.appendChild(el);
+    input.parentNode.insertBefore(el, input);
     setTimeout(function () {
       el.className += ' dp-visible';
       focus();

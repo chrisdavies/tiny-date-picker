@@ -4,7 +4,8 @@ A light-weight date picker with zero dependencies.
 
 - Zero dependencies
 - Roughly 1.5KB minified and gzipped
-- Based loosely on the awesome [pickadate](http://amsul.ca/pickadate.js/) but without the jQuery dependency
+- IE9+
+- Based loosely on the awesome [pickadate](http://amsul.ca/pickadate.js/), but without jQuery
 
 ## Usage
 
