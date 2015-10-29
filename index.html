@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tiny Date Picker Demo</title>
+    <meta name="author" content="Chris Davies - http://chrisdavies.github.io/">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="A tiny, responsive, modern, zero-dependency date picker">
+    <link rel="stylesheet" href="./tiny-date-picker.css">
+    <link rel="stylesheet" href="./demo/demo.css">
+  </head>
+  <body>
+    <main>
+      <h1>Tiny Date Picker</h1>
+      <div class="form-field">
+        <label>Pick a date:</label>
+        <input type="text" class="date-example" tabindex="400" />
+      </div>
+      <nav class="footer-links">
+        <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
+      </nav>
+    </main>
+
+    <script src="./tiny-date-picker.js"></script>
+    <script>
+      TinyDatePicker(document.querySelector('.date-example'));
+    </script>
+  </body>
+</html>
