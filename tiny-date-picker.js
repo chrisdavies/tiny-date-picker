@@ -1,3 +1,5 @@
+// TinyDatePicker was written as an experiment to see how small a functional date picker
+// utility could be. Procedural is a minification optimization.
 function TinyDatePicker(input, options) {
   'use strict';
 
