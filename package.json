@@ -5,7 +5,9 @@
   "main": "tiny-date-picker.js",
   "scripts": {
     "test": "jest",
-    "min": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified size' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
+    "min": "npm run mincss && npm run minjs",
+    "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
+    "minjs": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified JS:' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
     "type": "git",
@@ -26,6 +28,7 @@
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
     "jest-cli": "^0.6.1",
-    "uglify-js": "^2.4.23"
+    "uglify-js": "^2.4.23",
+    "uglifycss": "0.0.18"
   }
 }
