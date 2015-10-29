@@ -10,6 +10,8 @@ A light-weight date picker with zero dependencies.
 
 [See the demo...](http://chrisdavies.github.io/tiny-date-picker/)
 
+[![Build Status](https://travis-ci.org/chrisdavies/tiny-date-picker.svg?branch=master)](https://travis-ci.org/chrisdavies/tiny-date-picker)
+
 ## Usage
 
 Include a reference to `tiny-date-picker.css` and `tiny-date-picker.js`, then call it like this:
