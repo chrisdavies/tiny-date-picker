@@ -16,14 +16,14 @@ Include a reference to `tiny-date-picker.css` and `tiny-date-picker.js`, then ca
 
 ```javascript
 // Initialize a date picker on the specified input element
-new TinyDatePicker(document.querySelector('input'));
+TinyDatePicker(document.querySelector('input'));
 ```
 
 You can also pass in options as an optional second argument:
 
 ```javascript
 // Initialize a date picker using truncated month names
-new TinyDatePicker(document.querySelector('input'), {
+TinyDatePicker(document.querySelector('input'), {
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 });
 ```
@@ -34,7 +34,7 @@ Below is an example of all option parameters:
 
 ```javascript
 
-new TinyDatePicker(document.querySelector('input'), {
+TinyDatePicker(document.querySelector('input'), {
   // Used to convert a date into a string to be used as the value of input
   format: function (date) {
     return date.toLocaleDateString();
@@ -81,7 +81,7 @@ This library is [CommonJS](http://www.commonjs.org/) compatible, so you can use 
 ```javascript
 var TinyDatePicker = require('tiny-date-picker'),
 
-new TinyDatePicker(document.querySelector('input'));
+TinyDatePicker(document.querySelector('input'));
 ```
 
 ## Installation
