@@ -7,7 +7,8 @@ function TinyDatePicker(input, options) {
   var currentDate = opts.parse(input.value);
   var el = buildCalendarElement(currentDate, opts);
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
-
+  var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent;"></button>');
+  var body = document.body;
   input.readOnly = true;
 
   /////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ function TinyDatePicker(input, options) {
     '39': shiftDay(1), // Right
     '40': shiftDay(7), // Down
     '13': function () { pickDate(currentDate) }, // Enter,
+    '27': hide // Esc
   }));
 
   on(el, 'click', mapClick({
@@ -56,7 +58,8 @@ function TinyDatePicker(input, options) {
   function show() {
     if (isHiding) return;
     setDate(opts.parse(input.value));
-    input.parentNode.insertBefore(el, input);
+    body.appendChild(el);
+    body.appendChild(focusCatcher);
     setTimeout(function () {
       el.className += ' dp-visible';
       focus();
@@ -68,7 +71,8 @@ function TinyDatePicker(input, options) {
     isHiding = 1;
     input.focus();
     input.selectionEnd = input.selectionStart;
-    el.parentNode.removeChild(el);
+    body.removeChild(el);
+    body.removeChild(focusCatcher);
     el.className = el.className.replace(' dp-visible', '');
     setTimeout(function () { isHiding = 0 }, 1);
   }
@@ -180,14 +184,7 @@ function TinyDatePicker(input, options) {
   /////////////////////////////////////////////////////////
   // Helper rendering functions
   function buildCalendarElement(date, opts) {
-    var container = document.createElement('div');
-
-    container.innerHTML = renderCalendar();
-
-    return container.firstChild;
-
-    function renderCalendar() {
-      return '<div class="dp-wrapper">' +
+    return htmlToElement('<div class="dp-wrapper">' +
         '<div class="dp">' +
           '<header class="dp-header">' +
             '<button class="dp-prev"></button>' +
@@ -211,8 +208,7 @@ function TinyDatePicker(input, options) {
             '<button class="dp-close">' + opts.close + '</button>' +
           '</footer>' +
         '</div>' +
-      '</div>'
-    }
+      '</div>');
 
     // Render the column headings
     function renderDateHeadings() {
@@ -277,6 +273,12 @@ function TinyDatePicker(input, options) {
     }
 
     return o1;
+  }
+
+  function htmlToElement(htm) {
+    var div = document.createElement('div');
+    div.innerHTML = htm;
+    return div.firstChild;
   }
 }
 
