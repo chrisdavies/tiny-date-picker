@@ -8,6 +8,8 @@ A light-weight date picker with zero dependencies.
 - Mobile-friendly/responsive
 - Based loosely on the awesome [pickadate](http://amsul.ca/pickadate.js/), but without jQuery
 
+[See the demo...](http://chrisdavies.github.io/tiny-date-picker/)
+
 ## Usage
 
 Include a reference to `tiny-date-picker.css` and `tiny-date-picker.js`, then call it like this:
