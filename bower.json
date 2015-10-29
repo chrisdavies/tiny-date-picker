@@ -1,0 +1,23 @@
+{
+  "name": "tiny-date-picker",
+  "main": "tiny-date-picker.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/chrisdavies/tiny-date-picker",
+  "authors": [
+    "Chris Davies <ferociousturtle@gmail.com>"
+  ],
+  "description": "A small, zero-dependency date picker",
+  "keywords": [
+    "date", "datepicker", "calendar", "picker"
+  ],
+  "license": "MIT",
+  "ignore": [
+    ".gitignore",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "__tests__",
+    "readme.md"
+  ]
+}
