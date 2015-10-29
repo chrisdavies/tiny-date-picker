@@ -1,3 +1,9 @@
+/*
+  TODO:
+  - Test Esc
+  - Test opts overriding
+*/
+
 jest.dontMock('../tiny-date-picker');
 
 var Keys = {
@@ -6,25 +12,10 @@ var Keys = {
   right: 39,
   down: 40,
   enter: 13,
+  esc: 27,
 };
 
 describe('TinyDatePicker', function() {
- it('Defaults to parsing strings in mm/dd/yyyy format', function() {
-   var dp = getDatePicker();
-   var dt = dp.opts.parse('10/08/1973');
-
-   expect(dt.getMonth()).toBe(9); // Months are zero-based
-   expect(dt.getDate()).toBe(08);
-   expect(dt.getFullYear()).toBe(1973);
- });
-
- it('Defaults to formatting dates in mm/dd/yyyy format', function () {
-   var dp = getDatePicker();
-   var dt = dp.opts.format(new Date());
-
-   expect(dt).toBe(nowString());
- });
-
  it('Puts todays date into the input field when clicking Today', function () {
    var dp = getDatePicker();
    var input = $('input');
