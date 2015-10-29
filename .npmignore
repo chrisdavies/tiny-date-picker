@@ -1,0 +1,8 @@
+test
+example
+.gitignore
+node_modules
+bower_components
+readme.md
+bower.json
+.travis.yml
