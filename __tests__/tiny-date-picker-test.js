@@ -1,7 +1,5 @@
 /*
-  TODO:
-  - Test Esc
-  - Test opts overriding
+  TODO: Test opts overriding
 */
 
 jest.dontMock('../tiny-date-picker');
@@ -15,39 +13,44 @@ var Keys = {
   esc: 27,
 };
 
-describe('TinyDatePicker', function() {
- it('Puts todays date into the input field when clicking Today', function () {
-   var dp = getDatePicker();
-   var input = $('input');
+describe('TinyDatePicker', function () {
+  it('Puts todays date into the input field when clicking Today', function () {
+    var dp = getDatePicker();
+    var input = $('input');
 
-   input.click();
-   $('.dp-today').click();
-   expect(input.value).toBe(nowString());
-   calendarShouldBeHidden();
- });
+    input.click();
+    $('.dp-today').click();
+    expect(input.value).toBe(nowString());
+    calendarShouldBeHidden();
+  });
 
- it('Clears the input value when clicking Clear', function () {
-   var dp = getDatePicker();
-   var input = $('input');
+  it('Clears the input value when clicking Clear', function () {
+    var dp = getDatePicker();
+    var input = $('input');
 
-   input.value = nowString();
-   input.click();
-   $('.dp-clear').click();
-   expect(input.value).toBe('');
-   calendarShouldBeHidden();
- });
+    input.value = nowString();
+    input.click();
+    $('.dp-clear').click();
+    expect(input.value).toBe('');
+    calendarShouldBeHidden();
+  });
 
- it('Closes the calendar when clicking Close', function () {
-   var dp = getDatePicker();
-   var input = $('input');
-   var originalValue = '1/2/2016';
+  it('Closes the calendar when clicking Close', function () {
+    var dp = getDatePicker();
+    var input = $('input');
+    var originalValue = '1/2/2016';
 
-   input.value = originalValue;
-   input.click();
-   $('.dp-close').click();
-   expect(input.value).toBe(originalValue);
-   calendarShouldBeHidden();
- });
+    input.value = originalValue;
+    input.click();
+    $('.dp-close').click();
+    expect(input.value).toBe(originalValue);
+    calendarShouldBeHidden();
+  });
+
+  it('Closes the calendar when pressing Esc', function () {
+    testKeyNavigation('', [Keys.esc], '');
+    calendarShouldBeHidden();
+  });
 
   it('Selects the date specified in the input', function () {
     var dp = getDatePicker();
