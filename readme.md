@@ -61,7 +61,10 @@ TinyDatePicker(document.querySelector('input'), {
   clear: 'Clear',
 
   // The text for the button used to close the form
-  close: 'Close'
+  close: 'Close',
+
+  // Use or do not use a modal. ('dp-visible')
+  useModal: true
 });
 ```
 
