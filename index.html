@@ -24,6 +24,10 @@
     <script src="./tiny-date-picker.js"></script>
     <script>
       TinyDatePicker(document.querySelector('.date-example'));
+
+      document.addEventListener('change', function (e) {
+        console.log('Changed to: ' + e.target.value);
+      });
     </script>
   </body>
 </html>

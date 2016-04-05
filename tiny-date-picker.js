@@ -1,3 +1,5 @@
+// TinyDatePicker was written as an experiment to see how small a functional date picker
+// utility could be. Procedural is a minification optimization.
 function TinyDatePicker(input, options) {
   'use strict';
 
@@ -9,7 +11,25 @@ function TinyDatePicker(input, options) {
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
   var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent;"></button>');
   var body = document.body;
+  var CustomEvent = window.CustomEvent;
   input.readOnly = true;
+
+
+  /////////////////////////////////////////////////////////
+  // Unintrusive polyfill the custom event for IE9+
+  (function () {
+    if (typeof CustomEvent === 'function') return false;
+
+    CustomEvent = function (event, params) {
+      params = params || { bubbles: false, cancelable: false, detail: undefined };
+      var evt = document.createEvent('CustomEvent');
+      evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+      return evt;
+    }
+
+    CustomEvent.prototype = window.Event.prototype;
+  })();
+
 
   /////////////////////////////////////////////////////////
   // Event handling/state management
@@ -67,7 +87,7 @@ function TinyDatePicker(input, options) {
   }
 
   function hide() {
-    if (!document.body.contains(el)) return;
+    if (!body.contains(el)) return;
     isHiding = 1;
     input.focus();
     input.selectionEnd = input.selectionStart;
@@ -95,6 +115,9 @@ function TinyDatePicker(input, options) {
     input.value = date ? opts.format(date) : '';
     setDate(date);
     hide();
+
+    // Make sure the input fires its change event
+    input.dispatchEvent(new CustomEvent('change', { bubbles: true }));
   }
 
   function setDate(date) {
@@ -281,7 +304,6 @@ function TinyDatePicker(input, options) {
     return div.firstChild;
   }
 }
-
 
 /////////////////////////////////////////////////////////
 // Commonjs support
