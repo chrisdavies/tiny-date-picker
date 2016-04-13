@@ -9,7 +9,7 @@ function TinyDatePicker(input, options) {
   var currentDate = opts.parse(input.value);
   var el = buildCalendarElement(currentDate, opts);
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
-  var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent;"></button>');
+  var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent; top: 0;"></button>');
   var body = document.body;
   var CustomEvent = window.CustomEvent;
   input.readOnly = true;
