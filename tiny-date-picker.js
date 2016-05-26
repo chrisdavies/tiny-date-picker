@@ -59,9 +59,7 @@ function TinyDatePicker(input, options) {
   }));
 
   on(el, 'mousedown', function (e) {
-    if (!~['A', 'BUTTON'].indexOf(e.target.tagName)) {
-      e.preventDefault(); // Prevent loss of focus
-    }
+    e.preventDefault(); // Prevent loss of focus
   });
 
   on(el, 'blur', function (e) {
