@@ -129,6 +129,11 @@
   color: #D0D0D0;
 }
 
+.dp-day-disabled {
+  color: #D0D0D0;
+  cursor: default;
+}
+
 .dp-today:hover,
 .dp-close:hover,
 .dp-clear:hover,
@@ -146,6 +151,11 @@
 .dp-selected {
   background: #3497FF;
   color: white;
+}
+
+.dp-day-disabled:hover{
+  background-color: transparent;
+  color: #D0D0D0;
 }
 
 .dp-day-of-week {
