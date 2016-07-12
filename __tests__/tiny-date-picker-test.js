@@ -76,6 +76,46 @@ describe('TinyDatePicker', function () {
     calendarShouldBeHidden();
   });
 
+  it('Does not select date lower than min specified', function () {
+    var dp = getDatePicker({min: '9/23/2015'});
+    var input = $('input');
+    var originalValue = '9/26/2015';
+
+    input.value = originalValue;
+    setFocus(input);
+
+    document.querySelectorAll('.dp-day')[8].click();
+    expect(input.value).toBe('9/26/2015');
+  });
+
+  it('Does not select date higher than max specified', function () {
+    var dp = getDatePicker({max: '9/23/2015'});
+    var input = $('input');
+    var originalValue = '9/22/2015';
+
+    input.value = originalValue;
+    setFocus(input);
+
+    document.querySelectorAll('.dp-day')[25].click();
+    expect(input.value).toBe('9/22/2015');
+  });
+
+  it('Select min date when initial date is lower than min specified', function () {
+    var dp = getDatePickerWithInitalDate({min: '9/23/2015'}, '9/20/2015');
+    var input = $('input');
+    setFocus(input);
+
+    expectCalendar('2015', 'September', '23');
+  });
+
+  it('Select max date when initial date is higher than max specified', function () {
+    var dp = getDatePickerWithInitalDate({max: '9/25/2015'}, '9/29/2015');
+    var input = $('input');
+    setFocus(input);
+
+    expectCalendar('2015', 'September', '25');
+  });
+
   it('Shows the previous month when clicking prev', function () {
     testMonthNavigation('9/26/2015', '.dp-prev', '2015', 'August', '26');
   });
@@ -193,6 +233,13 @@ function nowString() {
 
 function getDatePicker(opts) {
   document.body.innerHTML = '<button>A</button><input type="text"><button>B</button>';
+
+  var fn = require('../tiny-date-picker');
+  return new fn(document.querySelector('input'), opts);
+}
+
+function getDatePickerWithInitalDate(opts, initialDate) {
+  document.body.innerHTML = '<button>A</button><input type="text" value="' + initialDate + '"><button>B</button>';
 
   var fn = require('../tiny-date-picker');
   return new fn(document.querySelector('input'), opts);

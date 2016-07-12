@@ -7,6 +7,13 @@ function TinyDatePicker(input, options) {
   // Initialization and state variables
   var opts = initializeOptions(options);
   var currentDate = opts.parse(input.value);
+  
+  var initialInRange = inRange(currentDate);
+  if (!initialInRange) {
+    currentDate = (opts.min) ? opts.parse(opts.min) : opts.parse(opts.max);
+    input.value = opts.format(currentDate);
+  }
+
   var el = buildCalendarElement(currentDate, opts);
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
   var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent; top: 0;"></button>');
@@ -110,6 +117,10 @@ function TinyDatePicker(input, options) {
   /////////////////////////////////////////////////////////
   // Date manipulation functions
   function pickDate(date) {
+    if (!inRange(date)) {
+      return;
+    }
+
     input.value = date ? opts.format(date) : '';
     setDate(date);
     hide();
@@ -151,7 +162,27 @@ function TinyDatePicker(input, options) {
     }
   }
 
+  function inRange(date) {
+    var minStamp = (opts.min) ? new Date(opts.min).getTime() : null;
+    var maxStamp = (opts.max) ? new Date(opts.max).getTime() : null;
 
+    if (!minStamp && !maxStamp) {
+      return true;
+    }
+
+    date = (typeof date == 'String') ? new Date(date) : date;
+    var stamp = (date) ? date.getTime() : Date.now();
+
+    if (minStamp && stamp < minStamp) {
+      return false;
+    }
+
+    if (maxStamp && stamp > maxStamp) {
+      return false;
+    }
+
+    return true;
+  }
 
 
   /////////////////////////////////////////////////////////
@@ -195,7 +226,9 @@ function TinyDatePicker(input, options) {
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       today: 'Today',
       clear: 'Clear',
-      close: 'Close'
+      close: 'Close',
+      min: null,
+      max: null
     }, opts);
   }
 
@@ -259,10 +292,12 @@ function TinyDatePicker(input, options) {
         var isToday = iter.toDateString() === new Date().toDateString();
         var isNotInMonth = iter.getMonth() !== date.getMonth();
         var tagName = isSelected ? 'a' : 'span';
+        var isDisabled = !inRange(iter);
 
         isSelected && (classes += ' dp-selected');
         isNotInMonth && (classes += ' dp-edge-day');
         isToday && (classes += ' dp-day-today');
+        isDisabled && (classes += ' dp-day-disabled');
 
         html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
             dayOfMonth +
