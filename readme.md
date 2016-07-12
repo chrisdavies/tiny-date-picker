@@ -3,7 +3,7 @@
 A light-weight date picker with zero dependencies.
 
 - Zero dependencies
-- Roughly 1.5KB minified and gzipped
+- Roughly 1.7KB minified and gzipped
 - IE9+
 - Mobile-friendly/responsive
 - Based loosely on the awesome [pickadate](http://amsul.ca/pickadate.js/), but without jQuery
@@ -29,6 +29,9 @@ TinyDatePicker(document.querySelector('input'), {
   months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 });
 ```
+
+The input to which the date picker is attached will fire its `change` event
+any time the date value chanegs.
 
 ## Options
 
@@ -61,10 +64,7 @@ TinyDatePicker(document.querySelector('input'), {
   clear: 'Clear',
 
   // The text for the button used to close the form
-  close: 'Close',
-
-  // Use or do not use a modal. ('dp-visible')
-  useModal: true
+  close: 'Close'
 });
 ```
 
