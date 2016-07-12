@@ -7,20 +7,20 @@ function TinyDatePicker(input, options) {
   // Initialization and state variables
   var opts = initializeOptions(options);
   var currentDate = opts.parse(input.value);
-  
-  var initialInRange = inRange(currentDate);
-  if (!initialInRange) {
-    currentDate = (opts.min) ? opts.parse(opts.min) : opts.parse(opts.max);
-    input.value = opts.format(currentDate);
-  }
-
+  var minStamp = opts.min && new Date(opts.min).getTime();
+  var maxStamp = opts.max && new Date(opts.max).getTime();
   var el = buildCalendarElement(currentDate, opts);
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
   var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent; top: 0;"></button>');
   var body = document.body;
   var CustomEvent = window.CustomEvent;
+
   input.readOnly = true;
 
+  if (!inRange(currentDate)) {
+    setDate(opts.parse(opts.min ? opts.min : opts.max));
+    input.value = opts.format(currentDate);
+  }
 
   /////////////////////////////////////////////////////////
   // Unintrusive polyfill the custom event for IE9+
@@ -162,26 +162,11 @@ function TinyDatePicker(input, options) {
     }
   }
 
-  function inRange(date) {
-    var minStamp = (opts.min) ? new Date(opts.min).getTime() : null;
-    var maxStamp = (opts.max) ? new Date(opts.max).getTime() : null;
+  function inRange(dateOrString) {
+    var date = (typeof dateOrString == 'String') ? new Date(dateOrString) : dateOrString;
+    var stamp = date ? date.getTime() : Date.now();
 
-    if (!minStamp && !maxStamp) {
-      return true;
-    }
-
-    date = (typeof date == 'String') ? new Date(date) : date;
-    var stamp = (date) ? date.getTime() : Date.now();
-
-    if (minStamp && stamp < minStamp) {
-      return false;
-    }
-
-    if (maxStamp && stamp > maxStamp) {
-      return false;
-    }
-
-    return true;
+    return (!minStamp || stamp >= minStamp) && (!maxStamp || stamp <= maxStamp);
   }
 
 

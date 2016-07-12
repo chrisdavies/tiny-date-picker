@@ -100,7 +100,7 @@ describe('TinyDatePicker', function () {
     expect(input.value).toBe('9/22/2015');
   });
 
-  it('Select min date when initial date is lower than min specified', function () {
+  it('Selects min date when initial date is lower than min specified', function () {
     var dp = getDatePickerWithInitalDate({min: '9/23/2015'}, '9/20/2015');
     var input = $('input');
     setFocus(input);
@@ -108,7 +108,7 @@ describe('TinyDatePicker', function () {
     expectCalendar('2015', 'September', '23');
   });
 
-  it('Select max date when initial date is higher than max specified', function () {
+  it('Selects max date when initial date is higher than max specified', function () {
     var dp = getDatePickerWithInitalDate({max: '9/25/2015'}, '9/29/2015');
     var input = $('input');
     setFocus(input);
