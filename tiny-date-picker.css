@@ -30,7 +30,8 @@
   transition: transform 0.5s;
 }
 
-.dp-visible .dp {
+.dp-visible .dp,
+.dp-show .dp {
   transform: translate(-50%, -50%);
 }
 
@@ -200,7 +201,8 @@
     padding: 0.5em;
   }
 
-  .dp-visible .dp {
+  .dp-visible .dp,
+  .dp-show .dp {
     transform: translate(-50%, -25%);
   }
 }

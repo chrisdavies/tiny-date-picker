@@ -33,25 +33,30 @@ function TinyDatePicker(input, options) {
 
   /////////////////////////////////////////////////////////
   // Event handling/state management
-  on(input, 'focus', show);
-  on(input, 'click', show);
+
+  if (opts.useModal) {
+      on(input, 'focus', show);
+      on(input, 'click', show);
+  } else {
+      show();
+  }
 
   on(el, 'keydown', mapKeys({
     '37': shiftDay(-1), // Left
     '38': shiftDay(-7), // Up
     '39': shiftDay(1), // Right
     '40': shiftDay(7), // Down
-    '13': function () { pickDate(currentDate) }, // Enter,
+    '13': function () { pickDate(currentDate); }, // Enter,
     '27': hide // Esc
   }));
 
   on(el, 'click', mapClick({
-    'dp-clear': function () { pickDate() },
+    'dp-clear': function () { pickDate(); },
     'dp-close': hide,
     'dp-wrapper': hide,
     'dp-prev': shiftMonth(-1),
     'dp-next': shiftMonth(1),
-    'dp-today': function () { pickDate(new Date()) },
+    'dp-today': function () { pickDate(new Date()); },
     'dp-day': function (e) {
       var time = e.target.getAttribute('data-dp');
       time && (pickDate(new Date(parseInt(time))));
@@ -79,20 +84,21 @@ function TinyDatePicker(input, options) {
     body.appendChild(el);
     body.appendChild(focusCatcher);
     setTimeout(function () {
-      el.className += ' dp-visible';
+      if (opts.useModal) el.className += ' dp-visible';
+      else el.className += ' dp-show';
       focus();
     }, 1);
   }
 
   function hide() {
-    if (!body.contains(el)) return;
+    if (!body.contains(el) || !opts.useModal) return;
     isHiding = 1;
     input.focus();
     input.selectionEnd = input.selectionStart;
     body.removeChild(el);
     body.removeChild(focusCatcher);
     el.className = el.className.replace(' dp-visible', '');
-    setTimeout(function () { isHiding = 0 }, 1);
+    setTimeout(function () { isHiding = 0; }, 1);
   }
 
   function redraw() {
@@ -129,7 +135,7 @@ function TinyDatePicker(input, options) {
     return function () {
       currentDate.setDate(currentDate.getDate() + amount);
       setDate(currentDate);
-    }
+    };
   }
 
   function shiftMonth(direction) {
@@ -148,7 +154,7 @@ function TinyDatePicker(input, options) {
       }
 
       setDate(dt);
-    }
+    };
   }
 
 
@@ -164,7 +170,7 @@ function TinyDatePicker(input, options) {
         e.preventDefault();
         action();
       }
-    }
+    };
   }
 
   function mapClick(map) {
@@ -172,7 +178,7 @@ function TinyDatePicker(input, options) {
       e.target.className.split(/[\s]+/g).forEach(function (key) {
         map[key] && map[key](e);
       });
-    }
+    };
   }
 
 
@@ -195,7 +201,8 @@ function TinyDatePicker(input, options) {
       months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
       today: 'Today',
       clear: 'Clear',
-      close: 'Close'
+      close: 'Close',
+      useModal: true // if (!useModal) show()
     }, opts);
   }
 
@@ -226,10 +233,20 @@ function TinyDatePicker(input, options) {
           '<footer class="dp-footer">' +
             '<button class="dp-today">' + opts.today + '</button>' +
             '<button class="dp-clear">' + opts.clear + '</button>' +
-            '<button class="dp-close">' + opts.close + '</button>' +
+             renderCloseBtn() +
           '</footer>' +
         '</div>' +
       '</div>');
+
+    // See how close button should render
+    function renderCloseBtn() {
+        var html = '';
+
+        if (opts.useModal) html = '<button class="dp-close">' + opts.close + '</button>';
+        else html = '<button class="dp-close" disabled>&nbsp;</button>';
+
+        return html;
+    }
 
     // Render the column headings
     function renderDateHeadings() {
