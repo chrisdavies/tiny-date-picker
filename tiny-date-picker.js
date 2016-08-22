@@ -7,7 +7,7 @@ function TinyDatePicker(input, options) {
   // Initialization and state variables
   var opts = initializeOptions(options);
   var currentDate = opts.parse(input.value);
-  
+
   var initialInRange = inRange(currentDate);
   if (!initialInRange) {
     currentDate = (opts.min) ? opts.parse(opts.min) : opts.parse(opts.max);
@@ -228,7 +228,8 @@ function TinyDatePicker(input, options) {
       clear: 'Clear',
       close: 'Close',
       min: null,
-      max: null
+      max: null,
+      weekStartsMonday: false
     }, opts);
   }
 
@@ -253,8 +254,8 @@ function TinyDatePicker(input, options) {
             '<button class="dp-next"></button>' +
           '</header>' +
           '<div class="dp-body">' +
-            renderDateHeadings() +
-            renderDaysOfMonth() +
+            renderDateHeadings(opts) +
+            renderDaysOfMonth(opts) +
           '</div>' +
           '<footer class="dp-footer">' +
             '<button class="dp-today">' + opts.today + '</button>' +
@@ -265,24 +266,23 @@ function TinyDatePicker(input, options) {
       '</div>');
 
     // Render the column headings
-    function renderDateHeadings() {
+    function renderDateHeadings(opts) {
+      var days = shuffleWeekdays(opts);
       var html = '';
 
       // Generate headings...
       for (var i = 0; i < 7; ++i) {
-        html += '<span class="dp-day-of-week">' + opts.days[i] + '</span>';
+        html += '<span class="dp-day-of-week">' + days[i] + '</span>';
       }
-
-      return html;
     }
 
     // Render the list of days in the calendar month
-    function renderDaysOfMonth() {
+    function renderDaysOfMonth(opts) {
       var iter = new Date(date);
       var html = '';
 
       iter.setDate(1); // First of the month
-      iter.setDate(iter.getDate() - iter.getDay()); // Back to Sunday
+      iter.setDate(iter.getDate() - iter.getDay() + Number(opts.weekStartsMonday)); // Back to Sunday or Monday
 
       // We are going to have 6 weeks always displayed to keep a consistent calendar size
       for (var day = 0; day < (6 * 7); ++day) {
@@ -300,7 +300,7 @@ function TinyDatePicker(input, options) {
         isDisabled && (classes += ' dp-day-disabled');
 
         html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
-            dayOfMonth +
+          dayOfMonth +
           '</' + tagName + '>';
 
         iter.setDate(dayOfMonth + 1);
@@ -311,6 +311,12 @@ function TinyDatePicker(input, options) {
   }
 
 
+  function shuffleWeekdays(opts) {
+    var days = opts.days.slice();
+    var offset = Number(opts.weekStartsMonday);
+
+    return days.splice(-offset).concat(days);
+  }
 
 
   /////////////////////////////////////////////////////////
