@@ -76,6 +76,26 @@ describe('TinyDatePicker', function () {
     calendarShouldBeHidden();
   });
 
+  it('Starts the week on Sunday by default', function () {
+    var dp = getDatePickerWithInitalDate({}, '9/26/2015');
+    var input = $('input');
+
+    setFocus(input);
+    $('.dp-day').click();
+
+    expect(input.value).toBe('8/30/2015');
+  });
+
+  it('Starts the week on Monday if weekStartsMonday is set', function () {
+    var dp = getDatePickerWithInitalDate({weekStartsMonday: true}, '9/26/2015');
+    var input = $('input');
+
+    setFocus(input);
+    $('.dp-day').click();
+
+    expect(input.value).toBe('8/31/2015');
+  });
+
   it('Does not select date lower than min specified', function () {
     var dp = getDatePicker({min: '9/23/2015'});
     var input = $('input');
