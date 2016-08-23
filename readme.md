@@ -64,7 +64,10 @@ TinyDatePicker(document.querySelector('input'), {
   clear: 'Clear',
 
   // The text for the button used to close the form
-  close: 'Close'
+  close: 'Close',
+
+  // Whether to use Monday as start of the week
+  weekStartsMonday: false
 });
 ```
 
