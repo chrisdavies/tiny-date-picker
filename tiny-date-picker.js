@@ -266,6 +266,8 @@ function TinyDatePicker(input, options) {
       for (var i = 0; i < 7; ++i) {
         html += '<span class="dp-day-of-week">' + days[i] + '</span>';
       }
+
+      return html;
     }
 
     // Render the list of days in the calendar month
