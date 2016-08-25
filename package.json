@@ -4,6 +4,7 @@
   "description": "A small, dependency-free date picker",
   "main": "tiny-date-picker.js",
   "scripts": {
+    "bump": "mversion",
     "test": "jest",
     "min": "npm run mincss && npm run minjs",
     "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
@@ -28,7 +29,8 @@
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
     "jest-cli": "^0.6.1",
+    "mversion": "^1.10.1",
     "uglify-js": "^2.4.23",
-    "uglifycss": "0.0.18"
+    "uglifycss": "0.0.21"
   }
 }
