@@ -309,7 +309,7 @@ function TinyDatePicker(input, options) {
     var days = opts.days.slice();
     var offset = Number(opts.weekStartsMonday);
 
-    return days.splice(-offset).concat(days);
+    return days.splice(offset).concat(days);
   }
 
 

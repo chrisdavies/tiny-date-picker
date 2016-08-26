@@ -81,8 +81,9 @@ describe('TinyDatePicker', function () {
     var input = $('input');
 
     setFocus(input);
-    $('.dp-day').click();
+    expect($('.dp-day-of-week').textContent).toBe("Sun");
 
+    $('.dp-day').click();
     expect(input.value).toBe('8/30/2015');
   });
 
@@ -91,8 +92,9 @@ describe('TinyDatePicker', function () {
     var input = $('input');
 
     setFocus(input);
-    $('.dp-day').click();
+    expect($('.dp-day-of-week').textContent).toBe("Mon");
 
+    $('.dp-day').click();
     expect(input.value).toBe('8/31/2015');
   });
 
