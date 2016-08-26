@@ -7,6 +7,8 @@ function TinyDatePicker(input, options) {
   // Initialization and state variables
   var opts = initializeOptions(options);
   var currentDate = opts.parse(input.value);
+  var minStamp = opts.min && new Date(opts.min).getTime();
+  var maxStamp = opts.max && new Date(opts.max).getTime();
 
   var initialInRange = inRange(currentDate);
   if (!initialInRange) {
@@ -19,8 +21,13 @@ function TinyDatePicker(input, options) {
   var focusCatcher = htmlToElement('<button style="position: absolute; width: 1; height: 1; overflow: hidden; border: 0; background: transparent; top: 0;"></button>');
   var body = document.body;
   var CustomEvent = window.CustomEvent;
+
   input.readOnly = true;
 
+  if (!inRange(currentDate)) {
+    setDate(opts.parse(opts.min ? opts.min : opts.max));
+    input.value = opts.format(currentDate);
+  }
 
   /////////////////////////////////////////////////////////
   // Unintrusive polyfill the custom event for IE9+
@@ -162,26 +169,11 @@ function TinyDatePicker(input, options) {
     }
   }
 
-  function inRange(date) {
-    var minStamp = (opts.min) ? new Date(opts.min).getTime() : null;
-    var maxStamp = (opts.max) ? new Date(opts.max).getTime() : null;
+  function inRange(dateOrString) {
+    var date = (typeof dateOrString == 'String') ? new Date(dateOrString) : dateOrString;
+    var stamp = date ? date.getTime() : Date.now();
 
-    if (!minStamp && !maxStamp) {
-      return true;
-    }
-
-    date = (typeof date == 'String') ? new Date(date) : date;
-    var stamp = (date) ? date.getTime() : Date.now();
-
-    if (minStamp && stamp < minStamp) {
-      return false;
-    }
-
-    if (maxStamp && stamp > maxStamp) {
-      return false;
-    }
-
-    return true;
+    return (!minStamp || stamp >= minStamp) && (!maxStamp || stamp <= maxStamp);
   }
 
 
@@ -228,7 +220,8 @@ function TinyDatePicker(input, options) {
       clear: 'Clear',
       close: 'Close',
       min: null,
-      max: null
+      max: null,
+      weekStartsMonday: false
     }, opts);
   }
 
@@ -253,8 +246,8 @@ function TinyDatePicker(input, options) {
             '<button class="dp-next"></button>' +
           '</header>' +
           '<div class="dp-body">' +
-            renderDateHeadings() +
-            renderDaysOfMonth() +
+            renderDateHeadings(opts) +
+            renderDaysOfMonth(opts) +
           '</div>' +
           '<footer class="dp-footer">' +
             '<button class="dp-today">' + opts.today + '</button>' +
@@ -265,24 +258,25 @@ function TinyDatePicker(input, options) {
       '</div>');
 
     // Render the column headings
-    function renderDateHeadings() {
+    function renderDateHeadings(opts) {
+      var days = shuffleWeekdays(opts);
       var html = '';
 
       // Generate headings...
       for (var i = 0; i < 7; ++i) {
-        html += '<span class="dp-day-of-week">' + opts.days[i] + '</span>';
+        html += '<span class="dp-day-of-week">' + days[i] + '</span>';
       }
 
       return html;
     }
 
     // Render the list of days in the calendar month
-    function renderDaysOfMonth() {
+    function renderDaysOfMonth(opts) {
       var iter = new Date(date);
       var html = '';
 
       iter.setDate(1); // First of the month
-      iter.setDate(iter.getDate() - iter.getDay()); // Back to Sunday
+      iter.setDate(iter.getDate() - iter.getDay() + Number(opts.weekStartsMonday)); // Back to Sunday or Monday
 
       // We are going to have 6 weeks always displayed to keep a consistent calendar size
       for (var day = 0; day < (6 * 7); ++day) {
@@ -300,7 +294,7 @@ function TinyDatePicker(input, options) {
         isDisabled && (classes += ' dp-day-disabled');
 
         html += '<' + tagName + ' href="#" class="' + classes + '" data-dp="' + iter.getTime() + '">' +
-            dayOfMonth +
+          dayOfMonth +
           '</' + tagName + '>';
 
         iter.setDate(dayOfMonth + 1);
@@ -311,6 +305,12 @@ function TinyDatePicker(input, options) {
   }
 
 
+  function shuffleWeekdays(opts) {
+    var days = opts.days.slice();
+    var offset = Number(opts.weekStartsMonday);
+
+    return days.splice(offset).concat(days);
+  }
 
 
   /////////////////////////////////////////////////////////
