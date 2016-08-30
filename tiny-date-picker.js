@@ -124,7 +124,7 @@ function TinyDatePicker(input, options) {
   /////////////////////////////////////////////////////////
   // Date manipulation functions
   function pickDate(date) {
-    if (!inRange(date)) {
+    if (date && !inRange(date)) {
       return;
     }
 

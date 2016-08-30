@@ -35,6 +35,17 @@ describe('TinyDatePicker', function () {
     calendarShouldBeHidden();
   });
 
+  it('Clears the input value when clicking Clear and max is past', function () {
+    var dp = getDatePicker({max: '9/23/2015'});
+    var input = $('input');
+
+    input.value = nowString();
+    input.click();
+    $('.dp-clear').click();
+    expect(input.value).toBe('');
+    calendarShouldBeHidden();
+  });
+
   it('Closes the calendar when clicking Close', function () {
     var dp = getDatePicker();
     var input = $('input');
