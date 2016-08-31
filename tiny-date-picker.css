@@ -123,15 +123,11 @@
   cursor: pointer;
   font-size: 1.25em;
   padding: 0.75rem 0;
+  border: 1px solid transparent;
 }
 
 .dp-edge-day {
   color: #D0D0D0;
-}
-
-.dp-day-disabled {
-  color: #D0D0D0;
-  cursor: default;
 }
 
 .dp-today:hover,
@@ -140,22 +136,22 @@
 .dp-today:focus,
 .dp-close:focus,
 .dp-clear:focus,
-.dp-day:hover {
+.dp-day:hover,
+.dp-selected {
   background: #72BBFF;
   color: white;
+}
+
+.dp-selected {
+  border-color: #3497FF;
 }
 
 .dp-today:active,
 .dp-close:active,
 .dp-clear:active,
-.dp-selected {
+.dp-current-val {
   background: #3497FF;
   color: white;
-}
-
-.dp-day-disabled:hover{
-  background-color: transparent;
-  color: #D0D0D0;
 }
 
 .dp-day-of-week {

@@ -6,7 +6,10 @@ function TinyDatePicker(input, options) {
   /////////////////////////////////////////////////////////
   // Initialization and state variables
   var opts = initializeOptions(options);
+
+  // The current selection (not necessarily confirmed by the user)
   var currentDate = opts.parse(input.value);
+
   var minStamp = opts.min && new Date(opts.min).getTime();
   var maxStamp = opts.max && new Date(opts.max).getTime();
 
@@ -15,6 +18,9 @@ function TinyDatePicker(input, options) {
     currentDate = (opts.min) ? opts.parse(opts.min) : opts.parse(opts.max);
     input.value = opts.format(currentDate);
   }
+
+  // The current date in the associated input
+  var currentValue = currentDate;
 
   var el = buildCalendarElement(currentDate, opts);
   var isHiding = false; // Used to prevent the calendar from showing when transitioning to hidden
@@ -129,6 +135,7 @@ function TinyDatePicker(input, options) {
     }
 
     input.value = date ? opts.format(date) : '';
+    currentValue = date;
     setDate(date);
     hide();
 
@@ -287,7 +294,9 @@ function TinyDatePicker(input, options) {
         var isNotInMonth = iter.getMonth() !== date.getMonth();
         var tagName = isSelected ? 'a' : 'span';
         var isDisabled = !inRange(iter);
+        var isCurrent = iter.toDateString() == currentValue.toDateString();
 
+        isCurrent && (classes += ' dp-current-val');
         isSelected && (classes += ' dp-selected');
         isNotInMonth && (classes += ' dp-edge-day');
         isToday && (classes += ' dp-day-today');
