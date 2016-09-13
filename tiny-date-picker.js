@@ -135,7 +135,8 @@ function TinyDatePicker(input, options) {
     }
 
     input.value = date ? opts.format(date) : '';
-    currentValue = opts.parse(date || '');
+    currentValue = date || currentDate;
+
     setDate(date);
     hide();
 

@@ -22,6 +22,7 @@ describe('TinyDatePicker', function () {
     $('.dp-today').click();
     expect(input.value).toBe(nowString());
     calendarShouldBeHidden();
+
   });
 
   it('Clears the input value when clicking Clear', function () {
@@ -33,6 +34,26 @@ describe('TinyDatePicker', function () {
     $('.dp-clear').click();
     expect(input.value).toBe('');
     calendarShouldBeHidden();
+  });
+
+  it('Clears the input value when clicking Clear and still works after', function () {
+    var dp = getDatePicker();
+    var input = $('input');
+
+    input.value = nowString();
+    input.click();
+    $('.dp-clear').click();
+    expect(input.value).toBe('');
+    calendarShouldBeHidden();
+
+    return new Promise(function (resolve) {
+      setTimeout(function() {
+        input.click();
+        $('.dp-day').click();
+        expect(input.value).not.toBe('');
+        resolve(true);
+      }, 2);
+    });
   });
 
   it('Clears the input value when clicking Clear and max is past', function () {

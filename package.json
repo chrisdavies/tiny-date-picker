@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "jest-cli": "^0.6.1",
+    "jest-cli": "^15.1.1",
     "mversion": "^1.10.1",
     "uglify-js": "^2.4.23",
     "uglifycss": "0.0.21"
