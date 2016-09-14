@@ -112,7 +112,7 @@ function TinyDatePicker(input, options) {
     body.removeChild(el);
     body.removeChild(focusCatcher);
     el.className = el.className.replace(' dp-visible', '');
-    setTimeout(function () { isHiding = 0 }, 1);
+    setTimeout(function () { isHiding = 0 }, 10);
   }
 
   function redraw() {
