@@ -52,7 +52,7 @@ describe('TinyDatePicker', function () {
         $('.dp-day').click();
         expect(input.value).not.toBe('');
         resolve(true);
-      }, 2);
+      }, 15);
     });
   });
 
