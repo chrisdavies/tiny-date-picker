@@ -130,6 +130,17 @@ describe('TinyDatePicker', function () {
     expect(input.value).toBe('8/31/2015');
   });
 
+  it('Leaves field blank if today not in min/max range', function () {
+    var dp = getDatePicker({min: '9/23/2015', max: '9/29/2015'});
+    var input = $('input');
+
+    setFocus(input);
+
+    $('.dp-close').click();
+
+    expect(input.value).toBe('');
+  });
+
   it('Does not select date lower than min specified', function () {
     var dp = getDatePicker({min: '9/23/2015'});
     var input = $('input');
