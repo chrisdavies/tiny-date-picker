@@ -16,7 +16,7 @@ function TinyDatePicker(input, options) {
   var initialInRange = inRange(currentDate);
   if (!initialInRange) {
     currentDate = (opts.min) ? opts.parse(opts.min) : opts.parse(opts.max);
-    input.value = opts.format(currentDate);
+    input.value && (input.value = opts.format(currentDate));
   }
 
   // The current date in the associated input
