@@ -66,6 +66,12 @@ TinyDatePicker(document.querySelector('input'), {
   // The text for the button used to close the form
   close: 'Close',
 
+  // Specifies the minimum date that can be selected
+  min: '10/1/2016',
+
+  // Specifies the maximum date that can be selected
+  max: '10/22/2016',
+
   // Whether to use Monday as start of the week
   weekStartsMonday: false
 });
