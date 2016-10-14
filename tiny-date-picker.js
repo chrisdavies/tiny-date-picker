@@ -108,7 +108,6 @@ function TinyDatePicker(input, options) {
     if (!body.contains(el)) return;
     isHiding = 1;
     input.focus();
-    input.selectionEnd = input.selectionStart;
     body.removeChild(el);
     body.removeChild(focusCatcher);
     el.className = el.className.replace(' dp-visible', '');
