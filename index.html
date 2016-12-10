@@ -16,6 +16,10 @@
         <label>Pick a date:</label>
         <input type="text" class="date-example" tabindex="400" />
       </div>
+      <div class="form-field">
+        <label>And another:</label>
+        <input type="text" class="date-example is-below" tabindex="401" />
+      </div>
       <nav class="footer-links">
         <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
       </nav>
@@ -24,6 +28,7 @@
     <script src="./tiny-date-picker.js"></script>
     <script>
       TinyDatePicker(document.querySelector('.date-example'));
+      TinyDatePicker(document.querySelector('.is-below'), {mode: 'dp-below'});
 
       if (window.console && window.console.log) {
         document.addEventListener('change', function (e) {

@@ -40,10 +40,11 @@ a {
 }
 
 main {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: block;
+  position: relative;
+  width: 400px;
+  margin: auto;
+  padding: 5em 2em;
 }
 
 .form-field {
