@@ -3,14 +3,17 @@
 A light-weight date picker with zero dependencies.
 
 - Zero dependencies
-- Roughly 1.7KB minified and gzipped
+- Roughly 2KB minified and gzipped
 - IE9+
 - Mobile-friendly/responsive
-- Based loosely on the awesome [pickadate](http://amsul.ca/pickadate.js/), but without jQuery
 
 [See the demo...](http://chrisdavies.github.io/tiny-date-picker/)
 
-[![Build Status](https://travis-ci.org/chrisdavies/tiny-date-picker.svg?branch=master)](https://travis-ci.org/chrisdavies/tiny-date-picker)
+
+## Installation
+
+    npm install --save tiny-date-picker
+
 
 ## Usage
 
@@ -32,6 +35,7 @@ TinyDatePicker(document.querySelector('input'), {
 
 The input to which the date picker is attached will fire its `change` event
 any time the date value chanegs.
+
 
 ## Options
 
@@ -72,10 +76,16 @@ TinyDatePicker(document.querySelector('input'), {
   // Specifies the maximum date that can be selected
   max: '10/22/2016',
 
+  // There are two modes: dp-modal (the default) and dp-below.
+  // dp-modal makes the date picker show up as a modal.
+  // dp-below makes it show up beneath its input element.
+  mode: 'dp-below',
+
   // Whether to use Monday as start of the week
   weekStartsMonday: false
 });
 ```
+
 
 ## Style
 
@@ -84,11 +94,13 @@ in `tiny-date-picker.css` have been kept as unspecific as possible so they can b
 
 For more info, launch a date picker and use the browser dev tools to inspect its structure and shape.
 
+
 ## Aria
 
 There is currently no Aria support baked into Tiny Date Picker, but it is planned.
 
-## Browserify
+
+## Bundling
 
 This library is [CommonJS](http://www.commonjs.org/) compatible, so you can use it in this way:
 
@@ -98,26 +110,25 @@ var TinyDatePicker = require('tiny-date-picker'),
 TinyDatePicker(document.querySelector('input'));
 ```
 
-## Installation
+Or, with ES6:
 
-Just download `tiny-date-picker.min.js` and `tiny-date-picker.css`, or use bower:
+```javascript
+import TinyDatePicker from 'tiny-date-picker',
 
-    bower install tiny-date-picker
+TinyDatePicker(document.querySelector('input'));
+```
 
-Or use npm:
-https://www.npmjs.com/package/tiny-date-picker
-
-    npm install --save tiny-date-picker
 
 ## Contributing
 
-Make your changes (and add tests), then run the tests:
+First, you'll need to have selenium installed and running, as detailed [here](http://webdriver.io/guide/getstarted/install.html) and you'll need to serve the test HTML page by running `npm start`.
 
     npm test
 
 If all is well, build your changes:
 
     npm run min
+
 
 ## License MIT
 

@@ -1,12 +1,13 @@
 {
   "name": "tiny-date-picker",
-  "version": "1.1.8",
+  "version": "2.0.0",
   "description": "A small, dependency-free date picker",
   "main": "tiny-date-picker.js",
   "scripts": {
-    "bump": "mversion",
-    "test": "jest",
-    "min": "npm run mincss && npm run minjs",
+    "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
+    "start": "http-server .",
+    "test": "wdio test/wdio.mocha.conf.js",
+    "min": "concurrently \"npm run mincss\" \"npm run minjs\"",
     "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
     "minjs": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified JS:' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
   },
@@ -28,9 +29,14 @@
   },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "jest-cli": "^15.1.1",
-    "mversion": "^1.10.1",
-    "uglify-js": "^2.4.23",
-    "uglifycss": "0.0.21"
+    "chai": "^3.5.0",
+    "concurrently": "^3.1.0",
+    "http-server": "^0.9.0",
+    "mocha": "^3.2.0",
+    "uglify-js": "^2.7.5",
+    "uglifycss": "0.0.25",
+    "wdio-mocha-framework": "^0.5.4",
+    "wdio-spec-reporter": "0.0.3",
+    "webdriverio": "^4.4.0"
   }
 }

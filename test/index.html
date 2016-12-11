@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tiny Date Picker Demo</title>
+    <meta name="author" content="Chris Davies - http://chrisdavies.github.io/">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="A tiny, responsive, modern, zero-dependency date picker">
+    <link rel="stylesheet" href="/test/demo.css">
+    <link rel="stylesheet" href="/tiny-date-picker.css">
+  </head>
+  <body>
+    <main>
+      <h1>Tiny Date Picker</h1>
+      <div class="form-field">
+        <label>Pick a date:</label>
+        <input type="text" class="modal-txt" tabindex="400" />
+      </div>
+      <div class="form-field">
+        <label>And another:</label>
+        <input type="text" class="non-modal-txt" tabindex="401" />
+      </div>
+      <nav class="footer-links">
+        <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
+      </nav>
+    </main>
+
+    <script src="/tiny-date-picker.js"></script>
+    <script>
+      TinyDatePicker(document.querySelector('.modal-txt'));
+      TinyDatePicker(document.querySelector('.non-modal-txt'), {mode: 'dp-below'});
+
+      if (window.console && window.console.log) {
+        document.addEventListener('change', function (e) {
+          console.log('Changed to: ' + e.target.value);
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,3 +1,4 @@
 node_modules
-serve.py
-npm-debug.log
+shots
+*.log
+*.jar
