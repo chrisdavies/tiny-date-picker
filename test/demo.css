@@ -12,6 +12,8 @@ body {
   font-weight: 400;
   line-height: 1.45;
   color: #333;
+  min-height: 100%;
+  padding-bottom: 4em;
 }
 
 p {margin-bottom: 1.3em;}
@@ -45,14 +47,16 @@ main {
   width: 400px;
   margin: auto;
   padding: 5em 2em;
+  max-width: 100%;
 }
 
 .form-field {
   margin-bottom: 1.4em;
 }
 
-.date-example {
+.form-field input {
   width: 100%;
+  margin-top: 0.25em;
   padding: 0.5em;
   border: 2px solid #DDD;
   border-radius: 4px;

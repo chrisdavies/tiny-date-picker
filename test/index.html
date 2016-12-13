@@ -23,10 +23,30 @@
       <nav class="footer-links">
         <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
       </nav>
+      <div class="debug">
+      </div>
     </main>
 
     <script src="/tiny-date-picker.js"></script>
     <script>
+      if (location.search === '?debug') {
+        var log = console.log;
+        console.log = function () {
+          var args = Array.prototype.slice.call(arguments).map(function (a) {
+            return JSON.stringify(a);
+          });
+
+          var pre = document.createElement('pre');
+          pre.appendChild(document.createTextNode(args.join(' ')));
+          document.querySelector('.debug').appendChild(pre);
+          log.apply(console, arguments);
+        }
+
+        window.onerror = function(messageOrEvent, source, lineno, colno, error) {
+          console.log(messageOrEvent, source, lineno, error);
+        };
+      }
+
       TinyDatePicker(document.querySelector('.modal-txt'));
       TinyDatePicker(document.querySelector('.non-modal-txt'), {mode: 'dp-below'});
 

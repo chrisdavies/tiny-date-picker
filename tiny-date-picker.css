@@ -29,6 +29,7 @@
   margin-top: 0.5em;
   font-size: 0.8em;
   width: 400px;
+  max-width: 100%;
 }
 
 .dp-modal .dp {
@@ -184,7 +185,7 @@
 
 .dp-year {
   display: block;
-  padding: 0.15em 4em;
+  padding: 0.5em 4em;
 }
 
 .dp-edge-day {
@@ -225,8 +226,8 @@
 
 /* Responsive overrides */
 @media (max-width: 480px), (max-height: 480px) {
-  .dp {
-    font-size: 0.8em;
+  .dp-modal .dp {
+    font-size: 0.9em;
     width: auto;
     top: 25%;
     left: 50%;
@@ -241,10 +242,6 @@
   .dp-day-of-week,
   .dp-day {
     padding: 0.5em;
-  }
-
-  .dp-visible .dp {
-    transform: translate(-50%, -25%);
   }
 }
 
