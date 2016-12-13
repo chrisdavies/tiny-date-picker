@@ -30,18 +30,19 @@ function TinyDatePicker(input, opts) {
     }));
   }
 
-  on('click', input, function () { showCalendar(context); });
-
-  // With the modal, we always begin and end by setting focus to the input
-  // so that tabbing works as expected. This means the focus event needs
-  // to be smart. With the dropdown, we only ever show on focus.
-  on('focus', input, buffer(5, function () {
+  var bufferShow = buffer(5, function () {
     if (context.isModal && isShowing(context)) {
       hideCalendar(context);
     } else {
       showCalendar(context);
     }
-  }));
+  });
+
+  // With the modal, we always begin and end by setting focus to the input
+  // so that tabbing works as expected. This means the focus event needs
+  // to be smart. With the dropdown, we only ever show on focus.
+  on('click', input, bufferShow);
+  on('focus', input, bufferShow);
 }
 
 // Builds the date picker's settings based on the opts provided.
@@ -80,7 +81,7 @@ function buildContext(input, opts) {
         render(calHtml, context);
       }
 
-      input.dispatchEvent(new CustomEvent('change', { bubbles: true }));
+      input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
     },
     weekStartsMonday: opts.weekStartsMonday,
   };
@@ -98,7 +99,7 @@ function buffer(ms, fn) {
   return function () {
     clearTimeout(timeout);
     timeout = setTimeout(fn, ms);
-  }
+  };
 }
 
 function showCalendar(context) {
@@ -215,7 +216,9 @@ function showCalendar(context) {
     // For dropdown calendars, we need to allow the focus
     // event to play out before hiding, or else the focus
     // event will re-show the calendar.
-    !context.isModal && buffer(10, function () { hideCalendar(context); })();
+    !context.isModal && buffer(10, function () {
+      hideCalendar(context);
+    })();
   });
 }
 
@@ -293,7 +296,7 @@ function on(evt, pattern, el, fn) {
   if (!fn) {
     fn = el;
     el = pattern;
-    pattern = /./
+    pattern = /./;
   }
 
   el.addEventListener(evt, function (e) {
@@ -319,11 +322,6 @@ function render(fn, context) {
 // representing years.
 function yearsHtml(context) {
   var currentYear = context.currentDate.getFullYear();
-
-  if (smartRender(context, '[data-year="' + currentYear + '"]')) {
-    return 0;
-  }
-
   var selectedYear = context.selectedDate.getFullYear();
 
   return (
@@ -376,10 +374,6 @@ function calHtml(context) {
   var currentMonth = currentDate.getMonth();
   var today = now().getTime();
 
-  if (smartRender(context, '[data-date="' + currentDate.getTime() + '"]')) {
-    return 0;
-  }
-
   return (
     '<div class="dp-cal">' +
       '<header class="dp-cal-header">' +
@@ -425,17 +419,6 @@ function calHtml(context) {
   );
 }
 
-function smartRender(context, selector) {
-  var currentEl = context.el.querySelector(selector);
-
-  if (currentEl) {
-    var prevEl = context.el.querySelector('.dp-current');
-    prevEl && (prevEl.className = prevEl.className.replace(' dp-current', ''));
-    currentEl.className += ' dp-current';
-    return 1;
-  }
-}
-
 function mapDays(currentDate, dayOffset, fn) {
   var result = '';
   var iter = new Date(currentDate);
@@ -463,7 +446,6 @@ function mapYears(context, fn) {
 }
 
 function shiftMonth(dt, month) {
-  var currentDate = new Date(dt);
   var dayOfMonth = dt.getDate();
 
   dt.setDate(1);
@@ -510,7 +492,7 @@ function getCustomEventConstructor() {
       var evt = document.createEvent('CustomEvent');
       evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
       return evt;
-    }
+    };
 
     CustomEvent.prototype = window.Event.prototype;
   }
