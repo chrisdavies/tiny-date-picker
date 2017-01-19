@@ -38,11 +38,17 @@ function TinyDatePicker(input, opts) {
     }
   });
 
+  function tryUpdateDate(e) {
+    var date = new Date(e.target.value);
+    isNaN(date) || context.onChange(date, true);
+  }
+
   // With the modal, we always begin and end by setting focus to the input
   // so that tabbing works as expected. This means the focus event needs
   // to be smart. With the dropdown, we only ever show on focus.
   on('click', input, bufferShow);
   on('focus', input, bufferShow);
+  on('input', input, tryUpdateDate);
 }
 
 // Builds the date picker's settings based on the opts provided.
@@ -62,7 +68,7 @@ function buildContext(input, opts) {
       var date = new Date(str);
       return isNaN(date) ? now() : date;
     },
-    onChange: function (date) {
+    onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
         return;
       }
@@ -71,7 +77,9 @@ function buildContext(input, opts) {
         context.selectedDate = new Date(context.currentDate = date);
       }
 
-      input.value = date ? context.format(date) : '';
+      if (!silent) {
+        input.value = date ? context.format(date) : '';
+      }
 
       // In modal-mode, if we are setting the value,
       // we are hiding.

@@ -45,6 +45,15 @@ describe('TinyDatePicker', function() {
     browser.getText('.dp-current').should.eql('11');
   });
 
+  it('Should update whenever the user inputs a date', function () {
+    browser.click('.txt-below');
+    browser.waitUntil(() => browser.isExisting('.dp-below'));
+    browser.keys('10/11/2012');
+    browser.getText('.dp-cal-month').should.eql('October');
+    browser.getText('.dp-cal-year').should.eql('2012');
+    browser.getText('.dp-current').should.eql('11');
+  });
+
   it('Should change the date when a date is clicked', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '11/12/2013');
     showModal();

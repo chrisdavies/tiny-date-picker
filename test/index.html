@@ -22,7 +22,7 @@
       </div>
       <div class="form-field bottom-left">
         <label>And another:</label>
-        <input type="text" class="non-modal-txt txt-bottom-left" tabindex="401" />
+        <input type="text" class="non-modal-txt txt-bottom-left" tabindex="401" data-max="10/30/2017" data-min="10/01/2017" />
       </div>
       <div class="form-field bottom-right">
         <label>And another:</label>
@@ -67,7 +67,11 @@
 
       Array.prototype.slice.apply(document.querySelectorAll('.non-modal-txt'))
         .forEach(function (el) {
-          TinyDatePicker(el, {mode: 'dp-below'});
+          TinyDatePicker(el, {
+            mode: 'dp-below',
+            max: el.getAttribute('data-max'),
+            min: el.getAttribute('data-min'),
+          });
         });
 
       if (window.console && window.console.log) {
