@@ -137,15 +137,18 @@ function showCalendar(context) {
 
   forceDatesIntoMinMax(context);
 
-  if (!context.isModal) {
-    el.style.left = input.offsetLeft + 'px';
-    el.style.top = (input.offsetTop + input.offsetHeight) + 'px';
-    input.parentElement.insertBefore(el, input.nextSibling);
-  } else {
+  if (context.isModal) {
     document.body.appendChild(el);
+  } else {
+    el.style.visibility = 'hidden'; // We need to render it, then adjust, then show
+    input.parentElement.appendChild(el);
   }
 
   render(calHtml, context);
+
+  if (!context.isModal) {
+    autoPosition(el, input);
+  }
 
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
@@ -220,6 +223,36 @@ function showCalendar(context) {
       hideCalendar(context);
     })();
   });
+}
+
+function autoPosition(cal, input) {
+  var inputPos = input.getBoundingClientRect();
+  var docEl = document.documentElement;
+
+  adjustCalY(cal, input, inputPos, docEl);
+  adjustCalX(cal, input, inputPos, docEl);
+
+  cal.style.visibility = '';
+}
+
+function adjustCalX(cal, input, inputPos, docEl) {
+  var viewWidth = docEl.clientWidth;
+  var calWidth = cal.offsetWidth;
+  var calRight = inputPos.left + calWidth;
+  var shouldLeftAlign = calRight < viewWidth || inputPos.right < calWidth;
+  var left = input.offsetLeft - (shouldLeftAlign ? 0 : calRight - viewWidth);
+
+  cal.style.left = left + 'px';
+}
+
+function adjustCalY(cal, input, inputPos, docEl) {
+  var viewHeight = docEl.clientHeight;
+  var calHeight = cal.offsetHeight;
+  var calBottom = inputPos.bottom + 8 + calHeight;
+  var isAbove = calBottom > viewHeight && inputPos.top > calHeight;
+  var top = input.offsetTop + (isAbove ? -calHeight - 8 : input.offsetHeight + 8);
+
+  cal.style.top = top + 'px';
 }
 
 // Forces the context's dates to be within min/max

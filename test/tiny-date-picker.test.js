@@ -211,13 +211,13 @@ describe('TinyDatePicker', function() {
   });
 
   it('Does not steal input focus if not modal', function () {
-    browser.click('.non-modal-txt');
+    browser.click('.txt-below');
     browser.waitUntil(() => browser.isExisting('.dp-below'));
-    browser.hasFocus('.non-modal-txt').should.be.true;
+    browser.hasFocus('.txt-below').should.be.true;
     browser.click('.dp-today');
-    browser.getValue('.non-modal-txt').should.eql(new Date().toLocaleDateString());
+    browser.getValue('.txt-below').should.eql(new Date().toLocaleDateString());
     browser.click('.dp-clear');
-    browser.getValue('.non-modal-txt').should.eql('');
+    browser.getValue('.txt-below').should.eql('');
     browser.click('.dp-close');
     browser.waitUntil(() => !browser.isExisting('.dp-below'));
   });

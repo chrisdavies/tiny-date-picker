@@ -1,11 +1,11 @@
 {
   "name": "tiny-date-picker",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "A small, dependency-free date picker",
   "main": "tiny-date-picker.js",
   "scripts": {
     "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
-    "start": "http-server .",
+    "start": "http-server . -c-1",
     "test": "wdio test/wdio.mocha.conf.js",
     "min": "concurrently \"npm run mincss\" \"npm run minjs\"",
     "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",

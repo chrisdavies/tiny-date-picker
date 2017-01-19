@@ -74,3 +74,27 @@ main {
 .dp-modal .dp {
   animation: none !important;
 }
+
+.bottom-left {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.top-left {
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.top-right {
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.bottom-right {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}

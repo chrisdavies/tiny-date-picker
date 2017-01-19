@@ -18,7 +18,23 @@
       </div>
       <div class="form-field">
         <label>And another:</label>
-        <input type="text" class="non-modal-txt" tabindex="401" />
+        <input type="text" class="non-modal-txt txt-below" tabindex="401" />
+      </div>
+      <div class="form-field bottom-left">
+        <label>And another:</label>
+        <input type="text" class="non-modal-txt txt-bottom-left" tabindex="401" />
+      </div>
+      <div class="form-field bottom-right">
+        <label>And another:</label>
+        <input type="text" class="non-modal-txt txt-bottom-right" tabindex="401" />
+      </div>
+      <div class="form-field top-left">
+        <label>And another:</label>
+        <input type="text" class="non-modal-txt txt-top-left" tabindex="401" />
+      </div>
+      <div class="form-field top-right">
+        <label>And another:</label>
+        <input type="text" class="non-modal-txt txt-top-right" tabindex="401" />
       </div>
       <nav class="footer-links">
         <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
@@ -48,7 +64,11 @@
       }
 
       TinyDatePicker(document.querySelector('.modal-txt'));
-      TinyDatePicker(document.querySelector('.non-modal-txt'), {mode: 'dp-below'});
+
+      Array.prototype.slice.apply(document.querySelectorAll('.non-modal-txt'))
+        .forEach(function (el) {
+          TinyDatePicker(el, {mode: 'dp-below'});
+        });
 
       if (window.console && window.console.log) {
         document.addEventListener('change', function (e) {
