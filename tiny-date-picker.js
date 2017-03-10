@@ -31,18 +31,28 @@ function TinyDatePicker(input, opts) {
   }
 
   var bufferShow = buffer(5, function () {
-    if (context.isModal && isShowing(context)) {
+    if (shouldHideModal(context)) {
       hideCalendar(context);
     } else {
       showCalendar(context);
     }
   });
 
+  function tryUpdateDate(e) {
+    var date = new Date(e.target.value);
+    isNaN(date) || context.onChange(date, true);
+  }
+
   // With the modal, we always begin and end by setting focus to the input
   // so that tabbing works as expected. This means the focus event needs
   // to be smart. With the dropdown, we only ever show on focus.
-  on('click', input, bufferShow);
+  on('mousedown', input, function () {
+    if (context.inputFocused()) {
+      bufferShow();
+    }
+  });
   on('focus', input, bufferShow);
+  on('input', input, tryUpdateDate);
 }
 
 // Builds the date picker's settings based on the opts provided.
@@ -62,7 +72,10 @@ function buildContext(input, opts) {
       var date = new Date(str);
       return isNaN(date) ? now() : date;
     },
-    onChange: function (date) {
+    inputFocused: function() {
+      return input === document.activeElement;
+    },
+    onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
         return;
       }
@@ -71,7 +84,9 @@ function buildContext(input, opts) {
         context.selectedDate = new Date(context.currentDate = date);
       }
 
-      input.value = date ? context.format(date) : '';
+      if (!silent) {
+        input.value = date ? context.format(date) : '';
+      }
 
       // In modal-mode, if we are setting the value,
       // we are hiding.
@@ -129,7 +144,7 @@ function showCalendar(context) {
     if (!dp.contains(document.activeElement)) {
       if (context.isModal) {
         input.focus();
-      } else if (input !== document.activeElement) {
+      } else if (!context.inputFocused()) {
         hideCalendar(context);
       }
     }
@@ -137,15 +152,18 @@ function showCalendar(context) {
 
   forceDatesIntoMinMax(context);
 
-  if (!context.isModal) {
-    el.style.left = input.offsetLeft + 'px';
-    el.style.top = (input.offsetTop + input.offsetHeight) + 'px';
-    input.parentElement.insertBefore(el, input.nextSibling);
-  } else {
+  if (context.isModal) {
     document.body.appendChild(el);
+  } else {
+    el.style.visibility = 'hidden'; // We need to render it, then adjust, then show
+    input.parentElement.appendChild(el);
   }
 
   render(calHtml, context);
+
+  if (!context.isModal) {
+    autoPosition(el, input);
+  }
 
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
@@ -220,6 +238,36 @@ function showCalendar(context) {
       hideCalendar(context);
     })();
   });
+}
+
+function autoPosition(cal, input) {
+  var inputPos = input.getBoundingClientRect();
+  var docEl = document.documentElement;
+
+  adjustCalY(cal, input, inputPos, docEl);
+  adjustCalX(cal, input, inputPos, docEl);
+
+  cal.style.visibility = '';
+}
+
+function adjustCalX(cal, input, inputPos, docEl) {
+  var viewWidth = docEl.clientWidth;
+  var calWidth = cal.offsetWidth;
+  var calRight = inputPos.left + calWidth;
+  var shouldLeftAlign = calRight < viewWidth || inputPos.right < calWidth;
+  var left = input.offsetLeft - (shouldLeftAlign ? 0 : calRight - viewWidth);
+
+  cal.style.left = left + 'px';
+}
+
+function adjustCalY(cal, input, inputPos, docEl) {
+  var viewHeight = docEl.clientHeight;
+  var calHeight = cal.offsetHeight;
+  var calBottom = inputPos.bottom + 8 + calHeight;
+  var isAbove = calBottom > viewHeight && inputPos.top > calHeight;
+  var top = input.offsetTop + (isAbove ? -calHeight - 8 : input.offsetHeight + 8);
+
+  cal.style.top = top + 'px';
 }
 
 // Forces the context's dates to be within min/max
@@ -309,10 +357,9 @@ function on(evt, pattern, el, fn) {
 // Renders HTML into context.el's container.
 // It keeps the focus on the input or calendar accordingly.
 function render(fn, context) {
-  var inputFocused = context.input === document.activeElement;
   var html = fn(context);
   html && (context.el.firstChild.innerHTML = html);
-  if (context.isModal || !inputFocused) {
+  if (context.isModal || !context.inputFocused()) {
     var current = context.el.querySelector('.dp-current');
     return current && current.focus();
   }
@@ -459,8 +506,8 @@ function shiftMonth(dt, month) {
   }
 }
 
-function isShowing(context) {
-  return !!context.el;
+function shouldHideModal(context) {
+  return context.isModal && !!context.el;
 }
 
 function hideCalendar(context) {
