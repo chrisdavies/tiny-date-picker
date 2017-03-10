@@ -31,7 +31,7 @@ function TinyDatePicker(input, opts) {
   }
 
   var bufferShow = buffer(5, function () {
-    if (context.isModal && isShowing(context)) {
+    if (shouldHideModal(context)) {
       hideCalendar(context);
     } else {
       showCalendar(context);
@@ -46,7 +46,11 @@ function TinyDatePicker(input, opts) {
   // With the modal, we always begin and end by setting focus to the input
   // so that tabbing works as expected. This means the focus event needs
   // to be smart. With the dropdown, we only ever show on focus.
-  on('click', input, bufferShow);
+  on('mousedown', input, function () {
+    if (context.inputFocused()) {
+      bufferShow();
+    }
+  });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
 }
@@ -67,6 +71,9 @@ function buildContext(input, opts) {
     parse: opts.parse || function (str) {
       var date = new Date(str);
       return isNaN(date) ? now() : date;
+    },
+    inputFocused: function() {
+      return input === document.activeElement;
     },
     onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
@@ -137,7 +144,7 @@ function showCalendar(context) {
     if (!dp.contains(document.activeElement)) {
       if (context.isModal) {
         input.focus();
-      } else if (input !== document.activeElement) {
+      } else if (!context.inputFocused()) {
         hideCalendar(context);
       }
     }
@@ -350,10 +357,9 @@ function on(evt, pattern, el, fn) {
 // Renders HTML into context.el's container.
 // It keeps the focus on the input or calendar accordingly.
 function render(fn, context) {
-  var inputFocused = context.input === document.activeElement;
   var html = fn(context);
   html && (context.el.firstChild.innerHTML = html);
-  if (context.isModal || !inputFocused) {
+  if (context.isModal || !context.inputFocused()) {
     var current = context.el.querySelector('.dp-current');
     return current && current.focus();
   }
@@ -500,8 +506,8 @@ function shiftMonth(dt, month) {
   }
 }
 
-function isShowing(context) {
-  return !!context.el;
+function shouldHideModal(context) {
+  return context.isModal && !!context.el;
 }
 
 function hideCalendar(context) {

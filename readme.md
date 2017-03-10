@@ -3,7 +3,7 @@
 A light-weight date picker with zero dependencies.
 
 - Zero dependencies
-- Roughly 2KB minified and gzipped
+- Roughly 2.5KB minified and gzipped
 - IE9+
 - Mobile-friendly/responsive
 
