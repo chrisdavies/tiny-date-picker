@@ -39,7 +39,7 @@ function TinyDatePicker(input, opts) {
   });
 
   function tryUpdateDate(e) {
-    var date = new Date(e.target.value);
+    var date = context.parse(e.target.value);
     isNaN(date) || context.onChange(date, true);
   }
 
