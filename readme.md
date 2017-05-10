@@ -86,6 +86,9 @@ TinyDatePicker(document.querySelector('input'), {
   // Specifies the maximum date that can be selected
   max: '10/22/2016',
 
+  // Place datepicker selector on this date if field is still empty
+  preselectedDate: '10/20/2016',
+
   // There are two modes: dp-modal (the default) and dp-below.
   // dp-modal makes the date picker show up as a modal.
   // dp-below makes it show up beneath its input element.
