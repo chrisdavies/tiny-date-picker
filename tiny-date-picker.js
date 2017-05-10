@@ -53,6 +53,99 @@ function TinyDatePicker(input, opts) {
   });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
+
+  /*
+   * Api
+   */
+
+  var api = {
+    context: context,
+    events: []
+  };
+
+  api.bindEvents = function () {
+    api.events.forEach(api.bindEvent);
+  };
+
+  api.bindEvent = function (event) {
+    on(event.name, event.element, context.el, event.callback);
+  };
+
+  api.on = function (name, element, callback) {
+    var event = {
+      name: name,
+      element: element,
+      callback: callback
+    };
+
+    api.events.push(event);
+
+    if (shouldHideModal(context)) {
+      api.bindEvent(event);
+    }
+  };
+
+  /*
+   * Handle datepicker
+   */
+
+  api.isEmpty = function () {
+    return !input.value;
+  };
+
+  api.open = function () {
+    if (!shouldHideModal(context)) {
+      showCalendar(context);
+    }
+  };
+
+  api.close = function () {
+    if (shouldHideModal(context)) {
+      hideCalendar(context);
+    }
+  };
+
+  api.updateDate = function (date) {
+    date = context.parse(date);
+    context.onChange(date);
+  };
+
+  api.openYears = function () {
+    api.open();
+    render(yearsHtml, context);
+  };
+
+  api.openMonths = function () {
+    api.open();
+    render(monthsHtml, context);
+  };
+
+  /*
+   * Events
+   */
+  context.openEvents = [];
+
+  api.onOpen = function (callback) {
+    context.openEvents.push(callback);
+  };
+
+  api.onSelectYear = function (callback) {
+    api.on('click', /dp-year/, callback);
+  };
+
+  api.onSelectMonth = function (callback) {
+    api.on('click', /dp-month/, callback);
+  };
+
+  context.fireOpen = function () {
+    context.openEvents.forEach(function (callback) {
+      callback();
+    });
+  };
+
+  api.onOpen(api.bindEvents);
+
+  return api;
 }
 
 // Builds the date picker's settings based on the opts provided.
@@ -238,6 +331,8 @@ function showCalendar(context) {
       hideCalendar(context);
     })();
   });
+
+  context.fireOpen();
 }
 
 function autoPosition(cal, input) {
