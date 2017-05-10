@@ -63,18 +63,7 @@
         };
       }
 
-      var dp = TinyDatePicker(document.querySelector('.modal-txt'));
-
-      dp.onOpen(function () {
-          if (dp.isEmpty()) {
-              dp.openYears();
-          }
-      });
-
-      dp.onSelectYear(function () {
-          dp.openMonths();
-      });
-
+      TinyDatePicker(document.querySelector('.modal-txt'));
 
       Array.prototype.slice.apply(document.querySelectorAll('.non-modal-txt'))
         .forEach(function (el) {
