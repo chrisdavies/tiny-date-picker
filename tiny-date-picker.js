@@ -125,6 +125,7 @@ function buildContext(input, opts) {
 
   context.min = initMinMax(context, opts.min, -100);
   context.max = initMinMax(context, opts.max, 100);
+  context.preselectedDate = initMinMax(context, opts.preselectedDate || opts.min, -100);
   context.isModal = context.mode === 'dp-modal';
 
   return context;
@@ -300,7 +301,7 @@ function adjustCalY(cal, input, inputPos, docEl) {
 function forceDatesIntoMinMax(context) {
   var input = context.input;
   var parsedValue = context.parse(input.value);
-  context.currentDate = (inRange(context, parsedValue) ? parsedValue : new Date(context.min));
+  context.currentDate = (input.value && inRange(context, parsedValue)) ? parsedValue : new Date(context.preselectedDate);
   context.selectedDate = new Date(context.currentDate);
   input.value && (input.value = context.format(context.currentDate));
 }

@@ -327,6 +327,47 @@ describe('TinyDatePicker', function() {
     browser.hasFocus('.modal-txt').should.be.true;
   });
 
+  it('Preselect with the date set in config and min max', function () {
+    inject('<input type="text" class="wk-preselected-min-max-test" />');
+    browser.execute(() => TinyDatePicker(document.querySelector('.wk-preselected-min-max-test'), {
+      min: '1/1/1900',
+      max: '1/1/2017',
+      preselectedDate: '1/1/2000'
+    }));
+    showModalByClick('.wk-preselected-min-max-test');
+
+    // The min value should be shown and selected, if today is not in the range
+    browser.getText('.dp-cal-year').should.eql('2000');
+    browser.getText('.dp-cal-month').should.eql('January');
+    browser.getText('.dp-current').should.eql('1');
+  });
+
+  it('Preselect with the date set in config without min max', function () {
+    inject('<input type="text" class="wk-preselected-test" />');
+    browser.execute(() => TinyDatePicker(document.querySelector('.wk-preselected-test'), {
+      preselectedDate: '1/1/2000'
+    }));
+    showModalByClick('.wk-preselected-test');
+
+    // The min value should be shown and selected, if today is not in the range
+    browser.getText('.dp-cal-year').should.eql('2000');
+    browser.getText('.dp-cal-month').should.eql('January');
+    browser.getText('.dp-current').should.eql('1');
+  });
+
+  it('Does not preselect if date already filled', function () {
+    inject('<input type="text" class="wk-preselected-filled-test" value="2/2/1990" />');
+    browser.execute(() => TinyDatePicker(document.querySelector('.wk-preselected-filled-test'), {
+      preselectedDate: '1/1/2000'
+    }));
+    showModalByClick('.wk-preselected-filled-test');
+
+    // The min value should be shown and selected, if today is not in the range
+    browser.getText('.dp-cal-year').should.eql('1990');
+    browser.getText('.dp-cal-month').should.eql('February');
+    browser.getText('.dp-current').should.eql('2');
+  });
+
   // Helpers
   function inject(html) {
     browser.execute((html) => document.body.innerHTML += html, html);
