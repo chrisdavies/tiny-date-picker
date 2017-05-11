@@ -8,6 +8,88 @@ describe('TinyDatePicker', function() {
     showModal();
   });
 
+  it('Should call onOpen when opened', function () {
+    inject('<input type="text" class="on-open-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.on-open-test'), {
+        onOpen: function() {
+          window.onOpenFired = true;
+        }
+      });
+    `;
+    browser.execute((html) => new Function(html)(), html);
+    showModalByClick('.on-open-test');
+    browser.execute(() => window.onOpenFired).value.should.eql(true);
+  });
+
+  it('Should call onSelectYear when year is selected', function () {
+    inject('<input type="text" value="12/9/2014" class="on-select-year-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.on-select-year-test'), {
+        onSelectYear: function(ctx) {
+          window.yearWas = ctx.currentDate.getFullYear();
+        }
+      });
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+    showModalByClick('.on-select-year-test');
+    browser.click('.dp-cal-year');
+    browser.execute(() => Array.prototype.slice.call(document.querySelectorAll('.dp-year'))
+      .filter(el => el.textContent === '2016')
+      .forEach(el => el.click()));
+    browser.execute(() => window.yearWas).value.should.eql(2016);
+  });
+
+  it('Should call onSelectMonth when month is selected', function () {
+    inject('<input type="text" value="12/9/2014" class="on-select-month-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.on-select-month-test'), {
+        onSelectMonth: function(ctx) {
+          window.monthWas = ctx.currentDate.getMonth();
+        }
+      });
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+    showModalByClick('.on-select-month-test');
+    browser.click('.dp-cal-month');
+    browser.click('[data-month="6"]');
+    browser.execute(() => window.monthWas).value.should.eql(6);
+  });
+
+  it('Should show the modal when open is called', function () {
+    inject('<input type="text" value="12/9/2014" class="open-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.open-test')).open();
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+    browser.isExisting('.dp-modal').should.eql(true);
+  });
+
+  it('Should show the years when openYears is called', function () {
+    inject('<input type="text" value="12/9/2014" class="open-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.open-test')).openYears();
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+    browser.isExisting('.dp-modal').should.eql(true);
+    browser.isExisting('.dp-year').should.eql(true);
+  });
+
+  it('Should show the months when openMonths is called', function () {
+    inject('<input type="text" value="12/9/2014" class="open-test" />');
+    const html = `
+      TinyDatePicker(document.querySelector('.open-test')).openMonths();
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+    browser.isExisting('.dp-modal').should.eql(true);
+    browser.isExisting('.dp-month').should.eql(true);
+  });
+
   it('Should hide the modal when the modal input re-gains focus', function () {
     showModal();
     setFocus('.modal-txt');

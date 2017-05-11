@@ -36,6 +36,16 @@ TinyDatePicker(document.querySelector('input'), {
 The input to which the date picker is attached will fire its `change` event
 any time the date value chanegs.
 
+The DatePicker context is returned by the `TinyDatePicker`. See below for further details.
+
+```javascript
+// Initialize a date picker on the specified input element
+const dp = TinyDatePicker(document.querySelector('input'));
+
+// Show the date picker
+dp.open();
+```
+
 
 ## Options
 
@@ -82,9 +92,43 @@ TinyDatePicker(document.querySelector('input'), {
   mode: 'dp-below',
 
   // Whether to use Monday as start of the week
-  weekStartsMonday: false
+  weekStartsMonday: false,
+
+  // A function which is called any time the date picker opens
+  onOpen: function (context) {
+    // context is the datepicker context, detailed below
+  },
+
+  // A function which is called any time the year is selected
+  // in the year menu
+  onSelectYear: function (context) {
+    // context is the datepicker context, detailed below
+  },
+
+  // A function which is called any time the month is selected
+  // in the month menu
+  onSelectMonth: function (context) {
+    // context is the datepicker context, detailed below
+  },
 });
 ```
+
+## Context
+
+The `onOpen`, `onSelectYear`, and `onSelectMonth` event handlers receive the date picker context object. This has many properties and methods, the most useful of which are as follows:
+
+### Properties
+
+- currentDate: the currently selected date (a Date object)
+- input: the input element to which the date picker is bound
+
+### Methods
+
+- open: opens the modal
+- close: closes the modal
+- openYears: shows the modal with the years menu showing
+- openMonths: shows the modal with the months menu showing
+- setValue: sets the date as a string value
 
 
 ## Style

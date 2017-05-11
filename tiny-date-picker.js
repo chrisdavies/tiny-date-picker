@@ -53,6 +53,8 @@ function TinyDatePicker(input, opts) {
   });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
+
+  return context;
 }
 
 // Builds the date picker's settings based on the opts provided.
@@ -65,6 +67,9 @@ function buildContext(input, opts) {
     today: opts.today || 'Today',
     clear: opts.clear || 'Clear',
     close: opts.close || 'Close',
+    onOpen: opts.onOpen || function() {},
+    onSelectYear: opts.onSelectYear || function() {},
+    onSelectMonth: opts.onSelectMonth || function() {},
     format: opts.format || function (date) {
       return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     },
@@ -97,6 +102,23 @@ function buildContext(input, opts) {
       }
 
       input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+    },
+    open: function () {
+      if (!shouldHideModal(context)) {
+        showCalendar(context);
+      }
+    },
+    openYears: function () {
+      context.open();
+      render(yearsHtml, context);
+    },
+    openMonths: function () {
+      context.open();
+      render(monthsHtml, context);
+    },
+    setValue: function (date) {
+      date = context.parse(date);
+      context.onChange(date);
     },
     weekStartsMonday: opts.weekStartsMonday,
   };
@@ -205,11 +227,13 @@ function showCalendar(context) {
   on('click', /dp-year/, el, function (e) {
     context.currentDate.setFullYear(parseInt(e.target.getAttribute('data-year')));
     render(calHtml, context);
+    context.onSelectYear(context);
   });
 
   on('click', /dp-month/, el, function(e) {
     context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
     render(calHtml, context);
+    context.onSelectMonth(context);
   });
 
   on('click', /dp-cal-year/, el, function () {
@@ -238,6 +262,8 @@ function showCalendar(context) {
       hideCalendar(context);
     })();
   });
+
+  context.onOpen(context);
 }
 
 function autoPosition(cal, input) {
@@ -485,7 +511,7 @@ function mapYears(context, fn) {
   var result = '';
   var max = context.max.getFullYear();
 
-  for (var i = context.min.getFullYear(); i <= max; ++i) {
+  for (var i = max; i >= context.min.getFullYear(); --i) {
     result += fn(i);
   }
 
