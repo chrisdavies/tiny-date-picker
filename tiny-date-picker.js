@@ -181,11 +181,8 @@ function showCalendar(context) {
     input.parentElement.appendChild(el);
   }
 
+  context.isAbove = null;
   render(calHtml, context);
-
-  if (!context.isModal) {
-    autoPosition(el, input);
-  }
 
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
@@ -266,17 +263,19 @@ function showCalendar(context) {
   context.onOpen(context);
 }
 
-function autoPosition(cal, input) {
-  var inputPos = input.getBoundingClientRect();
+function autoPosition(context) {
+  var inputPos = context.input.getBoundingClientRect();
   var docEl = document.documentElement;
 
-  adjustCalY(cal, input, inputPos, docEl);
-  adjustCalX(cal, input, inputPos, docEl);
+  adjustCalY(context, inputPos, docEl);
+  adjustCalX(context, inputPos, docEl);
 
-  cal.style.visibility = '';
+  context.el.style.visibility = '';
 }
 
-function adjustCalX(cal, input, inputPos, docEl) {
+function adjustCalX(context, inputPos, docEl) {
+  var cal = context.el;
+  var input = context.input;
   var viewWidth = docEl.clientWidth;
   var calWidth = cal.offsetWidth;
   var calRight = inputPos.left + calWidth;
@@ -286,12 +285,16 @@ function adjustCalX(cal, input, inputPos, docEl) {
   cal.style.left = left + 'px';
 }
 
-function adjustCalY(cal, input, inputPos, docEl) {
+function adjustCalY(context, inputPos, docEl) {
+  var cal = context.el;
+  var input = context.input;
   var viewHeight = docEl.clientHeight;
   var calHeight = cal.offsetHeight;
-  var calBottom = inputPos.bottom + 8 + calHeight;
-  var isAbove = calBottom > viewHeight && inputPos.top > calHeight;
-  var top = input.offsetTop + (isAbove ? -calHeight - 8 : input.offsetHeight + 8);
+  if (null === context.isAbove) {
+    var calBottom = inputPos.bottom + 8 + calHeight;
+    context.isAbove = calBottom > viewHeight && inputPos.top > calHeight;
+  }
+  var top = input.offsetTop + (context.isAbove ? -calHeight - 8 : input.offsetHeight + 8);
 
   cal.style.top = top + 'px';
 }
@@ -385,6 +388,9 @@ function on(evt, pattern, el, fn) {
 function render(fn, context) {
   var html = fn(context);
   html && (context.el.firstChild.innerHTML = html);
+  if (!context.isModal) {
+    autoPosition(context);
+  }
   if (context.isModal || !context.inputFocused()) {
     var current = context.el.querySelector('.dp-current');
     return current && current.focus();
