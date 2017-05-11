@@ -212,6 +212,21 @@ describe('TinyDatePicker', function() {
     new Date(browser.getValue('.wk-mon-test')).getDay().should.eql(1);
   });
 
+  it('Handles case when monday is the 2nd of the week', function () {
+    const html = `
+      TinyDatePicker(document.querySelector('.wk-mon-2-test'), {
+        min: new Date('1/1/1900'),
+        max: new Date('1/1/2020'),
+        weekStartsMonday: true
+      });
+    `;
+
+    inject('<input type="text" value="1/2/1905" class="wk-mon-2-test" />');
+    browser.execute((html) => new Function(html)(), html);
+    showModalByClick('.wk-mon-2-test');
+    selectFirstText('.dp-day').should.eql('26');
+  });
+
   it('Disallows selections outside of min/max range', function () {
     inject('<input type="text" class="wk-max-test" />');
     browser.execute(() => TinyDatePicker(document.querySelector('.wk-max-test'), {
@@ -337,6 +352,13 @@ describe('TinyDatePicker', function() {
       return Array.prototype.slice.call(document.querySelectorAll(selector))
         .map(el => el.textContent)
     }, selector).value;
+  }
+
+  function selectFirstText(selector) {
+    return browser.execute(
+      (selector) => document.querySelector(selector).textContent,
+      selector
+    ).value;
   }
 
   function showModalByClick(selector) {

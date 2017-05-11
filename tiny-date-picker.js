@@ -496,7 +496,14 @@ function mapDays(currentDate, dayOffset, fn) {
   var result = '';
   var iter = new Date(currentDate);
   iter.setDate(1);
-  iter.setDate(dayOffset + iter.getDate() - iter.getDay());
+  iter.setDate(1 - iter.getDay() + dayOffset);
+
+  // If we are showing monday as the 1st of the week,
+  // and the monday is the 2nd of the month, the sunday won't
+  // show, so we need to shift backwards
+  if (dayOffset && iter.getDate() === 2) {
+    iter.setDate(-5);
+  }
 
   // We are going to have 6 weeks always displayed to keep a consistent calendar size
   for (var day = 0; day < (6 * 7); ++day) {
