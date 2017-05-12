@@ -194,7 +194,8 @@
 .dp-day:hover,
 .dp-month:hover,
 .dp-year:hover,
-.dp-selected,
+.dp-current:focus,
+.dp-current,
 .dp-day:focus,
 .dp-month:focus,
 .dp-year:focus {
@@ -203,8 +204,9 @@
   color: white;
 }
 
-.dp-current:focus,
-.dp-current {
+.dp-selected:hover,
+.dp-selected:focus,
+.dp-selected {
   background: #3B99FC;
   color: #FFF;
 }
