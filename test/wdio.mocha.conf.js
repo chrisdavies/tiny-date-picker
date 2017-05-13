@@ -15,7 +15,7 @@ exports.config = {
   coloredLogs: true,
   screenshotPath: 'shots',
   baseUrl: 'http://localhost:8080/test',
-  waitforTimeout: 10000,
+  waitforTimeout: 1000,
   framework: 'mocha',
 
   reporters: ['dot', 'spec'],
