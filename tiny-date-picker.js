@@ -51,6 +51,10 @@ function TinyDatePicker(input, opts) {
       bufferShow();
     }
   });
+  on('touchend', input, function (e) {
+    bufferShow();
+    e.preventDefault();
+  });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
 
@@ -189,6 +193,11 @@ function showCalendar(context) {
 
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
+    if (e.target !== el && e.target.tagName !== 'A') {
+      e.preventDefault();
+    }
+  });
+  on('touchend', el, function (e) {
     if (e.target !== el && e.target.tagName !== 'A') {
       e.preventDefault();
     }
