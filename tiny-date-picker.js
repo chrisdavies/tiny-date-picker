@@ -52,12 +52,14 @@ function TinyDatePicker(input, opts) {
     }
   });
   on('touchend', input, function () {
-    if (context.inputFocused()) {   // discovered that the problem on iOS Safari was not with document.activeElement itself,
-                                    // but with how context.inputFocused() was being set below.
-      bufferShow();                 // iOS safari does catch some mousedown events, but doesn't do so on input fields.
-                                    // For example, if you're forced into debugging with alert windows, it will intercept a
-                                    // mousedown event when you click the "OK" button..
-    }
+                                  // "input === document.activeElement" returns false on iOS Safari, but a few
+                                  // ms later it becomes true. Not sure of a good solution. Another thing
+                                  // that works is to return the actual document.activeElement instead of doing
+                                  // a comparison. Waiting for a bit with setTimeout seems like a bad idea..
+                                  // So just removed the check for focus altogether as tabs don't usually matter on touch devices.
+      bufferShow();               // iOS Safari does catch some mousedown events, but doesn't do so on input fields.
+                                  // For example, if you're forced into debugging with alert windows, it will intercept a
+                                  // mousedown event when you click the "OK" button..
   });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
@@ -86,7 +88,7 @@ function buildContext(input, opts) {
       return isNaN(date) ? now() : date;
     },
     inputFocused: function() {
-      return document.activeElement;    // Removed 'input ===' as it doesn't work on iOS Safari. This works fine on other browsers too though.
+      return input === document.activeElement;
     },
     onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
@@ -205,12 +207,6 @@ function showCalendar(context) {
     }
   });
   on('touchend', el, function (e) {
-    // if (e.target !== el) {
-    //     alert("They're not equal.");
-    // }
-    // if (e.target.tagName !== 'A') {
-    //     alert("It's not an A.");
-    // }
     if (e.target !== el && e.target.tagName !== 'A') {
       e.preventDefault();           // preventDefault() alone doesn't stop the modal from closing on iOS Safari..
       e.stopPropagation();          // Also, adding stopPropagation() here intercepts clicks in spacing around months modal.
