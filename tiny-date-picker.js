@@ -51,9 +51,13 @@ function TinyDatePicker(input, opts) {
       bufferShow();
     }
   });
-  on('touchend', input, function (e) {
-    bufferShow();
-    e.preventDefault();
+  on('touchend', input, function () {
+    if (context.inputFocused()) {   // discovered that the problem on iOS Safari was not with document.activeElement itself,
+                                    // but with how context.inputFocused() was being set below.
+      bufferShow();                 // iOS safari does catch some mousedown events, but doesn't do so on input fields.
+                                    // For example, if you're forced into debugging with alert windows, it will intercept a
+                                    // mousedown event when you click the "OK" button..
+    }
   });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
@@ -82,7 +86,7 @@ function buildContext(input, opts) {
       return isNaN(date) ? now() : date;
     },
     inputFocused: function() {
-      return input === document.activeElement;
+      return document.activeElement;    // Removed 'input ===' as it doesn't work on iOS Safari. This works fine on other browsers too though.
     },
     onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
@@ -194,12 +198,14 @@ function showCalendar(context) {
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
     if (e.target !== el && e.target.tagName !== 'A') {
-      e.preventDefault();
+        e.preventDefault();         // on chrome and firefox clicking whitespace around months before any date is set
+                                    // causes a problem, but adding stopPropagation() here doesn't prevent it..
     }
   });
   on('touchend', el, function (e) {
     if (e.target !== el && e.target.tagName !== 'A') {
-      e.preventDefault();
+      e.stopPropagation();          // preventDefault() alone doesn't stop the modal from closing on iOS Safari..
+      e.preventDefault();           // Also, adding stopPropagation() here intercepts clicks in spacing around months modal.
     }
   });
 
