@@ -198,14 +198,22 @@ function showCalendar(context) {
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
     if (e.target !== el && e.target.tagName !== 'A') {
-        e.preventDefault();         // on chrome and firefox clicking whitespace around months before any date is set
-                                    // causes a problem, but adding stopPropagation() here doesn't prevent it..
+        e.preventDefault();         // on chrome and firefox, clicking whitespace around months
+                                    // causes a nasty problem but adding stopPropagation() here doesn't prevent it..
+                                    // So i added a check directly to the dp-month click event handler.
+                                    // You may wish to do something a little prettier :-).
     }
   });
   on('touchend', el, function (e) {
+    // if (e.target !== el) {
+    //     alert("They're not equal.");
+    // }
+    // if (e.target.tagName !== 'A') {
+    //     alert("It's not an A.");
+    // }
     if (e.target !== el && e.target.tagName !== 'A') {
-      e.stopPropagation();          // preventDefault() alone doesn't stop the modal from closing on iOS Safari..
-      e.preventDefault();           // Also, adding stopPropagation() here intercepts clicks in spacing around months modal.
+      e.preventDefault();           // preventDefault() alone doesn't stop the modal from closing on iOS Safari..
+      e.stopPropagation();          // Also, adding stopPropagation() here intercepts clicks in spacing around months modal.
     }
   });
 
@@ -246,9 +254,11 @@ function showCalendar(context) {
   });
 
   on('click', /dp-month/, el, function(e) {
-    context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
-    render(calHtml, context);
-    context.onSelectMonth(context);
+    if (e.target.tagName === 'A'){  // ignore irrelevant clicks in whitespace around month modal
+      context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
+      render(calHtml, context);
+      context.onSelectMonth(context);
+    }
   });
 
   on('click', /dp-cal-year/, el, function () {
