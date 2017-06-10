@@ -51,6 +51,16 @@ function TinyDatePicker(input, opts) {
       bufferShow();
     }
   });
+  on('touchend', input, function () {
+                                  // "input === document.activeElement" returns false on iOS Safari, but a few
+                                  // ms later it becomes true. Not sure of a good solution. Another thing
+                                  // that works is to return the actual document.activeElement instead of doing
+                                  // a comparison. Waiting for a bit with setTimeout seems like a bad idea..
+                                  // So just removed the check for focus altogether as tabs don't usually matter on touch devices.
+      bufferShow();               // iOS Safari does catch some mousedown events, but doesn't do so on input fields.
+                                  // For example, if you're forced into debugging with alert windows, it will intercept a
+                                  // mousedown event when you click the "OK" button..
+  });
   on('focus', input, bufferShow);
   on('input', input, tryUpdateDate);
 
@@ -190,7 +200,16 @@ function showCalendar(context) {
   // Prevent clicks on the wrapper's children from closing the modal
   on('mousedown', el, function (e) {
     if (e.target !== el && e.target.tagName !== 'A') {
-      e.preventDefault();
+        e.preventDefault();         // on chrome and firefox, clicking whitespace around months
+                                    // causes a nasty problem but adding stopPropagation() here doesn't prevent it..
+                                    // So i added a check directly to the dp-month click event handler.
+                                    // You may wish to do something a little prettier :-).
+    }
+  });
+  on('touchend', el, function (e) {
+    if (e.target !== el && e.target.tagName !== 'A') {
+      e.preventDefault();           // preventDefault() alone doesn't stop the modal from closing on iOS Safari..
+      e.stopPropagation();          // Also, adding stopPropagation() here intercepts clicks in spacing around months modal.
     }
   });
 
@@ -231,9 +250,11 @@ function showCalendar(context) {
   });
 
   on('click', /dp-month/, el, function(e) {
-    context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
-    render(calHtml, context);
-    context.onSelectMonth(context);
+    if (e.target.tagName === 'A'){  // ignore irrelevant clicks in whitespace around month modal
+      context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
+      render(calHtml, context);
+      context.onSelectMonth(context);
+    }
   });
 
   on('click', /dp-cal-year/, el, function () {
