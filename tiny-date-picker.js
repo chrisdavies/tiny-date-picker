@@ -96,7 +96,7 @@ function buildContext(input, opts) {
       // In modal-mode, if we are setting the value,
       // we are hiding.
       if (context.isModal) {
-        input.focus();
+        returnFocusFromModal(input);
       } else {
         render(calHtml, context);
       }
@@ -168,7 +168,7 @@ function showCalendar(context) {
   on('blur', dp, buffer(10, function () {
     if (!dp.contains(document.activeElement)) {
       if (context.isModal) {
-        input.focus();
+        returnFocusFromModal(input);
       } else if (!context.inputFocused()) {
         hideCalendar(context);
       }
@@ -253,7 +253,7 @@ function showCalendar(context) {
   });
 
   on('click', /dp-close/, el, function () {
-    input.focus();
+    returnFocusFromModal(input);
 
     // For dropdown calendars, we need to allow the focus
     // event to play out before hiding, or else the focus
@@ -550,6 +550,15 @@ function shiftMonth(dt, month) {
 
 function shouldHideModal(context) {
   return context.isModal && !!context.el;
+}
+
+// Prevents an iOS edge case where the modal can't be shown again
+// easily due to the way focus works on readonly inputs.
+function returnFocusFromModal(input) {
+  input.focus();
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+    input.blur();
+  }
 }
 
 function hideCalendar(context) {
