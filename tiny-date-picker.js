@@ -210,49 +210,49 @@ function showCalendar(context) {
     }
   });
 
-  on('click', /dp-next/, el, function () {
+  on('click', 'dp-next', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() + 1);
     render(calHtml, context);
   });
 
-  on('click', /dp-prev/, el, function () {
+  on('click', 'dp-prev', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() - 1);
     render(calHtml, context);
   });
 
-  on('click', /dp-day/, el, function (e) {
+  on('click', 'dp-day', el, function (e) {
     context.onChange(new Date(parseInt(e.target.getAttribute('data-date'))));
   });
 
-  on('click', /dp-year/, el, function (e) {
+  on('click', 'dp-year', el, function (e) {
     context.currentDate.setFullYear(parseInt(e.target.getAttribute('data-year')));
     render(calHtml, context);
     context.onSelectYear(context);
   });
 
-  on('click', /dp-month/, el, function(e) {
+  on('click', 'dp-month', el, function(e) {
     context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
     render(calHtml, context);
     context.onSelectMonth(context);
   });
 
-  on('click', /dp-cal-year/, el, function () {
+  on('click', 'dp-cal-year', el, function () {
     render(yearsHtml, context);
   });
 
-  on('click', /dp-cal-month/, el, function () {
+  on('click', 'dp-cal-month', el, function () {
     render(monthsHtml, context);
   });
 
-  on('click', /dp-today/, el, function () {
+  on('click', 'dp-today', el, function () {
     context.onChange(now());
   });
 
-  on('click', /dp-clear/, el, function () {
+  on('click', 'dp-clear', el, function () {
     context.onChange(null);
   });
 
-  on('click', /dp-close/, el, function () {
+  on('click', 'dp-close', el, function () {
     returnFocusFromModal(input);
 
     // For dropdown calendars, we need to allow the focus
@@ -377,6 +377,8 @@ function on(evt, pattern, el, fn) {
     fn = el;
     el = pattern;
     pattern = /.*/;
+  } else {
+    pattern = new RegExp('\\b' + pattern + '\\b');
   }
 
   el.addEventListener(evt, function (e) {
