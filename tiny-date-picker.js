@@ -376,7 +376,7 @@ function on(evt, pattern, el, fn) {
   if (!fn) {
     fn = el;
     el = pattern;
-    pattern = /./;
+    pattern = /.*/;
   }
 
   el.addEventListener(evt, function (e) {

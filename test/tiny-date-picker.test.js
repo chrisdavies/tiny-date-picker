@@ -22,6 +22,15 @@ describe('TinyDatePicker', function() {
     browser.execute(() => window.onOpenFired).value.should.eql(true);
   });
 
+  it('Should not require a class', function () {
+    inject('<input type="text" data-test="noclass" />');
+    const html = `
+      TinyDatePicker(document.querySelector('[data-test]'));
+    `;
+    browser.execute((html) => new Function(html)(), html);
+    showModalByClick('[data-test]');
+  });
+
   it('Should call onSelectYear when year is selected', function () {
     inject('<input type="text" value="12/9/2014" class="on-select-year-test" />');
     const html = `
