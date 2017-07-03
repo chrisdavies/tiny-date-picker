@@ -29,6 +29,17 @@
   max-width: 100vw;
 }
 
+.dp-permanent {
+  position: relative;
+  font-size: 0.8em;
+  width: 400px;
+  max-width: 100vw;
+}
+
+.dp-permanent .dp{
+  z-index: 0;
+}
+
 .dp-modal .dp {
   position: absolute;
   top: 50%;
@@ -145,6 +156,14 @@
   text-decoration: none;
   color: inherit;
 }
+
+.dp-permanent .dp-close,
+.dp-permanent .dp-clear {
+  display: none;
+}
+
+
+
 
 .dp-close:hover,
 .dp-close:focus,

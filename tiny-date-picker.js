@@ -20,7 +20,7 @@ function TinyDatePicker(input, opts) {
 
   if (context.isModal) {
     input.readOnly = true;
-  } else {
+  } else if (!context.isPermanent){
     // For the dropdown calendar, we need to hide when the input loses focus
     // for the modal, we never do this.
     on('blur', input, buffer(5, function () {
@@ -43,16 +43,19 @@ function TinyDatePicker(input, opts) {
     isNaN(date) || context.onChange(date, true);
   }
 
-  // With the modal, we always begin and end by setting focus to the input
-  // so that tabbing works as expected. This means the focus event needs
-  // to be smart. With the dropdown, we only ever show on focus.
-  on('mousedown', input, function () {
-    if (context.inputFocused()) {
-      bufferShow();
-    }
-  });
-  on('focus', input, bufferShow);
-  on('input', input, tryUpdateDate);
+  // Permanent mode doesn't need input to work so we wont capture its events
+  if (!context.isPermanent) {
+    // With the modal, we always begin and end by setting focus to the input
+    // so that tabbing works as expected. This means the focus event needs
+    // to be smart. With the dropdown, we only ever show on focus.
+    on('mousedown', input, function () {
+      if (context.inputFocused()) {
+        bufferShow();
+      }
+    });
+    on('focus', input, bufferShow);
+    on('input', input, tryUpdateDate);
+  }
 
   return context;
 }
@@ -60,7 +63,8 @@ function TinyDatePicker(input, opts) {
 // Builds the date picker's settings based on the opts provided.
 function buildContext(input, opts) {
   var context = {
-    input: input,
+    input: (opts.mode != 'dp-permanent')?gete(input):null,
+    container: (opts.mode == 'dp-permanent')?gete(input):null,
     mode: opts.mode || 'dp-modal',
     days: opts.days || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     months: opts.months || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -70,6 +74,7 @@ function buildContext(input, opts) {
     onOpen: opts.onOpen || function() {},
     onSelectYear: opts.onSelectYear || function() {},
     onSelectMonth: opts.onSelectMonth || function() {},
+    onChangeDate: opts.onChangeDate || function() {},
     format: opts.format || function (date) {
       return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     },
@@ -78,7 +83,7 @@ function buildContext(input, opts) {
       return isNaN(date) ? now() : date;
     },
     inputFocused: function() {
-      return input === document.activeElement;
+      return !context.container && input === document.activeElement;
     },
     onChange: function (date, silent) {
       if (date && !inRange(context, date)) {
@@ -87,9 +92,10 @@ function buildContext(input, opts) {
 
       if (date) {
         context.selectedDate = new Date(context.currentDate = date);
+        context.onChangeDate(context);
       }
 
-      if (!silent) {
+      if ((!silent) && (context.mode != 'dp_permanent')) {
         input.value = date ? context.format(date) : '';
       }
 
@@ -101,7 +107,8 @@ function buildContext(input, opts) {
         render(calHtml, context);
       }
 
-      input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+      if (context.mode != 'dp_permanent')
+        input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
     },
     open: function () {
       if (!shouldHideModal(context)) {
@@ -126,9 +133,14 @@ function buildContext(input, opts) {
   context.min = initMinMax(context, opts.min, -100);
   context.max = initMinMax(context, opts.max, 100);
   context.isModal = context.mode === 'dp-modal';
+  context.isPermanent = context.mode === 'dp-permanent';
 
   var preselectedDate = context.parse(opts.preselectedDate) || new Date();
   context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : context.min;
+
+  if (context.isPermanent){
+    showCalendar(context)
+  }
 
   return context;
 }
@@ -164,25 +176,41 @@ function showCalendar(context) {
   // do we return focus to the input. A possible other approach
   // would be to set context.redrawing = true on redraw and
   // set it to false in the blur event.
-  var dp = el.querySelector('.dp');
-  on('blur', dp, buffer(10, function () {
-    if (!dp.contains(document.activeElement)) {
-      if (context.isModal) {
-        returnFocusFromModal(input);
-      } else if (!context.inputFocused()) {
-        hideCalendar(context);
+  if (!context.isPermanent) {
+    var dp = el.querySelector('.dp');
+    on('blur', dp, buffer(10, function () {
+      if (!dp.contains(document.activeElement)) {
+        if (context.isModal) {
+          returnFocusFromModal(input);
+        } else if (!context.inputFocused()) {
+          hideCalendar(context);
+        }
       }
-    }
-  }));
+    }))
+  }
 
   forceDatesIntoMinMax(context);
 
-  if (context.isModal) {
+  switch (context.mode){
+
+    case 'dp-modal':
+      document.body.appendChild(el);
+      break;
+    case 'dp-below':
+      el.style.visibility = 'hidden'; // We need to render it, then adjust, then show
+      input.parentElement.appendChild(el);
+      break;
+    case 'dp-permanent':
+      context.container.appendChild(el);
+      break;
+  }
+
+  /*if (context.isModal) {
     document.body.appendChild(el);
   } else {
     el.style.visibility = 'hidden'; // We need to render it, then adjust, then show
     input.parentElement.appendChild(el);
-  }
+  }*/
 
   context.isAbove = null;
   render(calHtml, context);
@@ -258,7 +286,7 @@ function showCalendar(context) {
     // For dropdown calendars, we need to allow the focus
     // event to play out before hiding, or else the focus
     // event will re-show the calendar.
-    !context.isModal && buffer(10, function () {
+    !context.isModal && !context.isPermanent && buffer(10, function () {
       hideCalendar(context);
     })();
   });
@@ -304,7 +332,7 @@ function adjustCalY(context, inputPos, docEl) {
 
 // Forces the context's dates to be within min/max
 function forceDatesIntoMinMax(context) {
-  var input = context.input;
+  var input = context.input || {};
   var parsedValue = context.parse(input.value);
   context.currentDate = (input.value && inRange(context, parsedValue)) ? parsedValue : context.preselectedDate;
   context.selectedDate = new Date(context.currentDate);
@@ -393,7 +421,7 @@ function on(evt, pattern, el, fn) {
 function render(fn, context) {
   var html = fn(context);
   html && (context.el.firstChild.innerHTML = html);
-  if (!context.isModal) {
+  if ((!context.isModal) && (!context.isPermanent)) {
     autoPosition(context);
   }
   if (context.isModal || !context.inputFocused()) {
@@ -564,9 +592,9 @@ function returnFocusFromModal(input) {
 }
 
 function hideCalendar(context) {
-  var el = context.el;
-  el && el.parentElement.removeChild(el);
-  context.el = undefined;
+    var el = context.el;
+    el && el.parentElement.removeChild(el);
+    context.el = undefined;
 }
 
 function initMinMax(context, val, yearShift) {
@@ -581,6 +609,11 @@ function now() {
   var dt = new Date();
   dt.setHours(0, 0, 0, 0);
   return dt;
+}
+
+function gete(element) {
+  element = element || '';
+  return element? (element.nodeName || element == document.body) ? element : document.getElementById(element):false;
 }
 
 function getCustomEventConstructor() {
