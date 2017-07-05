@@ -136,7 +136,7 @@ function buildContext(input, opts) {
   context.isPermanent = context.mode === 'dp-permanent';
 
   var preselectedDate = context.parse(opts.preselectedDate) || new Date();
-  context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : context.min;
+  context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : new Date(context.min);
 
   if (context.isPermanent){
     showCalendar(context)
