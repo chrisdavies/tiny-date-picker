@@ -128,7 +128,7 @@ function buildContext(input, opts) {
   context.isModal = context.mode === 'dp-modal';
 
   var preselectedDate = context.parse(opts.preselectedDate) || new Date();
-  context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : context.min;
+  context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : new Date(context.min);
 
   return context;
 }

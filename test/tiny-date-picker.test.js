@@ -236,18 +236,18 @@ describe('TinyDatePicker', function() {
     selectFirstText('.dp-day').should.eql('26');
   });
 
-  it('Disallows selections outside of min/max range', function () {
+  it('Disallows selections outside of min/max range', function (done) {
     inject('<input type="text" class="wk-max-test" />');
     browser.execute(() => TinyDatePicker(document.querySelector('.wk-max-test'), {
-      min: '1/2/2013',
-      max: '1/5/2013'
+      min: '1/8/2013',
+      max: '1/10/2013'
     }));
     showModalByClick('.wk-max-test');
 
     // The min value should be shown and selected, if today is not in the range
     browser.getText('.dp-cal-month').should.eql('January');
     browser.getText('.dp-cal-year').should.eql('2013');
-    browser.getText('.dp-current').should.eql('2');
+    browser.getText('.dp-current').should.eql('8');
 
     // First day is outside of range and should do nothing...
     browser.click('.dp-day');
@@ -257,10 +257,22 @@ describe('TinyDatePicker', function() {
     browser.isExisting('.dp-modal');
     browser.getValue('.wk-max-test').should.eql('');
 
+    // Previous month should all be disabled
+    browser.click('.dp-prev');
+    const dpDays = browser.elements('.dp-day').value.length;
+    const dpDisabled = browser.elements('.dp-day-disabled').value.length;
+    dpDays.should.be.gt(0);
+    dpDays.should.eql(dpDisabled);
+    browser.isExisting('.dp-modal');
+    browser.execute(() => document.querySelectorAll('.dp-day')[9].click());
+    browser.isExisting('.dp-modal');
+    browser.getValue('.wk-max-test').should.eql('');
+    browser.click('.dp-next');
+
     // Clicking a valid date should still work
-    browser.execute(() => document.querySelectorAll('.dp-day')[5].click());
+    browser.execute(() => document.querySelectorAll('.dp-day')[9].click());
     modalShouldHide();
-    browser.getValue('.wk-max-test').should.eql('1/4/2013');
+    browser.getValue('.wk-max-test').should.eql('1/8/2013');
   });
 
   it('Allows custom formatting', function () {
