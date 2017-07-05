@@ -62,9 +62,10 @@ function TinyDatePicker(input, opts) {
 
 // Builds the date picker's settings based on the opts provided.
 function buildContext(input, opts) {
+  input = getElement(input);
   var context = {
-    input: (opts.mode != 'dp-permanent')?gete(input):null,
-    container: (opts.mode == 'dp-permanent')?gete(input):null,
+    input: (opts.mode !== 'dp-permanent') ? input : null,
+    container: (opts.mode === 'dp-permanent') ? input : null,
     mode: opts.mode || 'dp-modal',
     days: opts.days || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
     months: opts.months || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -95,7 +96,7 @@ function buildContext(input, opts) {
         context.onChangeDate(context);
       }
 
-      if ((!silent) && (context.mode != 'dp_permanent')) {
+      if (!silent && !context.isPermanent) {
         input.value = date ? context.format(date) : '';
       }
 
@@ -107,8 +108,9 @@ function buildContext(input, opts) {
         render(calHtml, context);
       }
 
-      if (context.mode != 'dp_permanent')
+      if (!context.isPermanent) {
         input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+      }
     },
     open: function () {
       if (!shouldHideModal(context)) {
@@ -133,13 +135,14 @@ function buildContext(input, opts) {
   context.min = initMinMax(context, opts.min, -100);
   context.max = initMinMax(context, opts.max, 100);
   context.isModal = context.mode === 'dp-modal';
+  context.isBelow = context.mode === 'dp-below';
   context.isPermanent = context.mode === 'dp-permanent';
 
   var preselectedDate = context.parse(opts.preselectedDate) || new Date();
   context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : new Date(context.min);
 
   if (context.isPermanent){
-    showCalendar(context)
+    showCalendar(context);
   }
 
   return context;
@@ -191,8 +194,7 @@ function showCalendar(context) {
 
   forceDatesIntoMinMax(context);
 
-  switch (context.mode){
-
+  switch (context.mode) {
     case 'dp-modal':
       document.body.appendChild(el);
       break;
@@ -204,13 +206,6 @@ function showCalendar(context) {
       context.container.appendChild(el);
       break;
   }
-
-  /*if (context.isModal) {
-    document.body.appendChild(el);
-  } else {
-    el.style.visibility = 'hidden'; // We need to render it, then adjust, then show
-    input.parentElement.appendChild(el);
-  }*/
 
   context.isAbove = null;
   render(calHtml, context);
@@ -286,7 +281,7 @@ function showCalendar(context) {
     // For dropdown calendars, we need to allow the focus
     // event to play out before hiding, or else the focus
     // event will re-show the calendar.
-    !context.isModal && !context.isPermanent && buffer(10, function () {
+    context.isBelow && buffer(10, function () {
       hideCalendar(context);
     })();
   });
@@ -421,7 +416,7 @@ function on(evt, pattern, el, fn) {
 function render(fn, context) {
   var html = fn(context);
   html && (context.el.firstChild.innerHTML = html);
-  if ((!context.isModal) && (!context.isPermanent)) {
+  if (context.isBelow) {
     autoPosition(context);
   }
   if (context.isModal || !context.inputFocused()) {
@@ -592,9 +587,9 @@ function returnFocusFromModal(input) {
 }
 
 function hideCalendar(context) {
-    var el = context.el;
-    el && el.parentElement.removeChild(el);
-    context.el = undefined;
+  var el = context.el;
+  el && el.parentElement.removeChild(el);
+  context.el = undefined;
 }
 
 function initMinMax(context, val, yearShift) {
@@ -611,9 +606,8 @@ function now() {
   return dt;
 }
 
-function gete(element) {
-  element = element || '';
-  return element? (element.nodeName || element == document.body) ? element : document.getElementById(element):false;
+function getElement(element) {
+  return (typeof element === 'string') ? document.querySelector(element) : element;
 }
 
 function getCustomEventConstructor() {
@@ -621,7 +615,7 @@ function getCustomEventConstructor() {
 
   if (typeof CustomEvent !== 'function') {
     CustomEvent = function (event, params) {
-      params = params || { bubbles: false, cancelable: false, detail: undefined };
+      params = params || {bubbles: false, cancelable: false, detail: undefined};
       var evt = document.createEvent('CustomEvent');
       evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
       return evt;

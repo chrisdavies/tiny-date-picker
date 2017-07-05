@@ -22,6 +22,9 @@ Include a reference to `tiny-date-picker.css` and `tiny-date-picker.js`, then ca
 ```javascript
 // Initialize a date picker on the specified input element
 TinyDatePicker(document.querySelector('input'));
+
+// Or with a selector
+TinyDatePicker('.some-class-or-id-or-whatever');
 ```
 
 You can also pass in options as an optional second argument:
@@ -89,9 +92,10 @@ TinyDatePicker(document.querySelector('input'), {
   // Place datepicker selector on this date if field is still empty
   preselectedDate: '10/20/2016',
 
-  // There are two modes: dp-modal (the default) and dp-below.
+  // There are three modes: dp-modal (the default), dp-permanent and dp-below.
   // dp-modal makes the date picker show up as a modal.
   // dp-below makes it show up beneath its input element.
+  // dp-permanent displays the calendar permanently with no input needed
   mode: 'dp-below',
 
   // Whether to use Monday as start of the week
@@ -111,6 +115,12 @@ TinyDatePicker(document.querySelector('input'), {
   // A function which is called any time the month is selected
   // in the month menu
   onSelectMonth: function (context) {
+    // context is the datepicker context, detailed below
+  },
+
+  // A function which is called when the date changes, before the modal closes
+  // and before the input's value is updated.
+  onChangeDate: function (context) {
     // context is the datepicker context, detailed below
   },
 });

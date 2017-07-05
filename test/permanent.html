@@ -24,28 +24,9 @@
 
     <script src="/tiny-date-picker.js"></script>
     <script>
-      if (location.search === '?debug') {
-        var log = console.log;
-        console.log = function () {
-          var args = Array.prototype.slice.call(arguments).map(function (a) {
-            return JSON.stringify(a);
-          });
-
-          var pre = document.createElement('pre');
-          pre.appendChild(document.createTextNode(args.join(' ')));
-          document.querySelector('.debug').appendChild(pre);
-          log.apply(console, arguments);
-        };
-
-        window.onerror = function(messageOrEvent, source, lineno, colno, error) {
-          console.log(messageOrEvent, source, lineno, error);
-        };
-      }
-
-
       Array.prototype.slice.apply(document.querySelectorAll('.permanent-txt'))
         .forEach(function (el) {
-          TinyDatePicker(el,{
+          TinyDatePicker(el, {
             mode: 'dp-permanent',
             max: el.getAttribute('data-max'),
             min: el.getAttribute('data-min'),
@@ -54,11 +35,10 @@
             }
           });
         });
-      if (window.console && window.console.log) {
+
         document.addEventListener('change', function (e) {
           console.log('Changed to: ' + e.target.value);
         });
-      }
     </script>
   </body>
 </html>
