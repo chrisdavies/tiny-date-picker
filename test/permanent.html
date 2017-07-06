@@ -14,11 +14,11 @@
       <h1>Tiny Date Picker</h1>
       <div class="form-field">
         <label>Permanent calendar:</label>
-        <div class="permanent-txt" tabindex="401" data-max="10/30/2017" data-min="10/01/2017"></div>
+        <div id="cal1" class="permanent-txt" tabindex="401" ></div>
       </div>
       <div class="form-field">
         <label>Another permanent calendar:</label>
-        <div class="permanent-txt" tabindex="401" data-max="10/30/2017" data-min="10/01/2017"></div>
+        <div id="cal2" class="permanent-txt" tabindex="401" data-max="10/30/2017" data-min="10/01/2017"></div>
       </div>
     </main>
 
@@ -26,13 +26,17 @@
     <script>
       Array.prototype.slice.apply(document.querySelectorAll('.permanent-txt'))
         .forEach(function (el) {
-          TinyDatePicker(el, {
+          window['td_' + el.id] = TinyDatePicker(el, {
             mode: 'dp-permanent',
             max: el.getAttribute('data-max'),
             min: el.getAttribute('data-min'),
             onChangeDate: function(context){
-              console.log(context.currentDate)
+              console.log('onChangeDate:', context.currentDate)
+            },
+            onSelect: function(context){
+              console.log('onSelect:', context.currentDate, context.selectedDate);
             }
+
           });
         });
 

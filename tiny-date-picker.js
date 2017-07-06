@@ -76,6 +76,7 @@ function buildContext(input, opts) {
     onSelectYear: opts.onSelectYear || function() {},
     onSelectMonth: opts.onSelectMonth || function() {},
     onChangeDate: opts.onChangeDate || function() {},
+    onSelect: opts.onSelect || function() {},
     format: opts.format || function (date) {
       return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     },
@@ -128,6 +129,20 @@ function buildContext(input, opts) {
     setValue: function (date) {
       date = context.parse(date);
       context.onChange(date);
+    },
+    goMonth: function(offset){
+      shiftMonth(context.currentDate, context.currentDate.getMonth() + offset);
+      render(calHtml, context);
+      context.onSelect(context);
+      return context.selectedDate;
+    },
+    goYear: function(offset){
+      return context.goMonth(offset * 12)
+    },
+    direct: function(date){
+      context.currentDate = context.parse(date);
+      render(calHtml, context);
+      context.onSelect(context);
     },
     weekStartsMonday: opts.weekStartsMonday,
   };
@@ -236,11 +251,13 @@ function showCalendar(context) {
   on('click', 'dp-next', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() + 1);
     render(calHtml, context);
+    context.onSelect(context);
   });
 
   on('click', 'dp-prev', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() - 1);
     render(calHtml, context);
+    context.onSelect(context);
   });
 
   on('click', 'dp-day', el, function (e) {
@@ -251,12 +268,14 @@ function showCalendar(context) {
     context.currentDate.setFullYear(parseInt(e.target.getAttribute('data-year')));
     render(calHtml, context);
     context.onSelectYear(context);
+    context.onSelect(context);
   });
 
   on('click', 'dp-month', el, function(e) {
     context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
     render(calHtml, context);
     context.onSelectMonth(context);
+    context.onSelect(context);
   });
 
   on('click', 'dp-cal-year', el, function () {
@@ -473,6 +492,7 @@ function monthsHtml(context) {
 
 // Given the specified context, produces an HTML string
 // representing a calendar.
+// representing a calendar.
 function calHtml(context) {
   var dayNames = context.days;
   var dayOffset = context.weekStartsMonday ? 1 : 0;
@@ -505,8 +525,8 @@ function calHtml(context) {
           var isToday = date.getTime() === today;
           var className = 'dp-day';
           className += (isNotInMonth ? ' dp-edge-day' : '');
-          className += (date.getTime() === currentDate.getTime() ? ' dp-current' : '');
-          className += (date.getTime() === selectedDate.getTime() ? ' dp-selected' : '');
+          className += (compareDates(date, currentDate) ? ' dp-current' : '');
+          className += (compareDates(date, selectedDate) ? ' dp-selected' : '');
           className += (isDisabled ? ' dp-day-disabled' : '');
           className += (isToday ? ' dp-day-today' : '');
 
@@ -604,6 +624,16 @@ function now() {
   var dt = new Date();
   dt.setHours(0, 0, 0, 0);
   return dt;
+}
+
+  /**
+   * Compare two dates ignoring hh:mm:ss
+   * @param date1
+   * @param date2
+   * @returns {boolean}
+   */
+  function compareDates(date1, date2){
+  return ((date1.getDate() === date2.getDate()) && (date1.getMonth() === date2.getMonth()) && (date1.getYear() === date2.getYear()))
 }
 
 function getElement(element) {
