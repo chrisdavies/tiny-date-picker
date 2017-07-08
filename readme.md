@@ -123,6 +123,12 @@ TinyDatePicker(document.querySelector('input'), {
   onChangeDate: function (context) {
     // context is the datepicker context, detailed below
   },
+  
+  // A function which is called any time the date in the calendar is changed  
+  // either vía UI buttons or the API
+  onSelect: function(context){
+    // context is the datepicker context, detailed below    
+  }
 });
 ```
 
@@ -137,12 +143,14 @@ The `onOpen`, `onSelectYear`, and `onSelectMonth` event handlers receive the dat
 
 ### Methods
 
-- open: opens the modal
-- close: closes the modal
-- openYears: shows the modal with the years menu showing
-- openMonths: shows the modal with the months menu showing
-- setValue: sets the date as a string value
-
+- open(): opens the modal
+- close(): closes the modal
+- openYears(): shows the modal with the years menu showing
+- openMonths(): shows the modal with the months menu showing
+- setValue(date): sets the date as a string value
+- goMonth(offset): Browse the calendar interface adding the number of months passed by parametter
+- goYear(offset): Browse the calendar interface adding the number of years passed by parametter 
+- direct(date): Browse the calendar interface to a specific date passed by parametter. 
 
 ## Style
 
