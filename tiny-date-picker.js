@@ -438,7 +438,7 @@ function render(fn, context) {
   if (context.isBelow) {
     autoPosition(context);
   }
-  if (context.isModal || !context.inputFocused()) {
+  if ((context.isModal || !context.inputFocused()) && (!context.isPermanent)) {
     var current = context.el.querySelector('.dp-current');
     return current && current.focus();
   }
