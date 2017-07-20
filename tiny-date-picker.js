@@ -76,6 +76,7 @@ function buildContext(input, opts) {
     onSelectYear: opts.onSelectYear || function() {},
     onSelectMonth: opts.onSelectMonth || function() {},
     onChangeDate: opts.onChangeDate || function() {},
+    onNavigate: opts.onNavigate || function() {},
     format: opts.format || function (date) {
       return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     },
@@ -128,6 +129,19 @@ function buildContext(input, opts) {
     setValue: function (date) {
       date = context.parse(date);
       context.onChange(date);
+    },
+    addMonths: function(numMonths) {
+      shiftMonth(context.currentDate, context.currentDate.getMonth() + numMonths);
+      return context.goToDate(context.currentDate);
+    },
+    addYears: function(numYears) {
+      return context.addMonths(numYears * 12);
+    },
+    goToDate: function(date) {
+      context.currentDate = context.parse(date);
+      render(calHtml, context);
+      context.onNavigate(context);
+      return context.selectedDate;
     },
     weekStartsMonday: opts.weekStartsMonday,
   };
@@ -236,11 +250,13 @@ function showCalendar(context) {
   on('click', 'dp-next', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() + 1);
     render(calHtml, context);
+    context.onNavigate(context);
   });
 
   on('click', 'dp-prev', el, function () {
     shiftMonth(context.currentDate, context.currentDate.getMonth() - 1);
     render(calHtml, context);
+    context.onNavigate(context);
   });
 
   on('click', 'dp-day', el, function (e) {
@@ -251,12 +267,14 @@ function showCalendar(context) {
     context.currentDate.setFullYear(parseInt(e.target.getAttribute('data-year')));
     render(calHtml, context);
     context.onSelectYear(context);
+    context.onNavigate(context);
   });
 
   on('click', 'dp-month', el, function(e) {
     context.currentDate.setMonth(parseInt(e.target.getAttribute('data-month')));
     render(calHtml, context);
     context.onSelectMonth(context);
+    context.onNavigate(context);
   });
 
   on('click', 'dp-cal-year', el, function () {
@@ -380,6 +398,7 @@ function selectYear(e, el, context, amount) {
 
   context.currentDate.setFullYear(validYear);
   render(yearsHtml, context);
+  context.onNavigate(context);
 }
 
 function selectMonth(el, context, amount) {
@@ -387,12 +406,14 @@ function selectMonth(el, context, amount) {
   var month = (12 + (context.currentDate.getMonth() + amount)) % 12;
   shiftMonth(context.currentDate, month);
   render(monthsHtml, context);
+  context.onNavigate(context);
 }
 
 function shiftDate(el, context, amount) {
   var dt = context.currentDate;
   dt.setDate(dt.getDate() + amount);
   render(calHtml, context);
+  context.onNavigate(context);
 }
 
 function on(evt, pattern, el, fn) {
@@ -505,8 +526,8 @@ function calHtml(context) {
           var isToday = date.getTime() === today;
           var className = 'dp-day';
           className += (isNotInMonth ? ' dp-edge-day' : '');
-          className += (date.getTime() === currentDate.getTime() ? ' dp-current' : '');
-          className += (date.getTime() === selectedDate.getTime() ? ' dp-selected' : '');
+          className += (datesEq(date, currentDate) ? ' dp-current' : '');
+          className += (datesEq(date, selectedDate) ? ' dp-selected' : '');
           className += (isDisabled ? ' dp-day-disabled' : '');
           className += (isToday ? ' dp-day-today' : '');
 
@@ -604,6 +625,10 @@ function now() {
   var dt = new Date();
   dt.setHours(0, 0, 0, 0);
   return dt;
+}
+
+function datesEq(date1, date2) {
+  return date1.toDateString() === date2.toDateString();
 }
 
 function getElement(element) {

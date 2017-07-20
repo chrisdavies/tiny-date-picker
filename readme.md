@@ -3,7 +3,7 @@
 A light-weight date picker with zero dependencies.
 
 - Zero dependencies
-- Roughly 2.5KB minified and gzipped
+- Roughly 3KB minified and gzipped
 - IE9+
 - Mobile-friendly/responsive
 
@@ -123,6 +123,12 @@ TinyDatePicker(document.querySelector('input'), {
   onChangeDate: function (context) {
     // context is the datepicker context, detailed below
   },
+
+  // A function which is called any time the calendar UI navigates to a different
+  // date. This does not mean the user has selected a date, but simply navigated in the UI.
+  onNavigate: function(context){
+    // context is the datepicker context, detailed below
+  }
 });
 ```
 
@@ -137,12 +143,14 @@ The `onOpen`, `onSelectYear`, and `onSelectMonth` event handlers receive the dat
 
 ### Methods
 
-- open: opens the modal
-- close: closes the modal
-- openYears: shows the modal with the years menu showing
-- openMonths: shows the modal with the months menu showing
-- setValue: sets the date as a string value
-
+- open(): opens the modal
+- close(): closes the modal
+- openYears(): shows the modal with the years menu showing
+- openMonths(): shows the modal with the months menu showing
+- setValue(date): sets the date as a string value
+- addMonths(numMonths): Moves the calendar UI forward/backward by `numMonths`
+- addYears(numYears): Moves the calendar UI forward/backward by `numYears`
+- goToDate(date): Moves the calendar UI to the specified date
 
 ## Style
 
