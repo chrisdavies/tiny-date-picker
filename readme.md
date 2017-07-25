@@ -57,12 +57,15 @@ Below is an example of all option parameters:
 ```javascript
 
 TinyDatePicker(document.querySelector('input'), {
-  // Used to convert a date into a string to be used as the value of input
+  // Used to convert a date into a string to be used as the value of input. If you specify format,
+  // you must also specify parse. Parse and format are complimentary. Format converts a date to a
+  // string, and parse converts a string to a date.
   format: function (date) {
     return date.toLocaleDateString();
   },
 
   // Used to parse a date string and return a date (e.g. parsing the input value)
+  // The value of str can be undefined / null, so you need to handle this case.
   parse: function (str) {
     var date = new Date(str);
     return isNaN(date) ? new Date() : date;
