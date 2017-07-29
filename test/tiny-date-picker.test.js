@@ -405,6 +405,33 @@ describe('TinyDatePicker', function() {
     browser.getText('.dp-current').should.eql('2');
   });
 
+  it('Allows customizing the css class for any given date', function () {
+    inject('<input type="text" class="dt-class-test" value="2/2/1990" />');
+
+    // Disable weekends
+    const html = `
+      TinyDatePicker(document.querySelector('.dt-class-test'), {
+        dateClass(d) {
+          return (d.getDay() % 6) ? '' : 'dp-day-disabled';
+        }
+      });
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+
+    showModalByClick('.dt-class-test');
+
+    const dpDisabled = browser.elements('.dp-day-disabled').value.length;
+    const disabledVals = browser.getAttribute('.dp-day-disabled', 'data-date');
+
+    dpDisabled.should.eql(12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
+
+    disabledVals.every(d => {
+      const dt = new Date(parseInt(d));
+      return dt.getDay() == 0 || dt.getDay() == 6;
+    }).should.be.true;
+  });
+
   // Helpers
   function inject(html) {
     browser.execute((html) => document.body.innerHTML += html, html);

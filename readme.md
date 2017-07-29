@@ -131,6 +131,16 @@ TinyDatePicker(document.querySelector('input'), {
   // date. This does not mean the user has selected a date, but simply navigated in the UI.
   onNavigate: function(context){
     // context is the datepicker context, detailed below
+  },
+
+  // Customizes what CSS class is associated with a particular date.
+  // For example, to disable weekends:
+  // dateClass(dt) {
+  //   return (dt.getDay() % 6) ? '' : 'dp-day-disabled';
+  // }
+  dateClass: function (dt, context) {
+    // dt is the date
+    // context is the datepicker context
   }
 });
 ```

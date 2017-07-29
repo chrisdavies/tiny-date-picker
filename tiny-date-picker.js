@@ -73,6 +73,7 @@ function buildContext(input, opts) {
     clear: opts.clear || 'Clear',
     close: opts.close || 'Close',
     onOpen: opts.onOpen || function() {},
+    dateClass: opts.dateClass || function() { return ''; },
     onSelectYear: opts.onSelectYear || function() {},
     onSelectMonth: opts.onSelectMonth || function() {},
     onChangeDate: opts.onChangeDate || function() {},
@@ -530,6 +531,7 @@ function calHtml(context) {
           className += (datesEq(date, selectedDate) ? ' dp-selected' : '');
           className += (isDisabled ? ' dp-day-disabled' : '');
           className += (isToday ? ' dp-day-today' : '');
+          className += ' ' + context.dateClass(date, context);
 
           return (
             '<a tabindex="-1" href="javascript:;" class="' + className + '" data-date="' + date.getTime() + '">' +
