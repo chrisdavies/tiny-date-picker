@@ -73,7 +73,8 @@ function buildContext(input, opts) {
     clear: opts.clear || 'Clear',
     close: opts.close || 'Close',
     onOpen: opts.onOpen || function() {},
-    dateClass: opts.dateClass || function() { return ''; },
+    dateClass: opts.dateClass || function() {},
+    inRange: opts.inRange || function () { return true; },
     onSelectYear: opts.onSelectYear || function() {},
     onSelectMonth: opts.onSelectMonth || function() {},
     onChangeDate: opts.onChangeDate || function() {},
@@ -153,8 +154,7 @@ function buildContext(input, opts) {
   context.isBelow = context.mode === 'dp-below';
   context.isPermanent = context.mode === 'dp-permanent';
 
-  var preselectedDate = context.parse(opts.preselectedDate) || new Date();
-  context.preselectedDate = inRange(context, preselectedDate) ? preselectedDate : new Date(context.min);
+  context.preselectedDate = context.parse(opts.preselectedDate) || new Date();
 
   if (context.isPermanent){
     showCalendar(context);
@@ -620,7 +620,7 @@ function initMinMax(context, val, yearShift) {
 }
 
 function inRange(context, date) {
-  return context.min <= date && context.max >= date;
+  return context.inRange(date, context) && context.min <= date && context.max >= date;
 }
 
 function now() {

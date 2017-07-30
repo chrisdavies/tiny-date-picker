@@ -240,7 +240,8 @@ describe('TinyDatePicker', function() {
     inject('<input type="text" class="wk-max-test" />');
     browser.execute(() => TinyDatePicker(document.querySelector('.wk-max-test'), {
       min: '1/8/2013',
-      max: '1/10/2013'
+      max: '1/10/2013',
+      preselectedDate: '1/8/2013',
     }));
     showModalByClick('.wk-max-test');
 
@@ -408,11 +409,11 @@ describe('TinyDatePicker', function() {
   it('Allows customizing the css class for any given date', function () {
     inject('<input type="text" class="dt-class-test" value="2/2/1990" />');
 
-    // Disable weekends
+    // Style weekends
     const html = `
       TinyDatePicker(document.querySelector('.dt-class-test'), {
         dateClass(d) {
-          return (d.getDay() % 6) ? '' : 'dp-day-disabled';
+          return (d.getDay() % 6) ? '' : 'dp-foo-test';
         }
       });
     `;
@@ -420,6 +421,33 @@ describe('TinyDatePicker', function() {
     browser.execute((html) => new Function(html)(), html);
 
     showModalByClick('.dt-class-test');
+
+    const foos = browser.elements('.dp-foo-test').value.length;
+    const fooVals = browser.getAttribute('.dp-foo-test', 'data-date');
+
+    foos.should.eql(12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
+
+    fooVals.every(d => {
+      const dt = new Date(parseInt(d));
+      return dt.getDay() == 0 || dt.getDay() == 6;
+    }).should.be.true;
+  });
+
+  it('Allows customizing the disabled range', function () {
+    inject('<input type="text" class="dt-range-test" />');
+
+    // Disable weekends
+    const html = `
+      TinyDatePicker(document.querySelector('.dt-range-test'), {
+        inRange(d) {
+          return (d.getDay() % 6);
+        }
+      });
+    `;
+
+    browser.execute((html) => new Function(html)(), html);
+
+    showModalByClick('.dt-range-test');
 
     const dpDisabled = browser.elements('.dp-day-disabled').value.length;
     const disabledVals = browser.getAttribute('.dp-day-disabled', 'data-date');

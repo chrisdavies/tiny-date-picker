@@ -134,13 +134,19 @@ TinyDatePicker(document.querySelector('input'), {
   },
 
   // Customizes what CSS class is associated with a particular date.
-  // For example, to disable weekends:
-  // dateClass(dt) {
-  //   return (dt.getDay() % 6) ? '' : 'dp-day-disabled';
-  // }
   dateClass: function (dt, context) {
     // dt is the date
     // context is the datepicker context
+  },
+
+  // Sometimes, min and max aren't enough, and you need to
+  // disable other days. You can specify the inRange function
+  // which should return a truthy value if the date dt should be
+  // enabled and falsy if it should be disabled.
+  // For example, to disable weekends:
+  // inRange(d) { return (d.getDay() % 6); }
+  inRange: function (dt, context) {
+
   }
 });
 ```

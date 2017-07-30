@@ -230,11 +230,14 @@
   color: #FFF;
 }
 
-.dp-day-disabled:focus,
-.dp-day-disabled:hover,
 .dp-day-disabled {
   background: transparent;
   color: #DDD;
+}
+
+.dp-day-disabled:focus,
+.dp-day-disabled:hover {
+  background: #DDD;
 }
 
 .dp-focuser {
