@@ -1,4 +1,4 @@
-global.should = require('chai').should();
+global.assert = require('chai').assert;
 
 exports.config = {
   host: '0.0.0.0',

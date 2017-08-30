@@ -16,18 +16,21 @@ return TinyDatePicker;
 
 // Constructs a new instance of the tiny date picker
 function TinyDatePicker(input, opts) {
-  var context = buildContext(input, opts || {});
+  // An array of functions that remove event handlers from
+  // the input when context.off is invoked.
+  var off = [];
+  var context = buildContext(input, off, opts || {});
 
   if (context.isModal) {
     input.readOnly = true;
   } else if (!context.isPermanent){
     // For the dropdown calendar, we need to hide when the input loses focus
     // for the modal, we never do this.
-    on('blur', input, buffer(5, function () {
+    off.push(on('blur', input, buffer(5, function () {
       if (context.el && !context.el.contains(document.activeElement)) {
         hideCalendar(context);
       }
-    }));
+    })));
   }
 
   var bufferShow = buffer(5, function () {
@@ -48,20 +51,20 @@ function TinyDatePicker(input, opts) {
     // With the modal, we always begin and end by setting focus to the input
     // so that tabbing works as expected. This means the focus event needs
     // to be smart. With the dropdown, we only ever show on focus.
-    on('mousedown', input, function () {
+    off.push(on('mousedown', input, function () {
       if (context.inputFocused()) {
         bufferShow();
       }
-    });
-    on('focus', input, bufferShow);
-    on('input', input, tryUpdateDate);
+    }));
+    off.push(on('focus', input, bufferShow));
+    off.push(on('input', input, tryUpdateDate));
   }
 
   return context;
 }
 
 // Builds the date picker's settings based on the opts provided.
-function buildContext(input, opts) {
+function buildContext(input, off, opts) {
   input = getElement(input);
   var context = {
     input: (opts.mode !== 'dp-permanent') ? input : null,
@@ -158,6 +161,13 @@ function buildContext(input, opts) {
       return context.selectedDate;
     },
     weekStartsMonday: opts.weekStartsMonday,
+    destroy: function() {
+      context.close();
+      console.log('DESTROYING... ', off.length);
+      off.forEach(function (f) {
+        f();
+      });
+    }
   };
 
   context.min = initMinMax(context, opts.min, -100);
@@ -425,11 +435,17 @@ function on(evt, pattern, el, fn) {
     pattern = new RegExp('\\b' + pattern + '\\b');
   }
 
-  el.addEventListener(evt, function (e) {
+  function handler(e) {
     if (pattern.test(e.target.className)) {
       fn(e);
     }
-  }, true);
+  }
+
+  el.addEventListener(evt, handler, true);
+
+  return function () {
+    el.removeEventListener(evt, handler, true);
+  };
 }
 
 // Renders HTML into context.el's container.

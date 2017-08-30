@@ -170,6 +170,7 @@ The `onOpen`, `onSelectYear`, and `onSelectMonth` event handlers receive the dat
 - addMonths(numMonths): Moves the calendar UI forward/backward by `numMonths`
 - addYears(numYears): Moves the calendar UI forward/backward by `numYears`
 - goToDate(date): Moves the calendar UI to the specified date
+- destroy(): destroys the date picker and unregisters all events from the input
 
 ## Style
 

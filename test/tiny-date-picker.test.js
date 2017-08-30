@@ -19,7 +19,7 @@ describe('TinyDatePicker', function() {
     `;
     browser.execute((html) => new Function(html)(), html);
     showModalByClick('.on-open-test');
-    browser.execute(() => window.onOpenFired).value.should.eql(true);
+    assert.ok(browser.execute(() => window.onOpenFired));
   });
 
   it('Should allow manual closing', function () {
@@ -30,6 +30,18 @@ describe('TinyDatePicker', function() {
     browser.execute((h) => new Function(h)(), html);
     showModalByClick('.manual-close-test');
     browser.execute((h) => new Function(h)(), 'dpManualCloseTest.close();');
+    modalShouldHide();
+  });
+
+  it('Should remove all handlers on destroy', function () {
+    inject('<input type="text" class="destroy-test" />');
+    const html = `
+      var dp = TinyDatePicker(document.querySelector('.destroy-test'));
+      dp.destroy();
+    `;
+    browser.execute((h) => new Function(h)(), html);
+    assert.isFalse(browser.isExisting('.dp-modal'));
+    setFocus('.destroy-test');
     modalShouldHide();
   });
 
@@ -58,7 +70,7 @@ describe('TinyDatePicker', function() {
     browser.execute(() => Array.prototype.slice.call(document.querySelectorAll('.dp-year'))
       .filter(el => el.textContent === '2016')
       .forEach(el => el.click()));
-    browser.execute(() => window.yearWas).value.should.eql(2016);
+    assert.equal(browser.execute(() => window.yearWas).value, 2016);
   });
 
   it('Should call onSelectMonth when month is selected', function () {
@@ -75,7 +87,7 @@ describe('TinyDatePicker', function() {
     showModalByClick('.on-select-month-test');
     browser.click('.dp-cal-month');
     browser.click('[data-month="6"]');
-    browser.execute(() => window.monthWas).value.should.eql(6);
+    assert.equal(browser.execute(() => window.monthWas).value, 6);
   });
 
   it('Should show the modal when open is called', function () {
@@ -85,7 +97,7 @@ describe('TinyDatePicker', function() {
     `;
 
     browser.execute((html) => new Function(html)(), html);
-    browser.isExisting('.dp-modal').should.eql(true);
+    assert.isTrue(browser.isExisting('.dp-modal'));
   });
 
   it('Should show the years when openYears is called', function () {
@@ -95,8 +107,8 @@ describe('TinyDatePicker', function() {
     `;
 
     browser.execute((html) => new Function(html)(), html);
-    browser.isExisting('.dp-modal').should.eql(true);
-    browser.isExisting('.dp-year').should.eql(true);
+    assert.isTrue(browser.isExisting('.dp-modal'));
+    assert.isTrue(browser.isExisting('.dp-year'));
   });
 
   it('Should show the months when openMonths is called', function () {
@@ -106,8 +118,8 @@ describe('TinyDatePicker', function() {
     `;
 
     browser.execute((html) => new Function(html)(), html);
-    browser.isExisting('.dp-modal').should.eql(true);
-    browser.isExisting('.dp-month').should.eql(true);
+    assert.isTrue(browser.isExisting('.dp-modal'));
+    assert.isTrue(browser.isExisting('.dp-month'));
   });
 
   it('Should hide the modal when the modal input re-gains focus', function () {
@@ -120,15 +132,15 @@ describe('TinyDatePicker', function() {
     showModal();
     browser.click('.dp-close');
     modalShouldHide();
-    browser.getValue('.modal-txt').should.eql('');
+    assert.isEmpty(browser.getValue('.modal-txt'));
   });
 
   it('Should select today when today is clicked', function () {
     showModal();
     browser.click('.dp-today');
     modalShouldHide();
-    browser.hasFocus('.modal-txt').should.be.true;
-    browser.getValue('.modal-txt').should.eql(new Date().toLocaleDateString());
+    assert.isTrue(browser.hasFocus('.modal-txt'));
+    assert.equal(browser.getValue('.modal-txt'), new Date().toLocaleDateString());
   });
 
   it('Should clear the date field when clear is clicked', function () {
@@ -136,24 +148,24 @@ describe('TinyDatePicker', function() {
     showModal();
     browser.click('.dp-clear');
     modalShouldHide();
-    browser.getValue('.modal-txt').should.eql('');
+    assert.isEmpty(browser.getValue('.modal-txt'));
   });
 
   it('Should load whatever date is already in the field', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '10/11/2012');
     showModal();
-    browser.getText('.dp-cal-month').should.eql('October');
-    browser.getText('.dp-cal-year').should.eql('2012');
-    browser.getText('.dp-current').should.eql('11');
+    assert.equal(browser.getText('.dp-cal-month'), 'October');
+    assert.equal(browser.getText('.dp-cal-year'), '2012');
+    assert.equal(browser.getText('.dp-current'), '11');
   });
 
   it('Should update whenever the user inputs a date', function () {
     browser.click('.txt-below');
     browser.waitUntil(() => browser.isExisting('.dp-below'));
     browser.keys('10/11/2012');
-    browser.getText('.dp-cal-month').should.eql('October');
-    browser.getText('.dp-cal-year').should.eql('2012');
-    browser.getText('.dp-current').should.eql('11');
+    assert.equal(browser.getText('.dp-cal-month'), 'October');
+    assert.equal(browser.getText('.dp-cal-year'), '2012');
+    assert.equal(browser.getText('.dp-current'), '11');
   });
 
   it('Should change the date when a date is clicked', function () {
@@ -161,75 +173,75 @@ describe('TinyDatePicker', function() {
     showModal();
     browser.execute(() => document.querySelectorAll('.dp-day')[10].click());
     modalShouldHide();
-    browser.getValue('.modal-txt').should.eql('11/6/2013');
+    assert.equal(browser.getValue('.modal-txt'), '11/6/2013');
   });
 
   it('Should show the prev month when prev arrow is clicked', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '12/7/2013');
     showModal();
     browser.click('.dp-prev');
-    browser.getText('.dp-cal-month').should.eql('November');
-    browser.getText('.dp-cal-year').should.eql('2013');
-    browser.getText('.dp-current').should.eql('7');
+    assert.equal(browser.getText('.dp-cal-month'), 'November');
+    assert.equal(browser.getText('.dp-cal-year'), '2013');
+    assert.equal(browser.getText('.dp-current'), '7');
 
     // Should not have changed the modal text
-    browser.getValue('.modal-txt').should.eql('12/7/2013');
+    assert.equal(browser.getValue('.modal-txt'), '12/7/2013');
   });
 
   it('Should show the next month when next arrow is clicked', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '12/8/2013');
     showModal();
     browser.click('.dp-next');
-    browser.getText('.dp-cal-month').should.eql('January');
-    browser.getText('.dp-cal-year').should.eql('2014');
-    browser.getText('.dp-current').should.eql('8');
+    assert.equal(browser.getText('.dp-cal-month'), 'January');
+    assert.equal(browser.getText('.dp-cal-year'), '2014');
+    assert.equal(browser.getText('.dp-current'), '8');
 
     // Should not have changed the modal text
-    browser.getValue('.modal-txt').should.eql('12/8/2013');
+    assert.equal(browser.getValue('.modal-txt'), '12/8/2013');
   });
 
   it('Allows year to be changed', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '12/8/2013');
     showModal();
-    browser.getText('.dp-cal-year').should.eql('2013');
+    assert.equal(browser.getText('.dp-cal-year'), '2013');
     browser.click('.dp-cal-year');
     browser.execute(() => Array.prototype.slice.call(document.querySelectorAll('.dp-year'))
       .filter(el => el.textContent === '2016')
       .forEach(el => el.click()));
 
-    browser.getText('.dp-cal-year').should.eql('2016');
+      assert.equal(browser.getText('.dp-cal-year'), '2016');
   });
 
   it('Allows month to be changed', function () {
     browser.execute(() => document.querySelector('.modal-txt').value = '12/8/2013');
     showModal();
-    browser.getText('.dp-cal-month').should.eql('December');
+    assert.equal(browser.getText('.dp-cal-month'), 'December');
     browser.click('.dp-cal-month');
     browser.click('[data-month="8"]'); // 0-based months
 
-    browser.getText('.dp-cal-month').should.eql('September');
+    assert.equal(browser.getText('.dp-cal-month'), 'September');
   });
 
   it('Shows days of the week, starting with Sunday', function () {
     showModal();
-    selectText('.dp-col-header').should.eql(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
+    assert.deepEqual(selectText('.dp-col-header'), ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
 
     // Verify that the first day is a Sunday
     browser.click('.dp-day');
     modalShouldHide();
-    new Date(browser.getValue('.modal-txt')).getDay().should.eql(0);
+    assert.equal(new Date(browser.getValue('.modal-txt')).getDay(), 0);
   });
 
   it('Shows days of the week, starting with Monday if weekStartsMonday', function () {
     inject('<input type="text" class="wk-mon-test" />');
     browser.execute(() => TinyDatePicker(document.querySelector('.wk-mon-test'), {weekStartsMonday: true}))
     showModalByClick('.wk-mon-test');
-    selectText('.dp-col-header').should.eql(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
+    assert.deepEqual(selectText('.dp-col-header'), ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']);
 
     // Verify that the first day is a Monday
     browser.click('.dp-day');
     modalShouldHide();
-    new Date(browser.getValue('.wk-mon-test')).getDay().should.eql(1);
+    assert.equal(new Date(browser.getValue('.wk-mon-test')).getDay(), 1);
   });
 
   it('Handles case when monday is the 2nd of the week', function () {
@@ -244,7 +256,7 @@ describe('TinyDatePicker', function() {
     inject('<input type="text" value="1/2/1905" class="wk-mon-2-test" />');
     browser.execute((html) => new Function(html)(), html);
     showModalByClick('.wk-mon-2-test');
-    selectFirstText('.dp-day').should.eql('26');
+    assert.equal(selectFirstText('.dp-day'), '26');
   });
 
   it('Disallows selections outside of min/max range', function (done) {
@@ -257,34 +269,34 @@ describe('TinyDatePicker', function() {
     showModalByClick('.wk-max-test');
 
     // The min value should be shown and selected, if today is not in the range
-    browser.getText('.dp-cal-month').should.eql('January');
-    browser.getText('.dp-cal-year').should.eql('2013');
-    browser.getText('.dp-current').should.eql('8');
+    assert.equal(browser.getText('.dp-cal-month'), 'January');
+    assert.equal(browser.getText('.dp-cal-year'), '2013');
+    assert.equal(browser.getText('.dp-current'), '8');
 
     // First day is outside of range and should do nothing...
     browser.click('.dp-day');
     browser.isExisting('.dp-modal');
-    browser.getValue('.wk-max-test').should.eql('');
+    assert.isEmpty(browser.getValue('.wk-max-test'));
     browser.execute(() => document.querySelector('.dp-day:last-child').click());
     browser.isExisting('.dp-modal');
-    browser.getValue('.wk-max-test').should.eql('');
+    assert.isEmpty(browser.getValue('.wk-max-test'));
 
     // Previous month should all be disabled
     browser.click('.dp-prev');
     const dpDays = browser.elements('.dp-day').value.length;
     const dpDisabled = browser.elements('.dp-day-disabled').value.length;
-    dpDays.should.be.gt(0);
-    dpDays.should.eql(dpDisabled);
+    assert.isAbove(dpDays, 0);
+    assert.equal(dpDays, dpDisabled);
     browser.isExisting('.dp-modal');
     browser.execute(() => document.querySelectorAll('.dp-day')[9].click());
     browser.isExisting('.dp-modal');
-    browser.getValue('.wk-max-test').should.eql('');
+    assert.isEmpty(browser.getValue('.wk-max-test'));
     browser.click('.dp-next');
 
     // Clicking a valid date should still work
     browser.execute(() => document.querySelectorAll('.dp-day')[9].click());
     modalShouldHide();
-    browser.getValue('.wk-max-test').should.eql('1/8/2013');
+    assert.equal(browser.getValue('.wk-max-test'), '1/8/2013');
   });
 
   it('Allows custom formatting', function () {
@@ -298,7 +310,7 @@ describe('TinyDatePicker', function() {
     showModalByClick('.wk-fmt-test');
     browser.click('.dp-day');
     modalShouldHide();
-    browser.getValue('.wk-fmt-test').should.match(/TODAY IS \d/);
+    assert.match(browser.getValue('.wk-fmt-test'), /TODAY IS \d/);
   });
 
   it('Allows custom parsing', function () {
@@ -316,10 +328,10 @@ describe('TinyDatePicker', function() {
     }));
 
     showModalByClick('.wk-p-test');
-    browser.getValue('.wk-p-test').should.eql('2/3/2014');
+    assert.equal(browser.getValue('.wk-p-test'), '2/3/2014');
     browser.click('.dp-day');
     modalShouldHide();
-    browser.getValue('.wk-p-test').should.eql('1/26/2014');
+    assert.equal(browser.getValue('.wk-p-test'), '1/26/2014');
   });
 
   it('Allows custom labels', function () {
@@ -334,12 +346,12 @@ describe('TinyDatePicker', function() {
     inject('<input type="text" class="wk-l-test" />');
     browser.execute((opts) => TinyDatePicker(document.querySelector('.wk-l-test'), opts), opts);
     showModalByClick('.wk-l-test');
-    browser.getText('.dp-clear').should.eql(opts.clear);
-    browser.getText('.dp-today').should.eql(opts.today);
-    browser.getText('.dp-close').should.eql(opts.close);
-    selectText('.dp-col-header').should.eql(opts.days);
+    assert.equal(browser.getText('.dp-clear'), opts.clear);
+    assert.equal(browser.getText('.dp-today'), opts.today);
+    assert.equal(browser.getText('.dp-close'), opts.close);
+    assert.deepEqual(selectText('.dp-col-header'), opts.days);
     browser.click('.dp-cal-month');
-    selectText('.dp-month').should.eql(opts.months);
+    assert.deepEqual(selectText('.dp-month'), opts.months);
   });
 
   it('Triggers change event when value changes', function () {
@@ -347,17 +359,17 @@ describe('TinyDatePicker', function() {
     browser.execute(() => document.querySelector('.modal-txt')
       .addEventListener('change', e => window.changeWasFired = true));
     browser.click('.dp-day');
-    browser.execute(() => changeWasFired).value.should.eql(true);
+    assert.isTrue(browser.execute(() => changeWasFired).value);
   });
 
   it('Does not steal input focus if not modal', function () {
     browser.click('.txt-below');
     browser.waitUntil(() => browser.isExisting('.dp-below'));
-    browser.hasFocus('.txt-below').should.be.true;
+    assert.isTrue(browser.hasFocus('.txt-below'));
     browser.click('.dp-today');
-    browser.getValue('.txt-below').should.eql(new Date().toLocaleDateString());
+    assert.equal(browser.getValue('.txt-below'), new Date().toLocaleDateString());
     browser.click('.dp-clear');
-    browser.getValue('.txt-below').should.eql('');
+    assert.isEmpty(browser.getValue('.txt-below'));
     browser.click('.dp-close');
     browser.waitUntil(() => !browser.isExisting('.dp-below'));
   });
@@ -366,14 +378,14 @@ describe('TinyDatePicker', function() {
     showModal();
     browser.keys(['Shift', 'Tab']);
     modalShouldHide();
-    browser.hasFocus('.modal-txt').should.be.true;
+    assert.isTrue(browser.hasFocus('.modal-txt'));
   });
 
   it('Sets focus back to the original input when tab', function () {
     showModal();
     browser.keys(['Tab']);
     modalShouldHide();
-    browser.hasFocus('.modal-txt').should.be.true;
+    assert.isTrue(browser.hasFocus('.modal-txt'));
   });
 
   it('Preselect with the date set in config and min max', function () {
@@ -386,9 +398,9 @@ describe('TinyDatePicker', function() {
     showModalByClick('.wk-preselected-min-max-test');
 
     // The min value should be shown and selected, if today is not in the range
-    browser.getText('.dp-cal-year').should.eql('2000');
-    browser.getText('.dp-cal-month').should.eql('January');
-    browser.getText('.dp-current').should.eql('1');
+    assert.equal(browser.getText('.dp-cal-year'), '2000');
+    assert.equal(browser.getText('.dp-cal-month'), 'January');
+    assert.equal(browser.getText('.dp-current'), '1');
   });
 
   it('Preselect with the date set in config without min max', function () {
@@ -399,9 +411,9 @@ describe('TinyDatePicker', function() {
     showModalByClick('.wk-preselected-test');
 
     // The min value should be shown and selected, if today is not in the range
-    browser.getText('.dp-cal-year').should.eql('2000');
-    browser.getText('.dp-cal-month').should.eql('January');
-    browser.getText('.dp-current').should.eql('1');
+    assert.equal(browser.getText('.dp-cal-year'), '2000');
+    assert.equal(browser.getText('.dp-cal-month'), 'January');
+    assert.equal(browser.getText('.dp-current'), '1');
   });
 
   it('Does not preselect if date already filled', function () {
@@ -412,9 +424,9 @@ describe('TinyDatePicker', function() {
     showModalByClick('.wk-preselected-filled-test');
 
     // The min value should be shown and selected, if today is not in the range
-    browser.getText('.dp-cal-year').should.eql('1990');
-    browser.getText('.dp-cal-month').should.eql('February');
-    browser.getText('.dp-current').should.eql('2');
+    assert.equal(browser.getText('.dp-cal-year'), '1990');
+    assert.equal(browser.getText('.dp-cal-month'), 'February');
+    assert.equal(browser.getText('.dp-current'), '2');
   });
 
   it('Allows customizing the css class for any given date', function () {
@@ -436,12 +448,12 @@ describe('TinyDatePicker', function() {
     const foos = browser.elements('.dp-foo-test').value.length;
     const fooVals = browser.getAttribute('.dp-foo-test', 'data-date');
 
-    foos.should.eql(12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
+    assert.equal(foos, 12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
 
-    fooVals.every(d => {
+    assert.isTrue(fooVals.every(d => {
       const dt = new Date(parseInt(d));
       return dt.getDay() == 0 || dt.getDay() == 6;
-    }).should.be.true;
+    }));
   });
 
   it('Allows customizing the disabled range', function () {
@@ -463,12 +475,12 @@ describe('TinyDatePicker', function() {
     const dpDisabled = browser.elements('.dp-day-disabled').value.length;
     const disabledVals = browser.getAttribute('.dp-day-disabled', 'data-date');
 
-    dpDisabled.should.eql(12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
+    assert.equal(dpDisabled, 12); // We always show 6 weeks, so this means 6 saturdays and 6 sundays
 
-    disabledVals.every(d => {
+    assert.isTrue(disabledVals.every(d => {
       const dt = new Date(parseInt(d));
       return dt.getDay() == 0 || dt.getDay() == 6;
-    }).should.be.true;
+    }));
   });
 
   // Helpers
@@ -496,9 +508,9 @@ describe('TinyDatePicker', function() {
   }
 
   function showModal(selector) {
-    browser.isExisting('.dp-modal').should.be.false;
+    assert.isFalse(browser.isExisting('.dp-modal'));
     setFocus(selector || '.modal-txt');
-    browser.element('.dp-modal').should.be.defined;
+    assert.ok(browser.element('.dp-modal'));
   }
 
   function modalShouldHide() {
