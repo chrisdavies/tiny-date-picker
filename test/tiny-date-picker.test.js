@@ -22,6 +22,17 @@ describe('TinyDatePicker', function() {
     browser.execute(() => window.onOpenFired).value.should.eql(true);
   });
 
+  it('Should allow manual closing', function () {
+    inject('<input type="text" class="manual-close-test" />');
+    const html = `
+      window.dpManualCloseTest = TinyDatePicker(document.querySelector('.manual-close-test'));
+    `;
+    browser.execute((h) => new Function(h)(), html);
+    showModalByClick('.manual-close-test');
+    browser.execute((h) => new Function(h)(), 'dpManualCloseTest.close();');
+    modalShouldHide();
+  });
+
   it('Should not require a class', function () {
     inject('<input type="text" data-test="noclass" />');
     const html = `

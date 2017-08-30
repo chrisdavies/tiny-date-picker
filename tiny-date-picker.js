@@ -71,7 +71,7 @@ function buildContext(input, opts) {
     months: opts.months || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     today: opts.today || 'Today',
     clear: opts.clear || 'Clear',
-    close: opts.close || 'Close',
+    txtClose: opts.close || 'Close',
     onOpen: opts.onOpen || function() {},
     dateClass: opts.dateClass || function() {},
     inRange: opts.inRange || function () { return true; },
@@ -118,6 +118,18 @@ function buildContext(input, opts) {
     open: function () {
       if (!shouldHideModal(context)) {
         showCalendar(context);
+      }
+    },
+    close: function () {
+      if (context.el) {
+        returnFocusFromModal(input);
+
+        // For dropdown calendars, we need to allow the focus
+        // event to play out before hiding, or else the focus
+        // event will re-show the calendar.
+        context.isBelow && buffer(10, function () {
+          hideCalendar(context);
+        })();
       }
     },
     openYears: function () {
@@ -198,13 +210,9 @@ function showCalendar(context) {
     var dp = el.querySelector('.dp');
     on('blur', dp, buffer(10, function () {
       if (!dp.contains(document.activeElement)) {
-        if (context.isModal) {
-          returnFocusFromModal(input);
-        } else if (!context.inputFocused()) {
-          hideCalendar(context);
-        }
+        context.close();
       }
-    }))
+    }));
   }
 
   forceDatesIntoMinMax(context);
@@ -294,16 +302,7 @@ function showCalendar(context) {
     context.onChange(null);
   });
 
-  on('click', 'dp-close', el, function () {
-    returnFocusFromModal(input);
-
-    // For dropdown calendars, we need to allow the focus
-    // event to play out before hiding, or else the focus
-    // event will re-show the calendar.
-    context.isBelow && buffer(10, function () {
-      hideCalendar(context);
-    })();
-  });
+  on('click', 'dp-close', el, context.close);
 
   context.onOpen(context);
 }
@@ -543,7 +542,7 @@ function calHtml(context) {
       '<footer class="dp-cal-footer">' +
         '<a tabindex="-1" href="javascript:;" class="dp-today">' + context.today + '</a>' +
         '<a tabindex="-1" href="javascript:;" class="dp-clear">' + context.clear + '</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-close">' + context.close + '</a>' +
+        '<a tabindex="-1" href="javascript:;" class="dp-close">' + context.txtClose + '</a>' +
       '</footer>' +
     '</div>'
   );
