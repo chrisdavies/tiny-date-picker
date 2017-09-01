@@ -219,7 +219,7 @@ function showCalendar(context) {
   if (!context.isPermanent) {
     var dp = el.querySelector('.dp');
     on('blur', dp, buffer(10, function () {
-      if (!dp.contains(document.activeElement)) {
+      if (!el.contains(document.activeElement)) {
         context.close();
       }
     }));

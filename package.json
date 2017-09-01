@@ -7,10 +7,10 @@
     "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
     "start": "http-server . -c-1",
     "test": "wdio test/wdio.mocha.conf.js",
-    "build": "rollup tiny-date-picker.js --format umd --output dist/tiny-date-picker.js",
+    "build": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
     "min": "concurrently \"npm run mincss\" \"npm run minjs\"",
     "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
-    "minjs": "uglifyjs tiny-date-picker.js --source-map tiny-date-picker.min.js.map -m -c -o tiny-date-picker.min.js && echo 'Minified JS:' && cat tiny-date-picker.min.js | gzip -9f | wc -c"
+    "minjs": "uglifyjs dist/tiny-date-picker.js --source-map dist/tiny-date-picker.min.js.map -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
     "type": "git",

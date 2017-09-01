@@ -1,0 +1,21 @@
+/**
+ * @file Defines the various date picker modes (modal, dropdown, permanent)
+ */
+
+import ModalMode from './modal-mode';
+import DropdownMode from './dropdown-mode';
+import PermanentMode from './permanent-mode';
+
+export default function Mode(input, opts) {
+  if (opts.mode === 'dp-modal') {
+    return ModalMode(input, opts);
+  }
+
+  if (opts.mode === 'dp-below') {
+    return DropdownMode(input, opts);
+  }
+
+  if (opts.mode === 'dp-permanent') {
+    return PermanentMode(input, opts);
+  }
+}
