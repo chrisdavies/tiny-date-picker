@@ -6,7 +6,7 @@
   "scripts": {
     "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
     "start": "http-server . -c-1",
-    "test": "wdio test/wdio.mocha.conf.js",
+    "test": "jest",
     "build": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
     "min": "concurrently \"npm run mincss\" \"npm run minjs\"",
     "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
@@ -28,17 +28,22 @@
   "bugs": {
     "url": "https://github.com/chrisdavies/tiny-date-picker/issues"
   },
+  "jest": {
+    "testRegex": ".*\\.test\\.js$",
+    "moduleFileExtensions": [
+      "js"
+    ]
+  },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "chai": "^4.1.1",
+    "babel": "^6.23.0",
+    "babel-jest": "^20.0.3",
+    "babel-preset-es2015": "^6.24.1",
     "concurrently": "^3.1.0",
     "http-server": "^0.9.0",
-    "mocha": "^3.2.0",
+    "jest": "^20.0.4",
     "rollup": "^0.49.2",
     "uglify-js": "^2.7.5",
-    "uglifycss": "0.0.25",
-    "wdio-mocha-framework": "^0.5.4",
-    "wdio-spec-reporter": "0.0.3",
-    "webdriverio": "^4.4.0"
+    "uglifycss": "0.0.25"
   }
 }

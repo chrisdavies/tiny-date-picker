@@ -42,7 +42,7 @@ export default function Emitter() {
         handlers[name] = [];
       } else {
         handlers[name] = (handlers[name] || []).filter(function (h) {
-          h !== handler;
+          return h !== handler;
         });
       }
     }

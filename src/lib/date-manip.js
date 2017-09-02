@@ -21,7 +21,7 @@ export function now() {
  * @returns {boolean}
  */
 export function datesEq(date1, date2) {
-  return date1.toDateString() === date2.toDateString();
+  return (date1 && date1.toDateString()) === (date2 && date2.toDateString());
 }
 
 /**
@@ -42,8 +42,8 @@ export function shiftDay(dt, n) {
  *
  * @param {Date} dt
  * @param {number} n
- * @param {boolean} wrap optional, indicates whether or not to change
- *                       year as a result, defaults to false
+ * @param {boolean} wrap optional, if true, does not change year
+ *                       value, defaults to false
  * @returns {Date}
  */
 export function shiftMonth(dt, n, wrap) {
@@ -59,7 +59,7 @@ export function shiftMonth(dt, n, wrap) {
   // If dayOfMonth = 31, but the target month only has 30 or 29 or whatever...
   // head back to the max of the target month
   if (dt.getDate() < dayOfMonth) {
-    dt.setDate(1 - dt.getDate());
+    dt.setDate(0);
   }
 
   return dt;
@@ -97,9 +97,7 @@ export function setYear(dt, year) {
  * @param {number} month
  */
 export function setMonth(dt, month) {
-  dt = new Date(dt);
-  dt.setMonth(month);
-  return dt;
+  return shiftMonth(dt, month - dt.getMonth());
 }
 
 /**
