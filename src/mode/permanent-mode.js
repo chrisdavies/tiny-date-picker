@@ -4,8 +4,8 @@
 import {noop} from '../lib/fns';
 import BaseMode from './base-mode';
 
-export default function PermanentMode(root, opts) {
-  var dp = BaseMode(root, opts);
+export default function PermanentMode(root, emit, opts) {
+  var dp = BaseMode(root, emit, opts);
 
   dp.close = noop;
   dp.destroy = noop;

@@ -3,8 +3,8 @@
  */
 import BaseMode from './base-mode';
 
-export default function ModalMode(input, opts) {
-  var dp = BaseMode(input, opts);
+export default function ModalMode(input, emit, opts) {
+  var dp = BaseMode(input, emit, opts);
 
   // In modal mode, users really shouldn't be able to type in
   // the input, as all input is done via the calendar.

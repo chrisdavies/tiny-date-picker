@@ -4,8 +4,8 @@
 
 import BaseMode from './base-mode';
 
-export default function DropdownMode(input, opts) {
-  var dp = BaseMode(input, opts);
+export default function DropdownMode(input, emit, opts) {
+  var dp = BaseMode(input, emit, opts);
 
   dp.shouldFocusOnBlur = false;
 

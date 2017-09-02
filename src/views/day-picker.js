@@ -32,7 +32,7 @@ function render(dp) {
   var state = dp.state;
   var dayNames = lang.days;
   var dayOffset = opts.weekStartsMonday ? 1 : 0;
-  var selectedDate = dp.selectedDate;
+  var selectedDate = state.selectedDate;
   var hilightedDate = state.hilightedDate;
   var hilightedMonth = hilightedDate.getMonth();
   var today = now().getTime();
@@ -106,11 +106,15 @@ function keyDown(e, dp) {
 }
 
 function selectToday(e, dp) {
-  dp.setDate(now());
+  dp.setState({
+    selectedDate: now(),
+  });
 }
 
 function clear(e, dp) {
-  dp.setDate(null);
+  dp.setState({
+    selectedDate: null,
+  });
 }
 
 function close(e, dp) {
@@ -144,7 +148,9 @@ function gotoPrevMonth(e, dp) {
 }
 
 function selectDay(e, dp) {
-  dp.setDate(new Date(parseInt(e.target.getAttribute('data-date'))));
+  dp.setState({
+    selectedDate: new Date(parseInt(e.target.getAttribute('data-date'))),
+  });
 }
 
 function mapDays(currentDate, dayOffset, fn) {

@@ -20,8 +20,9 @@ export default {
  * @returns {string}
  */
 function render(dp) {
-  var currentYear = dp.state.hilightedDate.getFullYear();
-  var selectedYear = dp.selectedDate.getFullYear();
+  var state = dp.state;
+  var currentYear = state.hilightedDate.getFullYear();
+  var selectedYear = state.selectedDate.getFullYear();
 
   return (
     '<div class="dp-years">' +

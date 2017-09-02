@@ -1,7 +1,6 @@
 /**
  * @file Defines the base date picker behavior, overridden by various modes.
  */
-import Emitter from '../lib/emitter';
 import dayPicker from '../views/day-picker';
 import monthPicker from '../views/month-picker';
 import yearPicker from '../views/year-picker';
@@ -14,21 +13,31 @@ var views = {
   month: monthPicker
 };
 
-export default function BaseMode(input, opts) {
+export default function BaseMode(input, emit, opts) {
   var detatchInputEvents;
-  var events = Emitter();
   var closing = false; // A hack to prevent calendar from re-opening when closing.
-
+  var selectedDate;
   var dp = {
     // The root DOM element for the date picker, initialized on first open.
     el: undefined,
     opts: opts,
-    on: events.on,
-    off: events.off,
-    selectedDate: undefined,
     shouldFocusOnBlur: true,
     shouldFocusOnRender: true,
     state: {
+      get selectedDate() {
+        return selectedDate;
+      },
+      set selectedDate(dt) {
+        if (dt && !opts.inRange(dt)) {
+          return;
+        }
+
+        selectedDate = dt ? new Date(dt) : dt;
+
+        dp.updateInput(selectedDate);
+        emit('select');
+        dp.close();
+      },
       view: 'day',
       hilightedDate: undefined,
     },
@@ -39,8 +48,8 @@ export default function BaseMode(input, opts) {
       document.body.appendChild(dp.el);
     },
 
-    updateInput: function () {
-      input.value = dp.selectedDate ? opts.format(dp.selectedDate) : '';
+    updateInput: function (selectedDate) {
+      input.value = selectedDate ? opts.format(selectedDate) : '';
       input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
     },
 
@@ -50,22 +59,6 @@ export default function BaseMode(input, opts) {
 
     currentView: function() {
       return views[dp.state.view];
-    },
-
-    setDate: function (dt) {
-      if (dt && !opts.inRange(dt)) {
-        return;
-      }
-
-      dp.selectedDate = dt ? new Date(dt) : dt;
-      dp.setState({
-        hilightedDate: dp.selectedDate
-      });
-
-      dp.updateInput();
-      dp.close();
-
-      events.emit('select', dp);
     },
 
     open: function () {
@@ -78,12 +71,12 @@ export default function BaseMode(input, opts) {
         attachContainerEvents(dp);
       }
 
-      dp.selectedDate = dp.computeSelectedDate();
-      dp.state.hilightedDate = dp.selectedDate || opts.preselectedDate;
+      selectedDate = dp.computeSelectedDate();
+      dp.state.hilightedDate = selectedDate || opts.preselectedDate;
       dp.attachToDom();
       dp.render();
 
-      events.emit('open', dp);
+      emit('open');
     },
 
     isVisible: function () {
@@ -120,7 +113,7 @@ export default function BaseMode(input, opts) {
         closing = false;
       }, 100);
 
-      events.emit('close', dp);
+      emit('close');
     },
 
     destroy: function () {
@@ -141,12 +134,11 @@ export default function BaseMode(input, opts) {
     },
 
     setState: function (state) {
-      // TODO... update state and re-render
       for (var key in state) {
         dp.state[key] = state[key];
       }
 
-      events.emit('statechange', dp);
+      emit('statechange');
       dp.render();
     },
   };
