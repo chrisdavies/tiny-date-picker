@@ -29,10 +29,22 @@ export default function Emitter() {
       }
     },
 
-    off: function (name, handler) {
-      handlers[name] = (handlers[name] || []).filter(function (h) {
-        h !== handler;
+    emit: function (name, arg) {
+      (handlers[name] || []).forEach(function (handler) {
+        handler(name, arg);
       });
+    },
+
+    off: function (name, handler) {
+      if (!name) {
+        handlers = {};
+      } else if (!handler) {
+        handlers[name] = [];
+      } else {
+        handlers[name] = (handlers[name] || []).filter(function (h) {
+          h !== handler;
+        });
+      }
     }
   };
 }

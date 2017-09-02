@@ -16,15 +16,15 @@ var views = {
 
 export default function BaseMode(input, opts) {
   var detatchInputEvents;
-  var emit = Emitter();
+  var events = Emitter();
   var closing = false; // A hack to prevent calendar from re-opening when closing.
 
   var dp = {
     // The root DOM element for the date picker, initialized on first open.
     el: undefined,
     opts: opts,
-    on: emit.on,
-    off: emit.off,
+    on: events.on,
+    off: events.off,
     selectedDate: undefined,
     shouldFocusOnBlur: true,
     shouldFocusOnRender: true,
@@ -58,12 +58,14 @@ export default function BaseMode(input, opts) {
       }
 
       dp.selectedDate = dt ? new Date(dt) : dt;
-      dp._setState({
+      dp.setState({
         hilightedDate: dp.selectedDate
       });
 
       dp.updateInput();
       dp.close();
+
+      events.emit('select', dp);
     },
 
     open: function () {
@@ -80,6 +82,8 @@ export default function BaseMode(input, opts) {
       dp.state.hilightedDate = dp.selectedDate || opts.preselectedDate;
       dp.attachToDom();
       dp.render();
+
+      events.emit('open', dp);
     },
 
     isVisible: function () {
@@ -115,6 +119,8 @@ export default function BaseMode(input, opts) {
       setTimeout(function() {
         closing = false;
       }, 100);
+
+      events.emit('close', dp);
     },
 
     destroy: function () {
@@ -134,12 +140,13 @@ export default function BaseMode(input, opts) {
       }
     },
 
-    _setState: function (state) {
+    setState: function (state) {
       // TODO... update state and re-render
       for (var key in state) {
         dp.state[key] = state[key];
       }
 
+      events.emit('statechange', dp);
       dp.render();
     },
   };
@@ -184,7 +191,7 @@ function attachInputEvents(input, dp) {
 
     on('input', input, function (e) {
       var date = dp.opts.parse(e.target.value);
-      isNaN(date) || dp._setState({
+      isNaN(date) || dp.setState({
         hilightedDate: date
       });
     }),

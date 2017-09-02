@@ -14,7 +14,7 @@ export default {
 };
 
 function onChooseMonth(e, dp) {
-  dp._setState({
+  dp.setState({
     hilightedDate: setMonth(dp.state.hilightedDate, parseInt(e.target.getAttribute('data-month'))),
     view: 'day',
   });
@@ -66,7 +66,7 @@ function keyDown(e, dp) {
     0;
 
   if (shiftBy) {
-    dp._setState({
+    dp.setState({
       hilightedDate: shiftMonth(dp.state.hilightedDate, shiftBy, true)
     });
   }

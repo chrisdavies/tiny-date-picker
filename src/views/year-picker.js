@@ -41,7 +41,7 @@ function render(dp) {
 }
 
 function onChooseYear(e, dp) {
-  dp._setState({
+  dp.setState({
     hilightedDate: setYear(dp.state.hilightedDate, parseInt(e.target.getAttribute('data-year'))),
     view: 'day',
   });
@@ -58,7 +58,7 @@ function keyDown(e, dp) {
   if (shiftBy) {
     var shiftedYear = shiftYear(dp.state.hilightedDate, shiftBy);
 
-    dp._setState({
+    dp.setState({
       hilightedDate: constrainDate(shiftedYear, opts.min, opts.max),
     });
   }

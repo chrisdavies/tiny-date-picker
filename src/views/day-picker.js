@@ -99,7 +99,7 @@ function keyDown(e, dp) {
     0;
 
   if (shiftBy) {
-    dp._setState({
+    dp.setState({
       hilightedDate: shiftDay(dp.state.hilightedDate, shiftBy)
     });
   }
@@ -118,27 +118,27 @@ function close(e, dp) {
 }
 
 function showMonthPicker(e, dp) {
-  dp._setState({
+  dp.setState({
     view: 'month'
   });
 }
 
 function showYearPicker(e, dp) {
-  dp._setState({
+  dp.setState({
     view: 'year'
   });
 }
 
 function gotoNextMonth(e, dp) {
   var hilightedDate = dp.state.hilightedDate;
-  dp._setState({
+  dp.setState({
     hilightedDate: shiftMonth(hilightedDate, 1)
   });
 }
 
 function gotoPrevMonth(e, dp) {
   var hilightedDate = dp.state.hilightedDate;
-  dp._setState({
+  dp.setState({
     hilightedDate: shiftMonth(hilightedDate, -1)
   });
 }
