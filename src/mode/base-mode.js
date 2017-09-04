@@ -32,7 +32,12 @@ export default function BaseMode(input, emit, opts) {
           return;
         }
 
-        selectedDate = dt ? new Date(dt) : dt;
+        if (dt) {
+          selectedDate = new Date(dt);
+          dp.state.hilightedDate = selectedDate;
+        } else {
+          selectedDate = dt;
+        }
 
         dp.updateInput(selectedDate);
         emit('select');
