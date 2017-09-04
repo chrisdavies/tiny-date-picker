@@ -66,6 +66,7 @@ function keyDown(e, dp) {
     0;
 
   if (shiftBy) {
+    e.preventDefault();
     dp.setState({
       hilightedDate: shiftMonth(dp.state.hilightedDate, shiftBy, true)
     });

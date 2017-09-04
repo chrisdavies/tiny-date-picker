@@ -57,6 +57,7 @@ function keyDown(e, dp) {
     0;
 
   if (shiftBy) {
+    e.preventDefault();
     var shiftedYear = shiftYear(dp.state.hilightedDate, shiftBy);
 
     dp.setState({
