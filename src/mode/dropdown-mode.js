@@ -38,7 +38,7 @@ function adjustCalX(dp, inputPos, docEl) {
   var calWidth = cal.offsetWidth;
   var calRight = inputPos.left + calWidth;
   var shouldLeftAlign = calRight < viewWidth || inputPos.right < calWidth;
-  var left = inputPos.left - (shouldLeftAlign ? 0 : calRight - viewWidth);
+  var left = inputPos.left - (shouldLeftAlign ? 0 : calRight - viewWidth) + document.body.scrollLeft;
 
   cal.style.left = left + 'px';
 }
@@ -47,12 +47,10 @@ function adjustCalY(dp, inputPos, docEl) {
   var cal = dp.el;
   var viewHeight = docEl.clientHeight;
   var calHeight = cal.offsetHeight;
-  if (dp.isAbove === undefined) {
-    var calBottom = inputPos.bottom + 8 + calHeight;
-    dp.isAbove = calBottom > viewHeight && inputPos.top > calHeight;
-  }
-
-  var top = inputPos.top + (dp.isAbove ? -calHeight - 8 : inputPos.height + 8);
+  var scrollTop = document.body.scrollTop;
+  var calBottom = inputPos.bottom + 8 + calHeight + scrollTop;
+  var isAbove = calBottom > viewHeight && inputPos.top > calHeight;
+  var top = scrollTop + inputPos.top + (isAbove ? -calHeight - 8 : inputPos.height + 8);
 
   cal.style.top = top + 'px';
 }
