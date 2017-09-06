@@ -7,13 +7,15 @@
 }
 
 body {
+  box-sizing: content-box;
   background-color: white;
   font-family: -apple-system, ".SFNSText-Regular", "San Francisco", "Roboto", "Segoe UI", "Helvetica Neue", "Lucida Grande", sans-serif;
   font-weight: 400;
   line-height: 1.45;
   color: #333;
   min-height: 100%;
-  padding-bottom: 4em;
+  padding: 800px;
+  min-width: 800px;
 }
 
 p {margin-bottom: 1.3em;}

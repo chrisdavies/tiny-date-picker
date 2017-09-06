@@ -6,6 +6,7 @@ import monthPicker from '../views/month-picker';
 import yearPicker from '../views/year-picker';
 import {bufferFn, noop} from '../lib/fns';
 import {on, CustomEvent, Key} from '../lib/dom';
+import {constrainDate} from '../lib/date-manip';
 
 var views = {
   day: dayPicker,
@@ -76,8 +77,10 @@ export default function BaseMode(input, emit, opts) {
         attachContainerEvents(dp);
       }
 
-      selectedDate = dp.computeSelectedDate();
+      selectedDate = constrainDate(dp.computeSelectedDate(), opts.min, opts.max);
       dp.state.hilightedDate = selectedDate || opts.preselectedDate;
+      dp.state.view = 'day';
+
       dp.attachToDom();
       dp.render();
 
@@ -127,6 +130,10 @@ export default function BaseMode(input, emit, opts) {
     },
 
     render: function () {
+      if (!dp.el) {
+        return;
+      }
+
       var html = dp.currentView().render(dp);
       html && (dp.el.firstChild.innerHTML = html);
 

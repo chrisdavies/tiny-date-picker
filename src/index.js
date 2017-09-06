@@ -15,8 +15,8 @@ import Emitter from './lib/emitter';
  */
 export default function TinyDatePicker(input, opts) {
   var emitter = Emitter();
-  var opts = DatePickerOptions(opts);
-  var mode = Mode(input, emit, opts);
+  var options = DatePickerOptions(opts);
+  var mode = Mode(input, emit, options);
   var me = {
     get state() {
       return mode.state;

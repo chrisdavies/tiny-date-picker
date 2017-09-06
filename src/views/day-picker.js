@@ -31,7 +31,7 @@ function render(dp) {
   var lang = opts.lang;
   var state = dp.state;
   var dayNames = lang.days;
-  var dayOffset = opts.weekStartsMonday ? 1 : 0;
+  var dayOffset = opts.dayOffset || 0;
   var selectedDate = state.selectedDate;
   var hilightedDate = state.hilightedDate;
   var hilightedMonth = hilightedDate.getMonth();
@@ -163,11 +163,12 @@ function mapDays(currentDate, dayOffset, fn) {
   // If we are showing monday as the 1st of the week,
   // and the monday is the 2nd of the month, the sunday won't
   // show, so we need to shift backwards
-  if (dayOffset && iter.getDate() === 2) {
-    iter.setDate(-5);
+  if (dayOffset && iter.getDate() === dayOffset + 1) {
+    iter.setDate(dayOffset - 6);
   }
 
-  // We are going to have 6 weeks always displayed to keep a consistent calendar size
+  // We are going to have 6 weeks always displayed to keep a consistent
+  // calendar size
   for (var day = 0; day < (6 * 7); ++day) {
     result += fn(iter);
     iter.setDate(iter.getDate() + 1);

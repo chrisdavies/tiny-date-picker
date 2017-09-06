@@ -33,21 +33,22 @@ var english = {
  */
 export default function DatePickerOptions(opts) {
   opts = opts || {};
-  opts = cp(defaults(cp(english, opts.lang)), opts);
-
+  opts = cp(defaults(), opts);
   var parse = dateOrParse(opts.parse);
+  opts.lang = cp(english, opts.lang);
   opts.parse = parse;
   opts.inRange = makeInRangeFn(opts);
   opts.min = parse(opts.min || shiftYear(now(), -100));
   opts.max = parse(opts.max || shiftYear(now(), 100));
+  opts.preselectedDate = opts.parse(opts.preselectedDate);
 
   return opts;
 }
 
-function defaults(lang) {
+function defaults() {
   return {
     // weekStartsMonday defaults to undefined / falsy
-    lang: lang,
+    lang: english,
 
     // Possible values: dp-modal, dp-below, dp-permanent
     mode: 'dp-modal',
@@ -84,9 +85,8 @@ function makeInRangeFn(opts) {
 function cp(o1, o2) {
   o2 = o2 || {};
 
-  for (var key in o1) {
-    var o2Val = o2[key];
-    o2Val !== undefined && (o1[key] = o2Val);
+  for (var key in o2) {
+    o1[key] = o2[key];
   }
 
   return o1;

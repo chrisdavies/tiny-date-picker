@@ -20,65 +20,32 @@
         <label>And another:</label>
         <input type="text" class="non-modal-txt txt-below" tabindex="401" />
       </div>
-      <div class="form-field bottom-left">
-        <label>And another:</label>
-        <input type="text" class="non-modal-txt txt-bottom-left" tabindex="401" data-max="1/5/2013" data-min="1/2/2013" />
-      </div>
-      <div class="form-field bottom-right">
-        <label>And another:</label>
-        <input type="text" class="non-modal-txt txt-bottom-right" tabindex="401" />
-      </div>
-      <div class="form-field top-left">
-        <label>And another:</label>
-        <input type="text" class="non-modal-txt txt-top-left" tabindex="401" />
-      </div>
-      <div class="form-field top-right">
-        <label>And another:</label>
-        <input type="text" class="non-modal-txt txt-top-right" tabindex="401" />
-      </div>
       <nav class="footer-links">
         <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
       </nav>
-      <div class="debug">
-      </div>
     </main>
 
     <script src="/dist/tiny-date-picker.js"></script>
     <script>
-      if (location.search === '?debug') {
-        var log = console.log;
-        console.log = function () {
-          var args = Array.prototype.slice.call(arguments).map(function (a) {
-            return JSON.stringify(a);
-          });
-
-          var pre = document.createElement('pre');
-          pre.appendChild(document.createTextNode(args.join(' ')));
-          document.querySelector('.debug').appendChild(pre);
-          log.apply(console, arguments);
-        }
-
-        window.onerror = function(messageOrEvent, source, lineno, colno, error) {
-          console.log(messageOrEvent, source, lineno, error);
-        };
-      }
-
-      TinyDatePicker(document.querySelector('.modal-txt'));
-
-      Array.prototype.slice.apply(document.querySelectorAll('.non-modal-txt'))
-        .forEach(function (el) {
-          TinyDatePicker(el, {
-            mode: 'dp-below',
-            max: el.getAttribute('data-max'),
-            min: el.getAttribute('data-min'),
-          });
+      TinyDatePicker(document.querySelector('.modal-txt'))
+        .on({
+          open () {
+            console.log('OPENED');
+          },
+          close () {
+            console.log('CLOSED');
+          },
+          select (_, dp) {
+            console.log('SELECT ', dp.selectedDate);
+          },
+          statechange (_, dp) {
+            console.log('STATE CHANGE ', dp.state);
+          }
         });
 
-      if (window.console && window.console.log) {
-        document.addEventListener('change', function (e) {
-          console.log('Changed to: ' + e.target.value);
-        });
-      }
+      TinyDatePicker(document.querySelector('.non-modal-txt'), {
+        mode: 'dp-below',
+      });
     </script>
   </body>
 </html>
