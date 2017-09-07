@@ -271,13 +271,7 @@
   .dp-modal .dp {
     font-size: 0.9em;
     width: auto;
-    top: 25%;
-    left: 50%;
     width: 100%;
-    border-radius: 2px;
-    overflow: hidden;
-    transform: translate(-50%, 0);
-    transition: transform 0.5s;
   }
 
   .dp-day-of-week,
