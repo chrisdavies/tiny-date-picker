@@ -98,7 +98,9 @@ function keyDown(e, dp) {
     (key === Key.down) ? 7 :
     0;
 
-  if (shiftBy) {
+  if (key === Key.esc) {
+    dp.close();
+  } else if (shiftBy) {
     e.preventDefault();
     dp.setState({
       hilightedDate: shiftDay(dp.state.hilightedDate, shiftBy)

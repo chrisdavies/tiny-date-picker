@@ -57,7 +57,6 @@ function render(dp) {
  */
 function keyDown(e, dp) {
   var key = e.keyCode;
-
   var shiftBy =
     (key === Key.left) ? -1 :
     (key === Key.right) ? 1 :
@@ -65,7 +64,11 @@ function keyDown(e, dp) {
     (key === Key.down) ? 3 :
     0;
 
-  if (shiftBy) {
+  if (key === Key.esc) {
+    dp.setState({
+      view: 'day',
+    });
+  } else if (shiftBy) {
     e.preventDefault();
     dp.setState({
       hilightedDate: shiftMonth(dp.state.hilightedDate, shiftBy, true)

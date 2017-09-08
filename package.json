@@ -2,7 +2,7 @@
   "name": "tiny-date-picker",
   "version": "2.4.0",
   "description": "A small, dependency-free date picker",
-  "main": "tiny-date-picker.js",
+  "main": "dist/tiny-date-picker.js",
   "scripts": {
     "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
     "start": "http-server . -c-1",

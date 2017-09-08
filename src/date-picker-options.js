@@ -30,6 +30,7 @@ var english = {
  * default values with any values specified in opts.
  *
  * @param {DatePickerOptions} opts
+ * @returns {DatePickerOptions}
  */
 export default function DatePickerOptions(opts) {
   opts = opts || {};
@@ -40,7 +41,7 @@ export default function DatePickerOptions(opts) {
   opts.inRange = makeInRangeFn(opts);
   opts.min = parse(opts.min || shiftYear(now(), -100));
   opts.max = parse(opts.max || shiftYear(now(), 100));
-  opts.preselectedDate = opts.parse(opts.preselectedDate);
+  opts.hilightedDate = opts.parse(opts.hilightedDate);
 
   return opts;
 }
@@ -55,7 +56,7 @@ function defaults() {
 
     // The date to hilight initially if the date picker has no
     // initial value.
-    preselectedDate: now(),
+    hilightedDate: now(),
 
     format: function (dt) {
       return (dt.getMonth() + 1) + '/' + dt.getDate() + '/' + dt.getFullYear();

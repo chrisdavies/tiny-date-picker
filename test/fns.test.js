@@ -39,7 +39,7 @@ describe('bufferFn', () => {
         f();
         f();
         f();
-      }, 5);
+      }, 10);
 
       setTimeout(() => {
         try {
@@ -48,7 +48,7 @@ describe('bufferFn', () => {
         } catch (err) {
           reject(err);
         }
-      }, 10);
+      }, 15);
     });
   });
 });

@@ -12,7 +12,7 @@ export default function PermanentMode(root, emit, opts) {
   dp.updateInput = noop;
 
   dp.computeSelectedDate = function () {
-    return opts.preselectedDate;
+    return opts.hilightedDate;
   };
 
   dp.attachToDom = function () {

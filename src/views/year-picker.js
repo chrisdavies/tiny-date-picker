@@ -56,7 +56,11 @@ function keyDown(e, dp) {
     (key === Key.right || key === Key.down) ? -1 :
     0;
 
-  if (shiftBy) {
+  if (key === Key.esc) {
+    dp.setState({
+      view: 'day',
+    });
+  } else if (shiftBy) {
     e.preventDefault();
     var shiftedYear = shiftYear(dp.state.hilightedDate, shiftBy);
 

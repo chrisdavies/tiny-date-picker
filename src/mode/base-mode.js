@@ -15,38 +15,16 @@ var views = {
 };
 
 export default function BaseMode(input, emit, opts) {
-  var detatchInputEvents;
+  var detatchInputEvents; // A function that detaches all events from the input
   var closing = false; // A hack to prevent calendar from re-opening when closing.
-  var selectedDate;
+  var selectedDate; // The currently selected date
   var dp = {
     // The root DOM element for the date picker, initialized on first open.
     el: undefined,
     opts: opts,
     shouldFocusOnBlur: true,
     shouldFocusOnRender: true,
-    state: {
-      get selectedDate() {
-        return selectedDate;
-      },
-      set selectedDate(dt) {
-        if (dt && !opts.inRange(dt)) {
-          return;
-        }
-
-        if (dt) {
-          selectedDate = new Date(dt);
-          dp.state.hilightedDate = selectedDate;
-        } else {
-          selectedDate = dt;
-        }
-
-        dp.updateInput(selectedDate);
-        emit('select');
-        dp.close();
-      },
-      view: 'day',
-      hilightedDate: undefined,
-    },
+    state: initialState(),
     adjustPosition: noop,
     containerHTML: '<div class="dp"></div>',
 
@@ -78,7 +56,7 @@ export default function BaseMode(input, emit, opts) {
       }
 
       selectedDate = constrainDate(dp.computeSelectedDate(), opts.min, opts.max);
-      dp.state.hilightedDate = selectedDate || opts.preselectedDate;
+      dp.state.hilightedDate = selectedDate || opts.hilightedDate;
       dp.state.view = 'day';
 
       dp.attachToDom();
@@ -117,6 +95,9 @@ export default function BaseMode(input, emit, opts) {
         focusInput(input);
       }
 
+      // When we close, the input often gains refocus, which
+      // can then launch the date picker again, so we buffer
+      // a bit and don't show the date picker within N ms of closing
       setTimeout(function() {
         closing = false;
       }, 100);
@@ -145,6 +126,8 @@ export default function BaseMode(input, emit, opts) {
       }
     },
 
+    // Conceptually similar to setState in React, updates
+    // the view state and re-renders.
     setState: function (state) {
       for (var key in state) {
         dp.state[key] = state[key];
@@ -156,6 +139,35 @@ export default function BaseMode(input, emit, opts) {
   };
 
   detatchInputEvents = attachInputEvents(input, dp);
+
+  // Builds the initial view state
+  // selectedDate is a special case and causes changes to hilightedDate
+  // hilightedDate is set on open, so remains undefined initially
+  // view is the current view (day, month, year)
+  function initialState() {
+    return {
+      get selectedDate() {
+        return selectedDate;
+      },
+      set selectedDate(dt) {
+        if (dt && !opts.inRange(dt)) {
+          return;
+        }
+
+        if (dt) {
+          selectedDate = new Date(dt);
+          dp.state.hilightedDate = selectedDate;
+        } else {
+          selectedDate = dt;
+        }
+
+        dp.updateInput(selectedDate);
+        emit('select');
+        dp.close();
+      },
+      view: 'day',
+    };
+  }
 
   return dp;
 }
@@ -210,15 +222,22 @@ function attachInputEvents(input, dp) {
 }
 
 function attachContainerEvents(dp) {
+  var el = dp.el;
+  var calEl = el.querySelector('.dp');
+
+  function onClick(e) {
+    e.target.className.split(' ').forEach(function(evt) {
+      var handler = dp.currentView().onClick[evt];
+      handler && handler(e, dp);
+    });
+  }
+
   // The calender fires a blur event *every* time we redraw
   // this means we need to buffer the blur event to see if
   // it still has no focus after redrawing, and only then
   // do we return focus to the input. A possible other approach
   // would be to set context.redrawing = true on redraw and
   // set it to false in the blur event.
-  var el = dp.el;
-  var calEl = el.querySelector('.dp');
-
   on('blur', calEl, bufferFn(10, function () {
     if (!calEl.contains(document.activeElement)) {
       dp.close(true);
@@ -234,13 +253,6 @@ function attachContainerEvents(dp) {
   });
 
   on('click', el, onClick);
-
-  function onClick(e) {
-    e.target.className.split(' ').forEach(function(evt) {
-      var handler = dp.currentView().onClick[evt];
-      handler && handler(e, dp);
-    });
-  }
 }
 
 function focusInput(input) {
