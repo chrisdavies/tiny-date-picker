@@ -40,7 +40,8 @@ TinyDatePicker(document.querySelector('input'), {
 
 ## DatePicker object
 
-The DatePicker context is returned by the `TinyDatePicker`.
+The DatePicker context is returned by from the `TinyDatePicker` function, and can be used to
+manipulate the date picker as documented below:
 
 ```javascript
 // Initialize a date picker on the specified input element
@@ -84,7 +85,7 @@ dp.destroy()
 
 ## Options
 
-TinyDatePicker can be configured by passing it an options object as its second argument.
+TinyDatePicker can be configured by passing it a second argument:
 
 ```javascript
 
@@ -167,9 +168,9 @@ TinyDatePicker('input', {
 ## Events
 
 The input to which the date picker is attached will fire its `change` event
-any time the date value chanegs.
+any time the date value changes.
 
-The DatePicker object has an `on` and `off` method which allows you to register for various events.
+The DatePicker object has an `on` and `off` method which allows you to register and unregister various event handlers.
 
 - open: Fired when the date picker opens / is shown
 - close: Fired when the date picker closes / is hidden
