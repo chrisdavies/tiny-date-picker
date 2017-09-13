@@ -6,55 +6,53 @@
     <meta name="author" content="Chris Davies - http://chrisdavies.github.io/">
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="A tiny, responsive, modern, zero-dependency date picker">
-    <link rel="stylesheet" href="./tiny-date-picker.css">
+    <link rel="stylesheet" href="./dist/tiny-date-picker.css">
     <link rel="stylesheet" href="./demo/demo.css">
   </head>
   <body>
     <main>
-      <h1>Tiny Date Picker</h1>
-      <div class="form-field">
-        <label>Pick a date:</label>
-        <input type="text" class="date-example" tabindex="400" />
-      </div>
-      <div class="form-field">
-        <label>And another:</label>
-        <input type="text" class="date-example is-below" tabindex="401" />
-      </div>
-      <nav class="footer-links">
-        <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
-      </nav>
-      <div class="debug">
+      <header class="page-header">
+        <h1 class="page-title">Tiny Date Picker</h1>
+        <nav class="nav-links">
+          <a href="https://github.com/chrisdavies/tiny-date-picker">Get it at GitHub</a>
+        </nav>
+      </header>
+      <div class="demo-content">
+        <div class="form-group">
+          <div class="form-field">
+            <label class="form-field-label">Example Modal</label>
+            <input type="text" class="date-example" tabindex="400" />
+          </div>
+          <div class="form-field">
+            <label class="form-field-label">Example Below</label>
+            <input type="text" class="date-example is-below" tabindex="401" />
+          </div>
+          <div class="form-field">
+            To play around with the date pickers, open up your browser's developer console and play with
+            <span class="code-sample">dpModal</span>,
+            <span class="code-sample">dpBelow</span>,
+            or <span class="code-sample">dpPermanent</span>.
+            For example, try running <span class="code-sample">dpBelow.open()</span> and see what happens.
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-field-label">This shows a permanent calendar</label>
+          <div class="permanent-cal-container"></div>
+        </div>
       </div>
     </main>
 
-    <script src="./tiny-date-picker.js"></script>
+    <script src="./dist/tiny-date-picker.min.js"></script>
     <script>
-      if (location.search === '?debug') {
-        var log = console.log;
-        console.log = function () {
-          var args = Array.prototype.slice.call(arguments).map(function (a) {
-            return JSON.stringify(a);
-          });
+      var dpModal = TinyDatePicker('.date-example');
 
-          var pre = document.createElement('pre');
-          pre.appendChild(document.createTextNode(args.join(' ')));
-          document.querySelector('.debug').appendChild(pre);
-          log.apply(console, arguments);
-        }
+      var dpBelow = TinyDatePicker('.is-below', {
+        mode: 'dp-below',
+      });
 
-        window.onerror = function(messageOrEvent, source, lineno, colno, error) {
-          console.log(messageOrEvent, source, lineno, error);
-        };
-      }
-
-      TinyDatePicker(document.querySelector('.date-example'));
-      TinyDatePicker(document.querySelector('.is-below'), {mode: 'dp-below'});
-
-      if (window.console && window.console.log) {
-        document.addEventListener('change', function (e) {
-          console.log('Changed to: ' + e.target.value);
-        });
-      }
+      var dpPermanent = TinyDatePicker('.permanent-cal-container', {
+        mode: 'dp-permanent',
+      });
     </script>
   </body>
 </html>

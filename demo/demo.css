@@ -42,18 +42,28 @@ a {
 main {
   display: block;
   position: relative;
-  width: 400px;
+  max-width: 1024px;
   margin: auto;
-  padding: 5em 2em;
+  padding: 40px;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
 .form-field {
-  margin-bottom: 1.4em;
+  margin-bottom: 24px;
+}
+
+.form-field-label {
+  display: block;
+  margin-bottom: 4px;
 }
 
 .date-example {
   width: 100%;
-  padding: 0.5em;
+  padding: 8px;
   border: 2px solid #DDD;
   border-radius: 4px;
 }
@@ -62,6 +72,33 @@ main {
   border: 2px solid #0078CF;
 }
 
-.footer-links {
+.demo-content {
   text-align: center;
+}
+
+.form-group {
+  text-align: left;
+  display: inline-block;
+  vertical-align: top;
+  max-width: 400px;
+  margin: 0 24px;
+}
+
+.code-sample {
+  display: inline-block;
+  font-family: monospace;
+  background: #f5f5f5;
+  padding: 4px;
+  border: 1px solid #EEE;
+}
+
+@media (max-width: 480px), (max-height: 480px) {
+  main {
+    padding: 8px;
+  }
+
+  .form-group {
+    width: 100%;
+    max-width: 480px;
+  }
 }
