@@ -3,9 +3,10 @@
 A light-weight date picker with zero dependencies.
 
 - Zero dependencies
-- Roughly 3KB minified and gzipped
+- Roughly 3.5KB minified and gzipped
 - IE9+
 - Mobile-friendly/responsive
+- Supports multiple languages
 
 [See the demo...](http://chrisdavies.github.io/tiny-date-picker/)
 
@@ -13,7 +14,6 @@ A light-weight date picker with zero dependencies.
 ## Installation
 
     npm install --save tiny-date-picker
-
 
 ## Usage
 
@@ -23,7 +23,7 @@ Include a reference to `tiny-date-picker.css` and `tiny-date-picker.js`, then ca
 // Initialize a date picker on the specified input element
 TinyDatePicker(document.querySelector('input'));
 
-// Or with a selector
+// Or with a CSS selector
 TinyDatePicker('.some-class-or-id-or-whatever');
 ```
 
@@ -32,145 +32,187 @@ You can also pass in options as an optional second argument:
 ```javascript
 // Initialize a date picker using truncated month names
 TinyDatePicker(document.querySelector('input'), {
-  months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  lang: {
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  },
 });
 ```
 
-The input to which the date picker is attached will fire its `change` event
-any time the date value chanegs.
+## DatePicker object
 
-The DatePicker context is returned by the `TinyDatePicker`. See below for further details.
+The DatePicker context is returned by the `TinyDatePicker`.
 
 ```javascript
 // Initialize a date picker on the specified input element
-const dp = TinyDatePicker(document.querySelector('input'));
+const dp = TinyDatePicker('input');
 
 // Show the date picker
 dp.open();
-```
 
+// Hide the date picker (does nothing if the date picker is in permanent mode)
+dp.close();
+
+// Get the current view of the date picker. Possible values are:
+// - 'day': The calendar is showing the day picker (the default)
+// - 'month': The calendar is showing the month picker
+// - 'year': The calendar is showing the year picker
+dp.state.view;
+
+// Get the currently selected date (can be null)
+dp.state.selectedDate;
+
+// Get the currently hilighted date (should not be null)
+dp.state.hilightedDate;
+
+// Add an event handler
+dp.on('statechange', (_, picker) => console.log(picker.state));
+
+// Remove all event handlers (see the Events section for more information)
+dp.off();
+
+// Update the date picker's state and redraw as necessary.
+// This example causes the date picker to show the month-picker view.
+// You can use setStsate to change the selectedDate or hilightedDate as well.
+dp.setState({
+  view: 'month',
+});
+
+// Close the date picker and remove all event handlers from the input
+dp.destroy()
+
+```
 
 ## Options
 
-Below is an example of all option parameters:
+TinyDatePicker can be configured by passing it an options object as its second argument.
 
 ```javascript
 
-TinyDatePicker(document.querySelector('input'), {
-  // Used to convert a date into a string to be used as the value of input. If you specify format,
-  // you must also specify parse. Parse and format are complimentary. Format converts a date to a
-  // string, and parse converts a string to a date.
-  format: function (date) {
+TinyDatePicker('input', {
+  // Lang can be used to customize the text that is displayed
+  // in the calendar. You can use this to display a different language.
+  lang: {
+    days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    months: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+    today: 'Today',
+    clear: 'Clear',
+    close: 'Close',
+  },
+
+  // format {Date} -> string is a function which takes a date and returns a string. It can be used to customize
+  // the way a date will look in the input after the user has selected it, and is particularly
+  // useful if you're targeting a non-US customer.
+  format(date) {
     return date.toLocaleDateString();
   },
 
-  // Used to parse a date string and return a date (e.g. parsing the input value)
-  // The value of str can be undefined / null, so you need to handle this case.
-  parse: function (str) {
+  // parse {string|Date} -> Date is the inverse of format. If you specify one, you probably should specify the other
+  // the default parse function handles whatever the new Date constructor handles. Note that
+  // parse may be passed either a string or a date.
+  parse(str) {
     var date = new Date(str);
     return isNaN(date) ? new Date() : date;
   },
 
-  // Names of months, in order
-  months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  // mode {'dp-modal'|'dp-below'|'dp-permanent'} specifies the way the date picker should display:
+  // 'dp-modal' displays the picker as a modal
+  // 'dp-below' displays the date picker as a dropdown
+  // 'dp-permanent' displays the date picker as a permanent (always showing) calendar
+  mode: 'dp-modal',
 
-  // Names of days of week, in order
-  days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  // hilightedDate specifies what date to hilight when the date picker is displayed and the
+  // associated input has no value.
+  hilightedDate: new Date(),
 
-  // The text for the button used to set the date to today's date
-  today: 'Today',
-
-  // The text for the button used to clear the input value
-  clear: 'Clear',
-
-  // The text for the button used to close the form
-  close: 'Close',
-
-  // Specifies the minimum date that can be selected
+  // min {string|Date} specifies the minimum date that can be selected (inclusive).
+  // All earlier dates will be disabled.
   min: '10/1/2016',
 
-  // Specifies the maximum date that can be selected
-  max: '10/22/2016',
+  // max {string|Date} specifies the maximum date that can be selected (inclusive).
+  // All later dates will be disabled.
+  max: '10/1/2020',
 
-  // Place datepicker selector on this date if field is still empty
-  preselectedDate: '10/20/2016',
-
-  // There are three modes: dp-modal (the default), dp-permanent and dp-below.
-  // dp-modal makes the date picker show up as a modal.
-  // dp-below makes it show up beneath its input element.
-  // dp-permanent displays the calendar permanently with no input needed
-  mode: 'dp-below',
-
-  // Whether to use Monday as start of the week
-  weekStartsMonday: false,
-
-  // A function which is called any time the date picker opens
-  onOpen: function (context) {
-    // context is the datepicker context, detailed below
+  // inRange {Date} -> boolean takes a date and returns true or false. If false, the date
+  // will be disabled in the date picker.
+  inRange(dt) {
+    return dt.getFullYear() % 2 > 0;
   },
 
-  // A function which is called any time the year is selected
-  // in the year menu
-  onSelectYear: function (context) {
-    // context is the datepicker context, detailed below
+  // dateClass {Date} -> string takes a date and returns a CSS class name to be associated
+  // with that date in the date picker.
+  dateClass(dt) {
+    return dt.getFullYear() % 2 ? 'odd-date' : 'even-date';
   },
 
-  // A function which is called any time the month is selected
-  // in the month menu
-  onSelectMonth: function (context) {
-    // context is the datepicker context, detailed below
-  },
+  // dayOffset {number} specifies which day of the week is considered the first. By default,
+  // this is 0 (Sunday). Set it to 1 for Monday, 2 for Tuesday, etc.
+  dayOffset: 1
+})
 
-  // A function which is called when the date changes, before the modal closes
-  // and before the input's value is updated.
-  onChangeDate: function (context) {
-    // context is the datepicker context, detailed below
-  },
-
-  // A function which is called any time the calendar UI navigates to a different
-  // date. This does not mean the user has selected a date, but simply navigated in the UI.
-  onNavigate: function(context){
-    // context is the datepicker context, detailed below
-  },
-
-  // Customizes what CSS class is associated with a particular date.
-  dateClass: function (dt, context) {
-    // dt is the date
-    // context is the datepicker context
-  },
-
-  // Sometimes, min and max aren't enough, and you need to
-  // disable other days. You can specify the inRange function
-  // which should return a truthy value if the date dt should be
-  // enabled and falsy if it should be disabled.
-  // For example, to disable weekends:
-  // inRange(d) { return (d.getDay() % 6); }
-  inRange: function (dt, context) {
-
-  }
-});
 ```
 
-## Context
+## Events
 
-The `onOpen`, `onSelectYear`, and `onSelectMonth` event handlers receive the date picker context object. This has many properties and methods, the most useful of which are as follows:
+The input to which the date picker is attached will fire its `change` event
+any time the date value chanegs.
 
-### Properties
+The DatePicker object has an `on` and `off` method which allows you to register for various events.
 
-- currentDate: the currently selected date (a Date object)
-- input: the input element to which the date picker is bound
+- open: Fired when the date picker opens / is shown
+- close: Fired when the date picker closes / is hidden
+- statechange: Fired when the date picker's state changes (view changes, hilighted date changes, selected date changes)
+- select: Fired when hte date picker's selected date changes (e.g. when the user picks a date)
 
-### Methods
+The event handler is passed two arguments: the name of the event, and the date picker object.
 
-- open(): opens the modal
-- close(): closes the modal
-- openYears(): shows the modal with the years menu showing
-- openMonths(): shows the modal with the months menu showing
-- setValue(date): sets the date as a string value
-- addMonths(numMonths): Moves the calendar UI forward/backward by `numMonths`
-- addYears(numYears): Moves the calendar UI forward/backward by `numYears`
-- goToDate(date): Moves the calendar UI to the specified date
-- destroy(): destroys the date picker and unregisters all events from the input
+```js
+// Log the selected date any time it changes
+TinyDatePicker('.my-input')
+  .on('select', (_, dp) => console.log(dp.state.selectedDate))
+  .on('close', () => console.log('CLOSED!!!'));
+
+// You can also register for multiple events at once without chaining the on method:
+TinyDatePicker('.my-input')
+  .on({
+    select: (_, dp) => console.log(dp.state.selectedDate),
+    close: () => console.log('CLOSED!!!')
+  });
+```
+
+To remove an event handler, you call the date picker's `off` method.
+
+```js
+const dp = TinyDatePicker('.example');
+
+function onOpen() {
+  console.log('OPENED!!!');
+}
+
+dp.on('open', onOpen);
+
+// Remove this specific open event handler
+dp.off('open', onOpen);
+
+// Remove all handlers of the open event
+dp.off('open');
+
+// Remove all handlers of any event
+dp.off();
+
+```
 
 ## Style
 
@@ -179,11 +221,9 @@ in `tiny-date-picker.css` have been kept as unspecific as possible so they can b
 
 For more info, launch a date picker and use the browser dev tools to inspect its structure and shape.
 
-
 ## Aria
 
 There is currently no Aria support baked into Tiny Date Picker, but it is planned.
-
 
 ## Bundling
 
@@ -192,7 +232,7 @@ This library is [CommonJS](http://www.commonjs.org/) compatible, so you can use 
 ```javascript
 var TinyDatePicker = require('tiny-date-picker'),
 
-TinyDatePicker(document.querySelector('input'));
+TinyDatePicker('.my-input');
 ```
 
 Or, with ES6:
@@ -200,20 +240,28 @@ Or, with ES6:
 ```javascript
 import TinyDatePicker from 'tiny-date-picker',
 
-TinyDatePicker(document.querySelector('input'));
+TinyDatePicker('.my-input');
 ```
+
+## Version 2.x
+
+If you're using version 2.x, the docs are [here](https://github.com/chrisdavies/tiny-date-picker/tree/dev/v2).
 
 
 ## Contributing
 
-First, you'll need to have selenium installed and running, as detailed [here](http://webdriver.io/guide/getstarted/install.html) and you'll need to serve the test HTML page by running `npm start`.
+TinyDatePicker supports IE9+, and does so without need for a transpiler (Babel or TypeScript). So when
+contributing, be sure to write plain old vanilla ES3.
 
-    npm test
+Make sure all tests are passing:
+
+- Put the [Chrome webdriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) somewhere in your path.
+- Run `npm start`
+- In a new terminal tab/window, run `npm test`
 
 If all is well, build your changes:
 
     npm run min
-
 
 ## License MIT
 

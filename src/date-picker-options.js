@@ -48,7 +48,6 @@ export default function DatePickerOptions(opts) {
 
 function defaults() {
   return {
-    // weekStartsMonday defaults to undefined / falsy
     lang: english,
 
     // Possible values: dp-modal, dp-below, dp-permanent

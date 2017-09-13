@@ -181,7 +181,6 @@ function DatePickerOptions(opts) {
 
 function defaults() {
   return {
-    // weekStartsMonday defaults to undefined / falsy
     lang: english,
 
     // Possible values: dp-modal, dp-below, dp-permanent
@@ -998,6 +997,8 @@ function PermanentMode(root, emit, opts) {
  */
 
 function Mode(input, emit, opts) {
+  input = input && input.tagName ? input : document.querySelector(input);
+
   if (opts.mode === 'dp-modal') {
     return ModalMode(input, emit, opts);
   }

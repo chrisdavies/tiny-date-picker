@@ -88,7 +88,7 @@ describe('browser', () => {
     it('should change the date when a date is clicked', async () => {
       await driver.executeScript(`
         document.write('<input class="my-modal" value="4/5/2006" />');
-        TinyDatePicker(document.querySelector('.my-modal'));
+        TinyDatePicker('.my-modal');
       `);
       const el = await driver.findElement(By.css('.my-modal')).click();
       await driver.findElement(By.linkText('8')).click();

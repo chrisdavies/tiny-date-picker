@@ -130,7 +130,7 @@
 
     <script src="/dist/tiny-date-picker.js"></script>
     <script>
-      TinyDatePicker(document.querySelector('.modal-txt'))
+      TinyDatePicker('.modal-txt')
         .on({
           open () {
             console.log('OPENED');
@@ -139,14 +139,14 @@
             console.log('CLOSED');
           },
           select (_, dp) {
-            console.log('SELECT ', dp.selectedDate);
+            console.log('SELECT ', _, dp.state.selectedDate);
           },
           statechange (_, dp) {
             console.log('STATE CHANGE ', dp.state);
           }
         });
 
-      TinyDatePicker(document.querySelector('.non-modal-txt'), {
+      TinyDatePicker('.non-modal-txt', {
         mode: 'dp-below',
       });
     </script>
