@@ -30,6 +30,16 @@
   background: linear-gradient(-90deg, #3B99FC 0%, #8AEFC8 100%);
 }
 
+.dp-permanent .dp {
+  padding-top: 0;
+  border: 1px solid #EEE;
+  box-shadow: none;
+}
+
+.dp-permanent .dp:before {
+  display: none;
+}
+
 .dp-cal {
   min-height: 300px;
 }
@@ -89,7 +99,8 @@
 .dp-cal-header {
   position: relative;
   text-align: center;
-  margin-bottom: 16px;
+  padding-bottom: 16px;
+  background: #f5f5f5;
 }
 
 .dp-next,
@@ -98,9 +109,9 @@
   width: 30px;
   height: 30px;
   overflow: hidden;
-  top: 8px;
+  top: 14px;
   color: #777;
-  transition: color 0.2s;
+  border-radius: 2px;
 }
 
 .dp-next:focus,
@@ -128,7 +139,7 @@
   display: inline-block;
   transform: rotate(-45deg);
   transition: border-color 0.2s;
-  margin: 16px 0 40px;
+  margin: 9px 0 40px 4px;
 }
 
 .dp-prev:before {
@@ -139,6 +150,8 @@
 .dp-next:before {
   border-left: 0;
   border-top: 0;
+  margin-left: 0;
+  margin-right: 4px;
 }
 
 .dp-cal-month,
@@ -151,6 +164,7 @@
 
 .dp-cal-footer {
   text-align: center;
+  background: #f5f5f5;
 }
 
 .dp-day-today:after {
@@ -181,15 +195,16 @@
   display: none;
 }
 
-
-
-
 .dp-close:hover,
 .dp-close:focus,
 .dp-clear:hover,
 .dp-clear:focus,
 .dp-today:hover,
 .dp-today:focus,
+.dp-next:hover,
+.dp-next:focus,
+.dp-prev:hover,
+.dp-prev:focus,
 .dp-cal-month:focus,
 .dp-cal-month:hover,
 .dp-cal-year:hover,
