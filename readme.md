@@ -248,6 +248,7 @@ TinyDatePicker('.my-input');
 
 If you're using version 2.x, the docs are [here](https://github.com/chrisdavies/tiny-date-picker/tree/dev/v2).
 
+Migration to 3.x is documented [here](https://github.com/chrisdavies/tiny-date-picker/wiki/Changes-from-2.0-to-3.0).
 
 ## Contributing
 
