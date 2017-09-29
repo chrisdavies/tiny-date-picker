@@ -33,8 +33,10 @@ export default function BaseMode(input, emit, opts) {
     },
 
     updateInput: function (selectedDate) {
+      var e = new CustomEvent('change', {bubbles: true});
+      e.simulated = true;
       input.value = selectedDate ? opts.format(selectedDate) : '';
-      input.dispatchEvent(new CustomEvent('change', {bubbles: true}));
+      input.dispatchEvent(e);
     },
 
     computeSelectedDate: function () {

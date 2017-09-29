@@ -4,7 +4,7 @@
     "tiny-date-picker.min.css",
     "tiny-date-picker.min.js"
   ],
-  "version": "3.0.0",
+  "version": "3.0.1",
   "homepage": "https://github.com/chrisdavies/tiny-date-picker",
   "authors": [
     "Chris Davies <ferociousturtle@gmail.com>"
