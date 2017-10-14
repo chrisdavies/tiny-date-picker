@@ -64,8 +64,8 @@ dp.off();
 // This example causes the date picker to select the specified start date
 // and end date.
 dp.setState({
-  start: new Date("10/12/2017),
-  start: new Date("10/14/2017),
+  start: new Date('10/12/2017'),
+  start: new Date('10/14/2017'),
 });
 
 ```
