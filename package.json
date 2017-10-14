@@ -1,17 +1,22 @@
 {
   "name": "tiny-date-picker",
-  "version": "3.0.2",
+  "version": "3.1.2",
   "description": "A small, dependency-free date picker",
   "main": "dist/tiny-date-picker.js",
   "scripts": {
-    "start": "concurrently \"npm run build -- --watch\" \"npm run serve\"",
+    "start": "concurrently \"npm run build:watch\" \"npm run serve\"",
     "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
     "serve": "http-server . -c-1 -p 8080",
     "test": "jest",
-    "build": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
-    "min": "concurrently \"npm run mincss\" \"npm run minjs\"",
-    "mincss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
-    "minjs": "uglifyjs dist/tiny-date-picker.js --source-map dist/tiny-date-picker.min.js.map -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c"
+    "build": "concurrently \"npm run build:dr\" \"npm run build:dp\"",
+    "build:watch": "concurrently \"npm run build:dr -- --watch\" \"npm run build:dp -- --watch\"",
+    "build:dr": "rollup src/date-range-picker.js --output.format umd --name DateRangePicker --output.file dist/date-range-picker.js",
+    "build:dp": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
+    "min": "concurrently \"npm run min:dpcss\" \"npm run min:dpjs\" \"npm run min:rpcss\" \"npm run min:rpjs\"",
+    "min:dpcss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
+    "min:dpjs": "uglifyjs dist/tiny-date-picker.js --source-map dist/tiny-date-picker.min.js.map -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c",
+    "min:rpcss": "uglifycss date-range-picker.css > date-range-picker.min.css && echo 'Minified CSS:' && cat date-range-picker.min.css | gzip -9f | wc -c",
+    "min:rpjs": "uglifyjs dist/date-range-picker.js --source-map dist/date-range-picker.min.js.map -m -c -o dist/date-range-picker.min.js && echo 'Minified JS:' && cat dist/date-range-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
     "type": "git",

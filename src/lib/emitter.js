@@ -27,6 +27,8 @@ export default function Emitter() {
       } else {
         onMany(name);
       }
+
+      return this;
     },
 
     emit: function (name, arg) {
@@ -45,6 +47,8 @@ export default function Emitter() {
           return h !== handler;
         });
       }
+
+      return this;
     }
   };
 }

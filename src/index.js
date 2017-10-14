@@ -32,10 +32,19 @@ import Emitter from './lib/emitter';
 */
 
 /**
+* The state values for the date picker
+*
+* @typedef {Object} DatePickerState
+* @property {string} view - The current view 'day' | 'month' | 'year'
+* @property {Date} selectedDate - The date which has been selected by the user
+* @property {Date} hilightedDate - The date which is currently hilighted / active
+*/
+
+/**
 * An instance of TinyDatePicker
 *
 * @typedef {Object} DatePicker
-* @property {string} state - The values currently displayed.
+* @property {DatePickerState} state - The values currently displayed.
 * @property {function} on - Adds an event handler
 * @property {function} off - Removes an event handler
 * @property {function} setState - Changes the current state of the date picker
@@ -47,7 +56,7 @@ import Emitter from './lib/emitter';
 /**
  * TinyDatePicker constructs a new date picker for the specified input
  *
- * @param {HTMLElement} input The input associated with the datepicker
+ * @param {HTMLElement | string} input The input or CSS selector associated with the datepicker
  * @param {DatePickerOptions} opts The options for initializing the date picker
  * @returns {DatePicker}
  */
