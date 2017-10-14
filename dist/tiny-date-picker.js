@@ -748,9 +748,8 @@ function BaseMode(input, emit, opts) {
 
       dp.adjustPosition();
 
-      var current = dp.el.querySelector('.dp-current');
       if (dp.shouldFocusOnRender) {
-        return current && current.focus();
+        focusCurrent(dp);
       }
     },
 
@@ -849,6 +848,11 @@ function attachInputEvents(input, dp) {
   };
 }
 
+function focusCurrent(dp) {
+  var current = dp.el.querySelector('.dp-current');
+  return current && current.focus();
+}
+
 function attachContainerEvents(dp) {
   var el = dp.el;
   var calEl = el.querySelector('.dp');
@@ -877,6 +881,13 @@ function attachContainerEvents(dp) {
       onClick(e);
     } else {
       dp.currentView().onKeyDown(e, dp);
+    }
+  });
+
+  on('mousedown', calEl, function (e) {
+    if (document.activeElement !== e.target) {
+      e.preventDefault();
+      focusCurrent(dp);
     }
   });
 
