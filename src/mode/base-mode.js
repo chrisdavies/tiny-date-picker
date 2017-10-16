@@ -117,12 +117,13 @@ export default function BaseMode(input, emit, opts) {
         return;
       }
 
+      var hadFocus = dp.hasFocus();
       var html = dp.currentView().render(dp);
       html && (dp.el.firstChild.innerHTML = html);
 
       dp.adjustPosition();
 
-      if (dp.shouldFocusOnRender) {
+      if (hadFocus || dp.shouldFocusOnRender) {
         focusCurrent(dp);
       }
     },

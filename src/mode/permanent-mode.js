@@ -10,6 +10,7 @@ export default function PermanentMode(root, emit, opts) {
   dp.close = noop;
   dp.destroy = noop;
   dp.updateInput = noop;
+  dp.shouldFocusOnRender = false;
 
   dp.computeSelectedDate = function () {
     return opts.hilightedDate;
