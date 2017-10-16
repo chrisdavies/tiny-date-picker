@@ -9,7 +9,7 @@ extended with time, and possibly break.
 - Mobile-friendly/responsive
 - Supports multiple languages
 
-[See the demo...](http://chrisdavies.github.io/tiny-date-picker/date-range.html)
+[See the demo...](http://chrisdavies.github.io/tiny-date-picker)
 
 ## Installation
 

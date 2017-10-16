@@ -8,7 +8,6 @@ A light-weight date picker with zero dependencies.
 - Mobile-friendly/responsive
 - Supports multiple languages
 - [TinyDatePicker demo](http://chrisdavies.github.io/tiny-date-picker/)
-- [DateRangePicker demo](http://chrisdavies.github.io/tiny-date-picker/date-range.html)
 
 ## Installation
 
