@@ -1,4 +1,3 @@
-
 .dr-cals {
   display: flex;
   justify-content: space-between;
@@ -37,10 +36,10 @@
   max-width: 300px;
 }
 
-.dp-selected:focus,
-.dp-selected,
-.dp-current:focus,
-.dp-current {
+.dr-cals .dp-selected:focus,
+.dr-cals .dp-selected,
+.dr-cals .dp-current:focus,
+.dr-cals .dp-current {
   background: transparent;
   color: inherit;
   border-radius: 0;
@@ -50,27 +49,23 @@
   border-left: 8px solid #F5F5F5;
 }
 
-.dr-cal-end {
-
-}
-
 .dr-cal-start .dp-next,
 .dr-cal-end .dp-prev {
   visibility: hidden;
 }
 
-.dp-current:hover,
-.dr-in-range:hover,
-.dr-in-range:focus,
-.dr-in-range {
+.dr-cals .dp-current:hover,
+.dr-cals .dr-in-range:hover,
+.dr-cals .dr-in-range:focus,
+.dr-cals .dr-in-range {
   background: #75BCFC;
   color: white;
   border-radius: 0;
 }
 
-.dr-selected:hover,
-.dr-selected:focus,
-.dr-selected {
+.dr-cals .dr-selected:hover,
+.dr-cals .dr-selected:focus,
+.dr-cals .dr-selected {
   background: #3B99FC;
   color: white;
   border-radius: 0;
