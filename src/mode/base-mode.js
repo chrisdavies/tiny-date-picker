@@ -259,7 +259,11 @@ function attachContainerEvents(dp) {
     }
   });
 
+  // If the user clicks in non-focusable space, but
+  // still within the date picker, we don't want to
+  // hide, so we need to hack some things...
   on('mousedown', calEl, function (e) {
+    e.target.focus(); // IE hack
     if (document.activeElement !== e.target) {
       e.preventDefault();
       focusCurrent(dp);

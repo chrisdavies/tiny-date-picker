@@ -132,16 +132,16 @@
     <script>
       TinyDatePicker('.modal-txt')
         .on({
-          open () {
+          open: function () {
             console.log('OPENED');
           },
-          close () {
+          close: function () {
             console.log('CLOSED');
           },
-          select (_, dp) {
+          select: function (_, dp) {
             console.log('SELECT ', _, dp.state.selectedDate);
           },
-          statechange (_, dp) {
+          statechange: function (_, dp) {
             console.log('STATE CHANGE ', dp.state);
           }
         });
