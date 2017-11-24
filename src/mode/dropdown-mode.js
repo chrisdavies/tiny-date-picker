@@ -24,7 +24,7 @@ export default function DropdownMode(input, emit, opts) {
 
 function autoPosition(input, dp) {
   var inputPos = input.getBoundingClientRect();
-  var docEl = document.documentElement;
+  var docEl = document.body.scrollTop !== 0 ? document.body : document.documentElement;
 
   adjustCalY(dp, inputPos, docEl);
   adjustCalX(dp, inputPos, docEl);
