@@ -24,35 +24,35 @@ export default function DropdownMode(input, emit, opts) {
 
 function autoPosition(input, dp) {
   var inputPos = input.getBoundingClientRect();
-  var docEl = document.documentElement;
+  var win = window;
 
-  adjustCalY(dp, inputPos, docEl);
-  adjustCalX(dp, inputPos, docEl);
+  adjustCalY(dp, inputPos, win);
+  adjustCalX(dp, inputPos, win);
 
   dp.el.style.visibility = '';
 }
 
-function adjustCalX(dp, inputPos, docEl) {
+function adjustCalX(dp, inputPos, win) {
   var cal = dp.el;
-  var scrollLeft = docEl.scrollLeft;
+  var scrollLeft = win.scrollX;
   var inputLeft = inputPos.left + scrollLeft;
-  var maxRight = docEl.clientWidth + scrollLeft;
+  var maxRight = win.innerWidth + scrollLeft;
   var offsetWidth = cal.offsetWidth;
   var calRight = inputLeft + offsetWidth;
-  var shiftedLeft = maxRight - offsetWidth;;
+  var shiftedLeft = maxRight - offsetWidth;
   var left = calRight > maxRight && shiftedLeft > 0 ? shiftedLeft : inputLeft;
 
   cal.style.left = left + 'px';
 }
 
-function adjustCalY(dp, inputPos, docEl) {
+function adjustCalY(dp, inputPos, win) {
   var cal = dp.el;
-  var scrollTop = docEl.scrollTop;
+  var scrollTop = win.scrollY;
   var inputTop = scrollTop + inputPos.top;
   var calHeight = cal.offsetHeight;
   var belowTop = inputTop + inputPos.height + 8;
   var aboveTop = inputTop - calHeight - 8;
-  var top = (aboveTop > 0 && belowTop + calHeight > scrollTop + docEl.clientHeight) ? aboveTop : belowTop;
+  var top = (aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight) ? aboveTop : belowTop;
 
   cal.style.top = top + 'px';
 }
