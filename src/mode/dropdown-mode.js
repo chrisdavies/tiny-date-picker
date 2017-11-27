@@ -34,7 +34,7 @@ function autoPosition(input, dp) {
 
 function adjustCalX(dp, inputPos, win) {
   var cal = dp.el;
-  var scrollLeft = win.scrollX;
+  var scrollLeft = win.pageXOffset;
   var inputLeft = inputPos.left + scrollLeft;
   var maxRight = win.innerWidth + scrollLeft;
   var offsetWidth = cal.offsetWidth;
@@ -47,7 +47,7 @@ function adjustCalX(dp, inputPos, win) {
 
 function adjustCalY(dp, inputPos, win) {
   var cal = dp.el;
-  var scrollTop = win.scrollY;
+  var scrollTop = win.pageYOffset;
   var inputTop = scrollTop + inputPos.top;
   var calHeight = cal.offsetHeight;
   var belowTop = inputTop + inputPos.height + 8;
