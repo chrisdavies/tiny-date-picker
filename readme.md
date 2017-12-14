@@ -7,7 +7,7 @@ A light-weight date picker with zero dependencies.
 - IE9+
 - Mobile-friendly/responsive
 - Supports multiple languages
-- [TinyDatePicker demo](http://chrisdavies.github.io/tiny-date-picker/)
+- [TinyDatePicker demo](https://chrisdavies.github.io/tiny-date-picker/)
 
 ## Installation
 
