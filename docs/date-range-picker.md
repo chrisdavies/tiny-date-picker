@@ -18,7 +18,7 @@ extended with time, and possibly break.
 ## Usage
 
 Include a reference to `tiny-date-picker.css` and `date-range-picker.js`, or import
-it `import {DateRangePicker} from 'tiny-date-picker/date-range-picker';` then call it like this:
+it `import {DateRangePicker} from 'tiny-date-picker/dist/date-range-picker';` then call it like this:
 
 ```javascript
 // Initialize a date range picker within the specified container
