@@ -50,10 +50,15 @@ export function DateRangePicker(container) {
     'statechange': onStateChange,
     'select': dateSelected,
   };
+  var dispose = function(){
+    start.dispose()
+    end.dispose()
+  };
   var me = {
     state: state,
     on: emitter.on,
     off: emitter.off,
+    dispose: dispose,
   };
 
   start.on(handlers);
