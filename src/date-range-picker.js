@@ -52,6 +52,7 @@ export function DateRangePicker(container) {
   };
   var me = {
     state: state,
+    setState: setState,
     on: emitter.on,
     off: emitter.off,
   };
