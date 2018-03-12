@@ -313,14 +313,14 @@ function render(dp) {
   return (
     '<div class="dp-cal">' +
       '<header class="dp-cal-header">' +
-        '<a tabindex="-1" href="javascript:;" class="dp-prev">Prev</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-cal-month">' +
+        '<a tabindex="-1" href="#" class="dp-prev">Prev</a>' +
+        '<a tabindex="-1" href="#" class="dp-cal-month">' +
           lang.months[hilightedMonth] +
         '</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-cal-year">' +
+        '<a tabindex="-1" href="#" class="dp-cal-year">' +
           hilightedDate.getFullYear() +
         '</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-next">Next</a>' +
+        '<a tabindex="-1" href="#" class="dp-next">Next</a>' +
       '</header>' +
       '<div class="dp-days">' +
         dayNames.map(function (name, i) {
@@ -341,16 +341,16 @@ function render(dp) {
           className += ' ' + opts.dateClass(date, dp);
 
           return (
-            '<a tabindex="-1" href="javascript:;" class="' + className + '" data-date="' + date.getTime() + '">' +
+            '<a tabindex="-1" href="#" class="' + className + '" data-date="' + date.getTime() + '">' +
               date.getDate() +
             '</a>'
           );
         }) +
       '</div>' +
       '<footer class="dp-cal-footer">' +
-        '<a tabindex="-1" href="javascript:;" class="dp-today">' + lang.today + '</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-clear">' + lang.clear + '</a>' +
-        '<a tabindex="-1" href="javascript:;" class="dp-close">' + lang.close + '</a>' +
+        '<a tabindex="-1" href="#" class="dp-today">' + lang.today + '</a>' +
+        '<a tabindex="-1" href="#" class="dp-clear">' + lang.clear + '</a>' +
+        '<a tabindex="-1" href="#" class="dp-close">' + lang.close + '</a>' +
       '</footer>' +
     '</div>'
   );
@@ -491,7 +491,7 @@ function render$1(dp) {
         className += (currentMonth === i ? ' dp-current' : '');
 
         return (
-          '<a tabindex="-1" href="javascript:;" class="' + className + '" data-month="' + i + '">' +
+          '<a tabindex="-1" href="#" class="' + className + '" data-month="' + i + '">' +
             month +
           '</a>'
         );
@@ -558,7 +558,7 @@ function render$2(dp) {
         className += (year === selectedYear ? ' dp-selected' : '');
 
         return (
-          '<a tabindex="-1" href="javascript:;" class="' + className + '" data-year="' + year + '">' +
+          '<a tabindex="-1" href="#" class="' + className + '" data-year="' + year + '">' +
             year +
           '</a>'
         );
@@ -1090,60 +1090,6 @@ function Emitter() {
  * @file The root date picker file, defines public exports for the library.
  */
 
-/**
-* The date picker language configuration
-* @typedef {Object} LangOptions
-* @property {Array.<string>} [days] - Days of the week
-* @property {Array.<string>} [months] - Months of the year
-* @property {string} today - The label for the 'today' button
-* @property {string} close - The label for the 'close' button
-* @property {string} clear - The label for the 'clear' button
-*/
-
-/**
-* The configuration options for a date picker.
-*
-* @typedef {Object} DatePickerOptions
-* @property {LangOptions} [lang] - Configures the label text, defaults to English
-* @property {('dp-modal'|'dp-below'|'dp-permanent')} [mode] - The date picker mode, defaults to 'dp-modal'
-* @property {(string|Date)} [hilightedDate] - The date to hilight if no date is selected
-* @property {function(string|Date):Date} [parse] - Parses a date, the complement of the "format" function
-* @property {function(Date):string} [format] - Formats a date for displaying to user
-* @property {function(Date):string} [dateClass] - Associates a custom CSS class with a date
-* @property {function(Date):boolean} [inRange] - Indicates whether or not a date is selectable
-* @property {(string|Date)} [min] - The minimum selectable date (inclusive, default 100 years ago)
-* @property {(string|Date)} [max] - The maximum selectable date (inclusive, default 100 years from now)
-*/
-
-/**
-* The state values for the date picker
-*
-* @typedef {Object} DatePickerState
-* @property {string} view - The current view 'day' | 'month' | 'year'
-* @property {Date} selectedDate - The date which has been selected by the user
-* @property {Date} hilightedDate - The date which is currently hilighted / active
-*/
-
-/**
-* An instance of TinyDatePicker
-*
-* @typedef {Object} DatePicker
-* @property {DatePickerState} state - The values currently displayed.
-* @property {function} on - Adds an event handler
-* @property {function} off - Removes an event handler
-* @property {function} setState - Changes the current state of the date picker
-* @property {function} open - Opens the date picker
-* @property {function} close - Closes the date picker
-* @property {function} destroy - Destroys the date picker (removing all handlers from the input, too)
-*/
-
-/**
- * TinyDatePicker constructs a new date picker for the specified input
- *
- * @param {HTMLElement | string} input The input or CSS selector associated with the datepicker
- * @param {DatePickerOptions} opts The options for initializing the date picker
- * @returns {DatePicker}
- */
 function TinyDatePicker$1(input, opts) {
   var emitter = Emitter();
   var options = DatePickerOptions(opts);

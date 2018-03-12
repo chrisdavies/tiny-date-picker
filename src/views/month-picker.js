@@ -40,7 +40,7 @@ function render(dp) {
         className += (currentMonth === i ? ' dp-current' : '');
 
         return (
-          '<a tabindex="-1" href="javascript:;" class="' + className + '" data-month="' + i + '">' +
+          '<a tabindex="-1" href="#" class="' + className + '" data-month="' + i + '">' +
             month +
           '</a>'
         );
