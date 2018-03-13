@@ -94,6 +94,8 @@
   position: relative;
   color: #3B404D;
   border-radius: 2px;
+  border: 0;
+  background: transparent;
 }
 
 .dp-cal-header {
@@ -112,6 +114,8 @@
   top: 14px;
   color: #777;
   border-radius: 2px;
+  border: 0;
+  background: transparent;
 }
 
 .dp-next:focus,
@@ -188,6 +192,8 @@
   padding: 8px;
   text-decoration: none;
   color: inherit;
+  border: 0;
+  background: transparent;
 }
 
 .dp-permanent .dp-close,
@@ -238,6 +244,7 @@
 .dp-year {
   display: block;
   padding: 8px 40px;
+  width: 100%;
 }
 
 .dp-edge-day {
