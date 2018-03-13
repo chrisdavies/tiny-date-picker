@@ -40,14 +40,14 @@ function render(dp) {
   return (
     '<div class="dp-cal">' +
       '<header class="dp-cal-header">' +
-        '<a tabindex="-1" href="#" class="dp-prev">Prev</a>' +
-        '<a tabindex="-1" href="#" class="dp-cal-month">' +
+        '<button tabindex="-1" type="button" class="dp-prev">Prev</button>' +
+        '<button tabindex="-1" type="button" class="dp-cal-month">' +
           lang.months[hilightedMonth] +
-        '</a>' +
-        '<a tabindex="-1" href="#" class="dp-cal-year">' +
+        '</button>' +
+        '<button tabindex="-1" type="button" class="dp-cal-year">' +
           hilightedDate.getFullYear() +
-        '</a>' +
-        '<a tabindex="-1" href="#" class="dp-next">Next</a>' +
+        '</button>' +
+        '<button tabindex="-1" type="button" class="dp-next">Next</button>' +
       '</header>' +
       '<div class="dp-days">' +
         dayNames.map(function (name, i) {
@@ -68,16 +68,16 @@ function render(dp) {
           className += ' ' + opts.dateClass(date, dp);
 
           return (
-            '<a tabindex="-1" href="#" class="' + className + '" data-date="' + date.getTime() + '">' +
+            '<button tabindex="-1" type="button" class="' + className + '" data-date="' + date.getTime() + '">' +
               date.getDate() +
-            '</a>'
+            '</button>'
           );
         }) +
       '</div>' +
       '<footer class="dp-cal-footer">' +
-        '<a tabindex="-1" href="#" class="dp-today">' + lang.today + '</a>' +
-        '<a tabindex="-1" href="#" class="dp-clear">' + lang.clear + '</a>' +
-        '<a tabindex="-1" href="#" class="dp-close">' + lang.close + '</a>' +
+        '<button tabindex="-1" type="button" class="dp-today">' + lang.today + '</button>' +
+        '<button tabindex="-1" type="button" class="dp-clear">' + lang.clear + '</button>' +
+        '<button tabindex="-1" type="button" class="dp-close">' + lang.close + '</button>' +
       '</footer>' +
     '</div>'
   );

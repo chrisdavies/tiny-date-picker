@@ -40,9 +40,9 @@ function render(dp) {
         className += (currentMonth === i ? ' dp-current' : '');
 
         return (
-          '<a tabindex="-1" href="#" class="' + className + '" data-month="' + i + '">' +
+          '<button tabindex="-1" type="button" class="' + className + '" data-month="' + i + '">' +
             month +
-          '</a>'
+          '</button>'
         );
       }).join('') +
     '</div>'

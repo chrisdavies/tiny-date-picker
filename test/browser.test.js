@@ -4,7 +4,7 @@ import chrome from 'selenium-webdriver/chrome'
 
 const options = new chrome.Options();
 options.addArguments(
-  '--headless',
+  // '--headless',
   // Use --disable-gpu to avoid an error from a missing Mesa library, as per
   // https://chromium.googlesource.com/chromium/src/+/lkgr/headless/README.md
   '--disable-gpu');
@@ -71,13 +71,13 @@ describe('browser', () => {
 
     it('should hide the modal when close is clicked', async () => {
       const el = await driver.findElement(By.css('.modal-txt')).click();
-      await driver.findElement(By.linkText('Close')).click();
+      await driver.findElement(By.css('.dp-close')).click();
       await driver.wait(untilRemoved('.dp-modal'));
     });
 
     it('should select today when today is clicked', async () => {
       const el = await driver.findElement(By.css('.modal-txt')).click();
-      await driver.findElement(By.linkText('Today')).click();
+      await driver.findElement(byText('Today')).click();
       await driver.wait(untilRemoved('.dp-modal'));
       const val = await driver.findElement(By.css('.modal-txt')).getAttribute('value');
       const now = new Date();
@@ -91,7 +91,8 @@ describe('browser', () => {
         TinyDatePicker('.my-modal');
       `);
       const el = await driver.findElement(By.css('.my-modal')).click();
-      await driver.findElement(By.linkText('8')).click();
+      const days = await driver.findElements(By.css('.dp-day:not(.dp-edge-day)'));
+      Array.from(days)[7].click();
       await driver.wait(untilRemoved('.dp-modal'));
       const val = await driver.findElement(By.css('.my-modal')).getAttribute('value');
 
@@ -105,7 +106,7 @@ describe('browser', () => {
       `);
 
       const el = await driver.findElement(By.css('.my-modal')).click();
-      await driver.findElement(By.linkText('Prev')).click();
+      await driver.findElement(By.css('.dp-prev')).click();
       const current = await currentEl(driver, '.dp-modal');
 
       await elDateIs(current, '6/30/2017');
@@ -118,7 +119,7 @@ describe('browser', () => {
       `);
 
       const el = await driver.findElement(By.css('.my-modal')).click();
-      await driver.findElement(By.linkText('Next')).click();
+      await driver.findElement(By.css('.dp-next')).click();
       const current = await currentEl(driver, '.dp-modal');
 
       await elDateIs(current, '2/28/2018');
@@ -130,7 +131,7 @@ describe('browser', () => {
         TinyDatePicker(document.querySelector('.my-modal'));
       `);
       const el = await driver.findElement(By.css('.my-modal')).click();
-      await driver.findElement(By.linkText('Clear')).click();
+      await driver.findElement(byText('Clear')).click();
       await driver.wait(untilRemoved('.dp-modal'));
       const val = await driver.findElement(By.css('.my-modal')).getAttribute('value');
 
@@ -189,7 +190,7 @@ describe('browser', () => {
       `);
 
       await driver.findElement(By.css('.my-modal')).click();
-      await driver.findElement(By.linkText('17')).click();
+      await driver.findElement(byText('17')).click();
       await driver.wait(untilRemoved('.dp-modal'));
 
       const myModalEvents = await driver.executeScript(function () {
@@ -252,7 +253,7 @@ describe('browser', () => {
         return !!document.querySelector('.dp-months');
       })
       expect(monthPickerShowing).toBeTruthy();
-      const month = await driver.findElement(By.linkText('September')).getAttribute('data-month');
+      const month = await driver.findElement(byText('September')).getAttribute('data-month');
       expect(month).toEqual('8');
     });
 
@@ -279,8 +280,8 @@ describe('browser', () => {
       `);
       const el = await driver.findElement(By.css('.modal-txt'));
       await el.click();
-      await driver.findElement(By.linkText('May')).click();
-      await driver.findElement(By.linkText('February')).click();
+      await driver.findElement(byText('May')).click();
+      await driver.findElement(byText('February')).click();
 
       const current = await currentEl(driver, '.dp-modal');
       await elDateIs(current, '2/6/2017');
@@ -293,8 +294,8 @@ describe('browser', () => {
       `);
       const el = await driver.findElement(By.css('.modal-txt'));
       await el.click();
-      await driver.findElement(By.linkText('2017')).click();
-      await driver.findElement(By.linkText('2013')).click();
+      await driver.findElement(byText('2017')).click();
+      await driver.findElement(byText('2013')).click();
 
       const current = await currentEl(driver, '.dp-modal');
       await elDateIs(current, '5/6/2013');
@@ -396,7 +397,7 @@ describe('browser', () => {
 
       await elDateIs(current, '1/2/2050');
 
-      await driver.findElement(By.linkText('Today')).click();
+      await driver.findElement(byText('Today')).click();
       const val = await driver.findElement(By.css('.my-input')).getAttribute('value');
 
       expect(val).toEqual('IT IS ' + new Date().toDateString() + '!');
@@ -457,11 +458,11 @@ describe('browser', () => {
         });
       `);
 
-      await driver.findElement(By.linkText('11')).click();
+      await driver.findElement(byText('11')).click();
       let current = await currentEl(driver, '.dp-permanent');
       await elDateIs(current, '1/1/2010');
 
-      await driver.findElement(By.linkText('28')).click();
+      await driver.findElement(byText('28')).click();
       current = await currentEl(driver, '.dp-permanent');
       await elDateIs(current, '12/28/2009');
     });
@@ -574,4 +575,8 @@ async function currentEl(driver, calendarSelector) {
  */
 async function untilRemoved(selector) {
   return () => driver.findElement(selector).then(() => false).catch(() => true);
+}
+
+function byText(txt) {
+  return By.xpath(`//*[contains(translate(normalize-space(text()), ' ', ''), '${txt}')]`);
 }

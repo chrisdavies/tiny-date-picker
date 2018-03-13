@@ -32,9 +32,9 @@ function render(dp) {
         className += (year === selectedYear ? ' dp-selected' : '');
 
         return (
-          '<a tabindex="-1" href="#" class="' + className + '" data-year="' + year + '">' +
+          '<button tabindex="-1" type="button" class="' + className + '" data-year="' + year + '">' +
             year +
-          '</a>'
+          '</button>'
         );
       }) +
     '</div>'
