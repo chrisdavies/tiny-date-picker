@@ -1,6 +1,6 @@
 {
   "name": "tiny-date-picker",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "A small, dependency-free date picker",
   "main": "dist/tiny-date-picker.js",
   "scripts": {
@@ -14,9 +14,9 @@
     "build:dp": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
     "min": "concurrently \"npm run min:dpcss\" \"npm run min:dpjs\" \"npm run min:rpcss\" \"npm run min:rpjs\"",
     "min:dpcss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
-    "min:dpjs": "uglifyjs dist/tiny-date-picker.js --source-map dist/tiny-date-picker.min.js.map -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c",
+    "min:dpjs": "uglifyjs dist/tiny-date-picker.js --source-map \"filename='./dist/tiny-date-picker.min.js.map'\" -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c",
     "min:rpcss": "uglifycss date-range-picker.css > date-range-picker.min.css && echo 'Minified CSS:' && cat date-range-picker.min.css | gzip -9f | wc -c",
-    "min:rpjs": "uglifyjs dist/date-range-picker.js --source-map dist/date-range-picker.min.js.map -m -c -o dist/date-range-picker.min.js && echo 'Minified JS:' && cat dist/date-range-picker.min.js | gzip -9f | wc -c"
+    "min:rpjs": "uglifyjs dist/date-range-picker.js --source-map \"filename='./dist/date-range-picker.min.js.map'\" -m -c -o dist/date-range-picker.min.js && echo 'Minified JS:' && cat dist/date-range-picker.min.js | gzip -9f | wc -c"
   },
   "repository": {
     "type": "git",
@@ -43,14 +43,14 @@
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
     "babel": "^6.23.0",
-    "babel-jest": "^22.4.1",
+    "babel-jest": "^22.4.3",
     "babel-preset-es2015": "^6.24.1",
     "concurrently": "^3.5.1",
     "http-server": "^0.11.1",
     "jest": "^22.4.2",
-    "rollup": "^0.56.5",
+    "rollup": "^0.57.1",
     "selenium-webdriver": "^4.0.0-alpha.1",
-    "uglify-js": "^3.3.14",
-    "uglifycss": "0.0.28"
+    "uglify-js": "^3.3.16",
+    "uglifycss": "0.0.29"
   }
 }

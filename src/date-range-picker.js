@@ -3,7 +3,7 @@ import TDP from './index';
 import Emitter from './lib/emitter';
 import {shiftMonth, datesEq} from './lib/date-manip';
 
-export const TinyDatePicker = TDP;
+export var TinyDatePicker = TDP;
 
 /**
 * The state values for the date range picker
@@ -61,9 +61,9 @@ export function DateRangePicker(container) {
   end.on(handlers);
 
   function onStateChange(_, dp) {
-    const d1 = start.state.hilightedDate;
-    const d2 = end.state.hilightedDate;
-    const diff = diffMonths(d1, d2);
+    var d1 = start.state.hilightedDate;
+    var d2 = end.state.hilightedDate;
+    var diff = diffMonths(d1, d2);
 
     if (diff === 1) {
       return;
@@ -112,8 +112,8 @@ export function DateRangePicker(container) {
 
   root.addEventListener('mouseover', function mouseOverDate(e) {
     if (e.target.classList.contains('dp-day')) {
-      const dt = new Date(parseInt(e.target.dataset.date));
-      const changed = !datesEq(dt, hoverDate);
+      var dt = new Date(parseInt(e.target.dataset.date));
+      var changed = !datesEq(dt, hoverDate);
 
       if (changed) {
         hoverDate = dt;
@@ -123,10 +123,10 @@ export function DateRangePicker(container) {
   });
 
   function dateClass(dt) {
-    const rangeClass = hoverDate &&
+    var rangeClass = hoverDate &&
                        state.start &&
                        inRange(dt, state.end || hoverDate, state.start);
-    const selectedClass = datesEq(dt, state.start) || datesEq(dt, state.end);
+    var selectedClass = datesEq(dt, state.start) || datesEq(dt, state.end);
 
     return (rangeClass ? 'dr-in-range ' : '') +
            (selectedClass ? 'dr-selected ' : '');

@@ -193,7 +193,7 @@ function attachInputEvents(input, dp) {
   });
 
   var off = [
-    on('blur', input, bufferFn(5, function () {
+    on('blur', input, bufferFn(150, function () {
       if (!dp.hasFocus()) {
         dp.close(true);
       }
@@ -232,6 +232,9 @@ function attachContainerEvents(dp) {
   var el = dp.el;
   var calEl = el.querySelector('.dp');
 
+  // Hack to get iOS to show active CSS states
+  el.ontouchstart = noop;
+
   function onClick(e) {
     e.target.className.split(' ').forEach(function(evt) {
       var handler = dp.currentView().onClick[evt];
@@ -245,8 +248,8 @@ function attachContainerEvents(dp) {
   // do we return focus to the input. A possible other approach
   // would be to set context.redrawing = true on redraw and
   // set it to false in the blur event.
-  on('blur', calEl, bufferFn(10, function () {
-    if (!calEl.contains(document.activeElement)) {
+  on('blur', calEl, bufferFn(150, function () {
+    if (!dp.hasFocus()) {
       dp.close(true);
     }
   }));
