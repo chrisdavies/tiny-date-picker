@@ -987,8 +987,13 @@
     var calHeight = cal.offsetHeight;
     var belowTop = inputTop + inputPos.height + 8;
     var aboveTop = inputTop - calHeight - 8;
-    var top = (aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight) ? aboveTop : belowTop;
+    var isAbove = (aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight);
+    var top = isAbove ? aboveTop : belowTop;
 
+    if (cal.classList) {
+      cal.classList.toggle('dp-is-above', isAbove);
+      cal.classList.toggle('dp-is-below', !isAbove);
+    }
     cal.style.top = top + 'px';
   }
 
