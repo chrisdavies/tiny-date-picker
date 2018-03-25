@@ -17,6 +17,7 @@
   z-index: 1000;
   padding-top: 6px;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .dp:before {
@@ -201,22 +202,35 @@
   display: none;
 }
 
-.dp-close:hover,
-.dp-close:focus,
-.dp-clear:hover,
-.dp-clear:focus,
-.dp-today:hover,
-.dp-today:focus,
-.dp-next:hover,
-.dp-next:focus,
-.dp-prev:hover,
-.dp-prev:focus,
-.dp-cal-month:focus,
-.dp-cal-month:hover,
-.dp-cal-year:hover,
-.dp-cal-year:focus {
+.dp-close:active,
+.dp-clear:active,
+.dp-today:active,
+.dp-next:active,
+.dp-prev:active,
+.dp-cal-month:active,
+.dp-cal-year:active {
   background: #75BCFC;
   color: white;
+}
+
+@media screen and (min-device-width: 1200px) {
+  .dp-close:hover,
+  .dp-close:focus,
+  .dp-clear:hover,
+  .dp-clear:focus,
+  .dp-today:hover,
+  .dp-today:focus,
+  .dp-next:hover,
+  .dp-next:focus,
+  .dp-prev:hover,
+  .dp-prev:focus,
+  .dp-cal-month:focus,
+  .dp-cal-month:hover,
+  .dp-cal-year:hover,
+  .dp-cal-year:focus {
+    background: #75BCFC;
+    color: white;
+  }
 }
 
 .dp-col-header,
