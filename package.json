@@ -1,6 +1,6 @@
 {
   "name": "tiny-date-picker",
-  "version": "3.2.2",
+  "version": "3.2.3",
   "description": "A small, dependency-free date picker",
   "main": "dist/tiny-date-picker.js",
   "scripts": {

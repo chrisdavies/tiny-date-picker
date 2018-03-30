@@ -699,7 +699,10 @@
       },
 
       hasFocus: function () {
-        return dp.el && dp.el.contains(document.activeElement);
+        var focused = document.activeElement;
+        return dp.el &&
+          dp.el.contains(focused) &&
+          focused.className.indexOf('dp-focuser') < 0;
       },
 
       shouldHide: function () {
@@ -893,7 +896,7 @@
     // still within the date picker, we don't want to
     // hide, so we need to hack some things...
     on('mousedown', calEl, function (e) {
-      e.target.focus(); // IE hack
+      e.target.focus && e.target.focus(); // IE hack
       if (document.activeElement !== e.target) {
         e.preventDefault();
         focusCurrent(dp);
