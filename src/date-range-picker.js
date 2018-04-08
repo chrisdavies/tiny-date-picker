@@ -2,6 +2,7 @@
 import TDP from './index';
 import Emitter from './lib/emitter';
 import {shiftMonth, datesEq} from './lib/date-manip';
+import {cp} from './lib/fns';
 
 export var TinyDatePicker = TDP;
 
@@ -29,7 +30,8 @@ export var TinyDatePicker = TDP;
  * @param {HTMLElement} input The input associated with the datepicker
  * @returns {DateRangePickerInst}
  */
-export function DateRangePicker(container) {
+export function DateRangePicker(container, opts) {
+  opts = opts || {};
   var emitter = Emitter();
   var root = renderInto(container);
   var hoverDate;
@@ -37,15 +39,17 @@ export function DateRangePicker(container) {
     start: undefined,
     end: undefined,
   };
-  var start = TDP(root.querySelector('.dr-cal-start'), {
+  opts.startOpts = cp(opts.startOpts || {}, {
     mode: 'dp-permanent',
     dateClass: dateClass,
   });
-  var end = TDP(root.querySelector('.dr-cal-end'), {
+  var start = TDP(root.querySelector('.dr-cal-start'), opts.startOpts);
+  opts.endOpts = cp(opts.endOpts || {}, {
     mode: 'dp-permanent',
     hilightedDate: shiftMonth(start.state.hilightedDate, 1),
     dateClass: dateClass,
   });
+  var end = TDP(root.querySelector('.dr-cal-end'), opts.endOpts);
   var handlers = {
     'statechange': onStateChange,
     'select': dateSelected,
