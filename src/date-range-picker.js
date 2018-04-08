@@ -39,17 +39,15 @@ export function DateRangePicker(container, opts) {
     start: undefined,
     end: undefined,
   };
-  opts.startOpts = cp(opts.startOpts || {}, {
+  var start = TDP(root.querySelector('.dr-cal-start'), cp({}, opts.startOpts, {
     mode: 'dp-permanent',
     dateClass: dateClass,
-  });
-  var start = TDP(root.querySelector('.dr-cal-start'), opts.startOpts);
-  opts.endOpts = cp(opts.endOpts || {}, {
+  }));
+  var end = TDP(root.querySelector('.dr-cal-end'), cp({}, opts.endOpts, {
     mode: 'dp-permanent',
     hilightedDate: shiftMonth(start.state.hilightedDate, 1),
     dateClass: dateClass,
-  });
-  var end = TDP(root.querySelector('.dr-cal-end'), opts.endOpts);
+  }));
   var handlers = {
     'statechange': onStateChange,
     'select': dateSelected,

@@ -138,7 +138,7 @@
    */
 
   /**
-   * bufferFn buffers calls to fn so they only happen ever ms milliseconds
+   * bufferFn buffers calls to fn so they only happen every ms milliseconds
    *
    * @param {number} ms number of milliseconds
    * @param {function} fn the function to be buffered
@@ -164,13 +164,15 @@
    * @params {Object} o2
    * @returns {Object}
    */
-  function cp(o1, o2) {
-    o2 = o2 || {};
-
-    for (var key in o2) {
-      o1[key] = o2[key];
+  function cp() {
+    var args = arguments;
+    var o1 = args[0];
+    for (var i = 1; i < args.length; ++i) {
+      var o2 = args[i] || {};
+      for (var key in o2) {
+        o1[key] = o2[key];
+      }
     }
-
     return o1;
   }
 
@@ -1225,17 +1227,15 @@
       start: undefined,
       end: undefined,
     };
-    opts.startOpts = cp(opts.startOpts || {}, {
+    var start = TinyDatePicker(root.querySelector('.dr-cal-start'), cp({}, opts.startOpts, {
       mode: 'dp-permanent',
       dateClass: dateClass,
-    });
-    var start = TinyDatePicker(root.querySelector('.dr-cal-start'), opts.startOpts);
-    opts.endOpts = cp(opts.endOpts || {}, {
+    }));
+    var end = TinyDatePicker(root.querySelector('.dr-cal-end'), cp({}, opts.endOpts, {
       mode: 'dp-permanent',
       hilightedDate: shiftMonth(start.state.hilightedDate, 1),
       dateClass: dateClass,
-    });
-    var end = TinyDatePicker(root.querySelector('.dr-cal-end'), opts.endOpts);
+    }));
     var handlers = {
       'statechange': onStateChange,
       'select': dateSelected,

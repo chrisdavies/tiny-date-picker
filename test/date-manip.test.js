@@ -150,7 +150,7 @@ describe('date-manip', () => {
   describe('setMonth', () => {
     it('does not mutate the date', () => {
       const dt = now();
-      const next = setMonth(dt, 3);
+      const next = setMonth(dt, (dt.getMonth() + 1) % 12);
 
       expect(datesEq(dt, next)).toBeFalsy();
     });
