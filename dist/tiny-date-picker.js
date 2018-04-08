@@ -134,6 +134,47 @@
   }
 
   /**
+   * @file Utility functions for function manipulation.
+   */
+
+  /**
+   * bufferFn buffers calls to fn so they only happen ever ms milliseconds
+   *
+   * @param {number} ms number of milliseconds
+   * @param {function} fn the function to be buffered
+   * @returns {function}
+   */
+  function bufferFn(ms, fn) {
+    var timeout = undefined;
+    return function () {
+      clearTimeout(timeout);
+      timeout = setTimeout(fn, ms);
+    };
+  }
+
+  /**
+   * noop is a function which does nothing at all.
+   */
+  function noop() { }
+
+  /**
+   * copy properties from object o2 to object o1.
+   *
+   * @params {Object} o1
+   * @params {Object} o2
+   * @returns {Object}
+   */
+  function cp(o1, o2) {
+    o2 = o2 || {};
+
+    for (var key in o2) {
+      o1[key] = o2[key];
+    }
+
+    return o1;
+  }
+
+  /**
    * @file Responsible for sanitizing and creating date picker options.
    */
 
@@ -213,16 +254,6 @@
     return function (dt, dp) {
       return inRange(dt, dp) && opts.min <= dt && opts.max >= dt;
     };
-  }
-
-  function cp(o1, o2) {
-    o2 = o2 || {};
-
-    for (var key in o2) {
-      o1[key] = o2[key];
-    }
-
-    return o1;
   }
 
   /**
@@ -606,30 +637,6 @@
 
     return result;
   }
-
-  /**
-   * @file Utility functions for function manipulation.
-   */
-
-  /**
-   * bufferFn buffers calls to fn so they only happen ever ms milliseconds
-   *
-   * @param {number} ms number of milliseconds
-   * @param {function} fn the function to be buffered
-   * @returns {function}
-   */
-  function bufferFn(ms, fn) {
-    var timeout = undefined;
-    return function () {
-      clearTimeout(timeout);
-      timeout = setTimeout(fn, ms);
-    };
-  }
-
-  /**
-   * noop is a function which does nothing at all.
-   */
-  function noop() { }
 
   /**
    * @file Defines the base date picker behavior, overridden by various modes.

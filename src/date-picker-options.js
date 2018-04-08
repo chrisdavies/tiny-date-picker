@@ -3,6 +3,7 @@
  */
 
 import {now, shiftYear, dateOrParse} from './lib/date-manip';
+import {cp} from './lib/fns';
 
 var english = {
   days: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -80,14 +81,4 @@ function makeInRangeFn(opts) {
   return function (dt, dp) {
     return inRange(dt, dp) && opts.min <= dt && opts.max >= dt;
   };
-}
-
-function cp(o1, o2) {
-  o2 = o2 || {};
-
-  for (var key in o2) {
-    o1[key] = o2[key];
-  }
-
-  return o1;
 }
