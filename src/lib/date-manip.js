@@ -108,7 +108,7 @@ export function setMonth(dt, month) {
  */
 export function dateOrParse(parse) {
   return function (dt) {
-    return typeof dt === 'string' ? parse(dt) : dt;
+    return dropTime(typeof dt === 'string' ? parse(dt) : dt);
   };
 }
 
@@ -125,4 +125,10 @@ export function constrainDate(dt, min, max) {
   return (dt < min) ? min :
          (dt > max) ? max :
          dt;
+}
+
+function dropTime(dt) {
+  dt = new Date(dt);
+  dt.setHours(0, 0, 0, 0);
+  return dt;
 }
