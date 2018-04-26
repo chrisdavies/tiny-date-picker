@@ -87,14 +87,14 @@ describe('browser', () => {
 
     it('should change the date when a date is clicked', async () => {
       await driver.executeScript(`
-        document.write('<input class="my-modal" value="4/5/2006" />');
-        TinyDatePicker('.my-modal');
+        document.write('<input class="click-test" value="4/5/2006" />');
+        TinyDatePicker('.click-test');
       `);
-      const el = await driver.findElement(By.css('.my-modal')).click();
-      const days = await driver.findElements(By.css('.dp-day:not(.dp-edge-day)'));
-      Array.from(days)[7].click();
+      const el = await driver.findElement(By.css('.click-test')).click();
+      const day = await driver.findElement(By.css('[data-date="1144468800000"]'));
+      day.click();
       await driver.wait(untilRemoved('.dp-modal'));
-      const val = await driver.findElement(By.css('.my-modal')).getAttribute('value');
+      const val = await driver.findElement(By.css('.click-test')).getAttribute('value');
 
       expect(val).toEqual('4/8/2006');
     });
