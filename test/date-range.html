@@ -127,19 +127,51 @@
             const txtStart = root.querySelector('.ex-inputs-start');
             const txtEnd = root.querySelector('.ex-inputs-end');
             const container = root.querySelector('.ex-inputs-picker');
+            const minYear = new Date().getFullYear();
+            const maxYear = minYear + 1;
 
             // Inject DateRangePicker into our container
-            DateRangePicker.DateRangePicker(container)
+            const dp = DateRangePicker.DateRangePicker(container, {
+              startOpts: {
+                min: new Date(minYear + '-01-01'),
+                max: new Date(maxYear + '-01-01'),
+              },
+              endOpts: {
+                min: new Date(minYear + '-01-01'),
+                max: new Date(maxYear + '-01-01'),
+              },
+            })
               .on('statechange', function (_, rp) {
                 // Update the inputs when the state changes
                 var range = rp.state;
-                txtStart.value = range.start ? range.start.toDateString() : '';
-                txtEnd.value = range.end ? range.end.toDateString() : '';
+                setValue(txtStart, range.start);
+                setValue(txtEnd, range.end);
               });
 
             // When the inputs gain focus, show the date range picker
             txtStart.addEventListener('focus', showPicker);
             txtEnd.addEventListener('focus', showPicker);
+            txtStart.addEventListener('input', (e) => {
+              dp.setState({
+                start: parseDate(e.target.value, dp.state.start),
+              });
+            });
+            txtEnd.addEventListener('input', (e) => {
+              dp.setState({
+                end: parseDate(e.target.value, dp.state.end),
+              });
+            });
+
+            function setValue(input, dt) {
+              if (input !== document.activeElement) {
+                input.value = dt ? dt.toDateString() : '';
+              }
+            }
+
+            function parseDate(txt, defaultDt) {
+              const dt = new Date(txt);
+              return isNaN(dt.getTime()) ? defaultDt : dt;
+            }
 
             function showPicker() {
               container.classList.add('ex-inputs-picker-visible');

@@ -45,6 +45,11 @@
   border-radius: 0;
 }
 
+.dr-cals .dp-day-disabled,
+.dr-cals .dp-day-disabled:focus {
+  color: #DDD;
+}
+
 .dr-cal-end .dp {
   border-left: 8px solid #F5F5F5;
 }
