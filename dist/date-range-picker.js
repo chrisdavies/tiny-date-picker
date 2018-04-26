@@ -1302,9 +1302,9 @@
     });
 
     function dateClass(dt) {
-      var rangeClass = hoverDate &&
-                         state.start &&
-                         inRange(dt, state.end || hoverDate, state.start);
+      var rangeClass = (state.end || hoverDate) &&
+                       state.start &&
+                       inRange(dt, state.end || hoverDate, state.start);
       var selectedClass = datesEq(dt, state.start) || datesEq(dt, state.end);
 
       return (rangeClass ? 'dr-in-range ' : '') +
