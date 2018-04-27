@@ -1025,7 +1025,7 @@
     dp.close = noop;
     dp.destroy = noop;
     dp.updateInput = noop;
-    dp.shouldFocusOnRender = false;
+    dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 
     dp.computeSelectedDate = function () {
       return opts.hilightedDate;

@@ -1025,7 +1025,7 @@
     dp.close = noop;
     dp.destroy = noop;
     dp.updateInput = noop;
-    dp.shouldFocusOnRender = false;
+    dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 
     dp.computeSelectedDate = function () {
       return opts.hilightedDate;
@@ -1305,17 +1305,20 @@
       end.setState({});
     }
 
-    root.addEventListener('mouseover', function mouseOverDate(e) {
-      if (e.target.classList.contains('dp-day')) {
-        var dt = new Date(parseInt(e.target.dataset.date));
-        var changed = !datesEq(dt, hoverDate);
-
-        if (changed) {
-          hoverDate = dt;
-          rerender();
+    // Hack to avoid a situation where iOS requires double-clicking to select
+    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      root.addEventListener('mouseover', function mouseOverDate(e) {
+        if (e.target.classList.contains('dp-day')) {
+          var dt = new Date(parseInt(e.target.dataset.date));
+          var changed = !datesEq(dt, hoverDate);
+    
+          if (changed) {
+            hoverDate = dt;
+            rerender();
+          }
         }
-      }
-    });
+      });
+    }
 
     function dateClass(dt) {
       var rangeClass = (state.end || hoverDate) &&
