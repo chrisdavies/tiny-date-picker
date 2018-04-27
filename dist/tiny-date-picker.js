@@ -114,7 +114,7 @@
    */
   function dateOrParse(parse) {
     return function (dt) {
-      return typeof dt === 'string' ? parse(dt) : dt;
+      return dropTime(typeof dt === 'string' ? parse(dt) : dt);
     };
   }
 
@@ -131,6 +131,55 @@
     return (dt < min) ? min :
            (dt > max) ? max :
            dt;
+  }
+
+  function dropTime(dt) {
+    dt = new Date(dt);
+    dt.setHours(0, 0, 0, 0);
+    return dt;
+  }
+
+  /**
+   * @file Utility functions for function manipulation.
+   */
+
+  /**
+   * bufferFn buffers calls to fn so they only happen every ms milliseconds
+   *
+   * @param {number} ms number of milliseconds
+   * @param {function} fn the function to be buffered
+   * @returns {function}
+   */
+  function bufferFn(ms, fn) {
+    var timeout = undefined;
+    return function () {
+      clearTimeout(timeout);
+      timeout = setTimeout(fn, ms);
+    };
+  }
+
+  /**
+   * noop is a function which does nothing at all.
+   */
+  function noop() { }
+
+  /**
+   * copy properties from object o2 to object o1.
+   *
+   * @params {Object} o1
+   * @params {Object} o2
+   * @returns {Object}
+   */
+  function cp() {
+    var args = arguments;
+    var o1 = args[0];
+    for (var i = 1; i < args.length; ++i) {
+      var o2 = args[i] || {};
+      for (var key in o2) {
+        o1[key] = o2[key];
+      }
+    }
+    return o1;
   }
 
   /**
@@ -213,16 +262,6 @@
     return function (dt, dp) {
       return inRange(dt, dp) && opts.min <= dt && opts.max >= dt;
     };
-  }
-
-  function cp(o1, o2) {
-    o2 = o2 || {};
-
-    for (var key in o2) {
-      o1[key] = o2[key];
-    }
-
-    return o1;
   }
 
   /**
@@ -608,30 +647,6 @@
   }
 
   /**
-   * @file Utility functions for function manipulation.
-   */
-
-  /**
-   * bufferFn buffers calls to fn so they only happen ever ms milliseconds
-   *
-   * @param {number} ms number of milliseconds
-   * @param {function} fn the function to be buffered
-   * @returns {function}
-   */
-  function bufferFn(ms, fn) {
-    var timeout = undefined;
-    return function () {
-      clearTimeout(timeout);
-      timeout = setTimeout(fn, ms);
-    };
-  }
-
-  /**
-   * noop is a function which does nothing at all.
-   */
-  function noop() { }
-
-  /**
    * @file Defines the base date picker behavior, overridden by various modes.
    */
 
@@ -699,7 +714,10 @@
       },
 
       hasFocus: function () {
-        return dp.el && dp.el.contains(document.activeElement);
+        var focused = document.activeElement;
+        return dp.el &&
+          dp.el.contains(focused) &&
+          focused.className.indexOf('dp-focuser') < 0;
       },
 
       shouldHide: function () {
@@ -893,7 +911,7 @@
     // still within the date picker, we don't want to
     // hide, so we need to hack some things...
     on('mousedown', calEl, function (e) {
-      e.target.focus(); // IE hack
+      e.target.focus && e.target.focus(); // IE hack
       if (document.activeElement !== e.target) {
         e.preventDefault();
         focusCurrent(dp);
@@ -987,8 +1005,13 @@
     var calHeight = cal.offsetHeight;
     var belowTop = inputTop + inputPos.height + 8;
     var aboveTop = inputTop - calHeight - 8;
-    var top = (aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight) ? aboveTop : belowTop;
+    var isAbove = (aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight);
+    var top = isAbove ? aboveTop : belowTop;
 
+    if (cal.classList) {
+      cal.classList.toggle('dp-is-above', isAbove);
+      cal.classList.toggle('dp-is-below', !isAbove);
+    }
     cal.style.top = top + 'px';
   }
 
@@ -1002,7 +1025,7 @@
     dp.close = noop;
     dp.destroy = noop;
     dp.updateInput = noop;
-    dp.shouldFocusOnRender = false;
+    dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 
     dp.computeSelectedDate = function () {
       return opts.hilightedDate;
