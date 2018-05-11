@@ -135,10 +135,12 @@
               startOpts: {
                 min: new Date(minYear + '-01-01'),
                 max: new Date(maxYear + '-01-01'),
+                shouldFocusOnRender: true,
               },
               endOpts: {
                 min: new Date(minYear + '-01-01'),
                 max: new Date(maxYear + '-01-01'),
+                shouldFocusOnRender: true,
               },
             })
               .on('statechange', function (_, rp) {
