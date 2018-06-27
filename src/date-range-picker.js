@@ -57,6 +57,8 @@ export function DateRangePicker(container, opts) {
     setState: setState,
     on: emitter.on,
     off: emitter.off,
+    start: start,
+    end: end
   };
 
   start.on(handlers);
