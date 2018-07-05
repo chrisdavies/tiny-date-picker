@@ -71,7 +71,9 @@ function defaults() {
 
     inRange: function () {
       return true;
-    }
+    },
+
+    appendTo: document.body,
   };
 }
 
