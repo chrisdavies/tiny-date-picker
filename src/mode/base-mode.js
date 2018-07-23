@@ -29,7 +29,7 @@ export default function BaseMode(input, emit, opts) {
     containerHTML: '<div class="dp"></div>',
 
     attachToDom: function () {
-      document.body.appendChild(dp.el);
+      opts.appendTo.appendChild(dp.el);
     },
 
     updateInput: function (selectedDate) {
