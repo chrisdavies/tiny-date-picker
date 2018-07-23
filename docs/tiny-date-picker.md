@@ -91,6 +91,10 @@ TinyDatePicker can be configured by passing it a second argument:
 ```javascript
 
 TinyDatePicker('input', {
+  // What dom element the date picker will be added to. This defaults
+  // to document.body
+  appendTo: document.querySelector('.foo'),
+
   // Lang can be used to customize the text that is displayed
   // in the calendar. You can use this to display a different language.
   lang: {
