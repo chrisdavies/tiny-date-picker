@@ -758,7 +758,7 @@
       },
 
       render: function () {
-        if (!dp.el) {
+        if (!dp.el || !dp.el.firstChild) {
           return;
         }
 
