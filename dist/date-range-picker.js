@@ -252,7 +252,9 @@
 
       inRange: function () {
         return true;
-      }
+      },
+
+      appendTo: document.body,
     };
   }
 
@@ -671,7 +673,8 @@
       containerHTML: '<div class="dp"></div>',
 
       attachToDom: function () {
-        document.body.appendChild(dp.el);
+        var appendTo = opts.appendTo || document.body;
+        appendTo.appendChild(dp.el);
       },
 
       updateInput: function (selectedDate) {
@@ -1023,7 +1026,6 @@
     var dp = BaseMode(root, emit, opts);
 
     dp.close = noop;
-    dp.destroy = noop;
     dp.updateInput = noop;
     dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 
@@ -1032,7 +1034,8 @@
     };
 
     dp.attachToDom = function () {
-      root.appendChild(dp.el);
+      var appendTo = opts.appendTo || root;
+      appendTo.appendChild(dp.el);
     };
 
     dp.open();
