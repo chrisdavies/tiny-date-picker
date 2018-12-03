@@ -3,3 +3,5 @@ shots
 *.log
 *.jar
 todo.md
+/tiny-date-picker.iml
+/.idea/

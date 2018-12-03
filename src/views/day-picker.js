@@ -29,6 +29,8 @@ export default {
 function render(dp) {
   var opts = dp.opts;
   var lang = opts.lang;
+  var nextButton = lang.nextButton || 'Next';
+  var prevButton = lang.prevButton || 'Previuos';
   var state = dp.state;
   var dayNames = lang.days;
   var dayOffset = opts.dayOffset || 0;
@@ -40,14 +42,14 @@ function render(dp) {
   return (
     '<div class="dp-cal">' +
       '<header class="dp-cal-header">' +
-        '<button tabindex="-1" type="button" class="dp-prev">Prev</button>' +
+        '<button tabindex="-1" type="button" class="dp-prev">nextButton</button>' +
         '<button tabindex="-1" type="button" class="dp-cal-month">' +
           lang.months[hilightedMonth] +
         '</button>' +
         '<button tabindex="-1" type="button" class="dp-cal-year">' +
           hilightedDate.getFullYear() +
         '</button>' +
-        '<button tabindex="-1" type="button" class="dp-next">Next</button>' +
+        '<button tabindex="-1" type="button" class="dp-next">prevButton</button>' +
       '</header>' +
       '<div class="dp-days">' +
         dayNames.map(function (name, i) {
