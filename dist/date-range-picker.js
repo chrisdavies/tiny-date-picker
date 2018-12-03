@@ -252,7 +252,9 @@
 
       inRange: function () {
         return true;
-      }
+      },
+
+      appendTo: document.body,
     };
   }
 
@@ -341,6 +343,8 @@
   function render(dp) {
     var opts = dp.opts;
     var lang = opts.lang;
+    var nextButton = lang.nextButton || 'Next';
+    var prevButton = lang.prevButton || 'Previuos';
     var state = dp.state;
     var dayNames = lang.days;
     var dayOffset = opts.dayOffset || 0;
@@ -352,14 +356,14 @@
     return (
       '<div class="dp-cal">' +
         '<header class="dp-cal-header">' +
-          '<button tabindex="-1" type="button" class="dp-prev">Prev</button>' +
+          '<button tabindex="-1" type="button" class="dp-prev">nextButton</button>' +
           '<button tabindex="-1" type="button" class="dp-cal-month">' +
             lang.months[hilightedMonth] +
           '</button>' +
           '<button tabindex="-1" type="button" class="dp-cal-year">' +
             hilightedDate.getFullYear() +
           '</button>' +
-          '<button tabindex="-1" type="button" class="dp-next">Next</button>' +
+          '<button tabindex="-1" type="button" class="dp-next">prevButton</button>' +
         '</header>' +
         '<div class="dp-days">' +
           dayNames.map(function (name, i) {
@@ -671,7 +675,7 @@
       containerHTML: '<div class="dp"></div>',
 
       attachToDom: function () {
-        document.body.appendChild(dp.el);
+        opts.appendTo.appendChild(dp.el);
       },
 
       updateInput: function (selectedDate) {
@@ -1023,7 +1027,6 @@
     var dp = BaseMode(root, emit, opts);
 
     dp.close = noop;
-    dp.destroy = noop;
     dp.updateInput = noop;
     dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 

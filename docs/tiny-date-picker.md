@@ -113,6 +113,8 @@ TinyDatePicker('input', {
       'November',
       'December',
     ],
+    nextButton:'Next',
+    prevButton:'Previous',
     today: 'Today',
     clear: 'Clear',
     close: 'Close',
