@@ -31,6 +31,7 @@ export function on(evt, el, handler) {
 export var CustomEvent = shimCustomEvent();
 
 function shimCustomEvent() {
+  if(typeof window === 'undefined') {return;}
   var CustomEvent = window.CustomEvent;
 
   if (typeof CustomEvent !== 'function') {
