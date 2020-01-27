@@ -252,7 +252,9 @@
 
       inRange: function () {
         return true;
-      }
+      },
+
+      appendTo: document.body,
     };
   }
 
@@ -297,6 +299,8 @@
   var CustomEvent = shimCustomEvent();
 
   function shimCustomEvent() {
+    if(typeof window === 'undefined') {return;}
+    console.log('hi-------------------');
     var CustomEvent = window.CustomEvent;
 
     if (typeof CustomEvent !== 'function') {
@@ -671,7 +675,7 @@
       containerHTML: '<div class="dp"></div>',
 
       attachToDom: function () {
-        document.body.appendChild(dp.el);
+        opts.appendTo.appendChild(dp.el);
       },
 
       updateInput: function (selectedDate) {
@@ -758,7 +762,7 @@
       },
 
       render: function () {
-        if (!dp.el || !dp.el.firstChild) {
+        if (!dp.el) {
           return;
         }
 
@@ -1023,7 +1027,6 @@
     var dp = BaseMode(root, emit, opts);
 
     dp.close = noop;
-    dp.destroy = noop;
     dp.updateInput = noop;
     dp.shouldFocusOnRender = opts.shouldFocusOnRender;
 
