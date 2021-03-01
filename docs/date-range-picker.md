@@ -65,7 +65,7 @@ dp.off();
 // and end date.
 dp.setState({
   start: new Date('10/12/2017'),
-  start: new Date('10/14/2017'),
+  end: new Date('10/14/2017'),
 });
 
 ```
