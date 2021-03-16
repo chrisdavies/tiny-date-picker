@@ -81,7 +81,7 @@ The event handler is passed two arguments: the name of the event, and the date p
 ```js
 // Log the selected date range any time it changes
 DateRangePicker('.container')
-  .on('statechange', (_, dp) => console.log(`${dp.state.start}-${dp.state.end}));
+  .on('statechange', (_, dp) => console.log(`${dp.state.start}-${dp.state.end}`));
 ```
 
 To remove an event handler, you call the date picker's `off` method, as with TinyDatePicker.
