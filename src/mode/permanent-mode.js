@@ -16,7 +16,8 @@ export default function PermanentMode(root, emit, opts) {
   };
 
   dp.attachToDom = function () {
-    root.appendChild(dp.el);
+    var appendTo = opts.appendTo || root;
+    appendTo.appendChild(dp.el);
   };
 
   dp.open();
