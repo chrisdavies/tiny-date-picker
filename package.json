@@ -1,56 +1,42 @@
 {
   "name": "tiny-date-picker",
-  "version": "3.2.8",
-  "description": "A small, dependency-free date picker",
+  "version": "4.0.0-beta",
+  "description": "",
   "main": "dist/tiny-date-picker.js",
+  "types": "dist/types",
+  "files": [
+    "/dist"
+  ],
   "scripts": {
-    "start": "concurrently \"npm run build:watch\" \"npm run serve\"",
-    "selenium": "concurrently \"java -jar selenium-server-standalone-3.0.1.jar\" \"npm start\"",
-    "serve": "http-server . -c-1 -p 8080",
-    "test": "jest",
-    "build": "concurrently \"npm run build:dr\" \"npm run build:dp\"",
-    "build:watch": "concurrently \"npm run build:dr -- --watch\" \"npm run build:dp -- --watch\"",
-    "build:dr": "rollup src/date-range-picker.js --output.format umd --name DateRangePicker --output.file dist/date-range-picker.js",
-    "build:dp": "rollup src/index.js --output.format umd --name TinyDatePicker --output.file dist/tiny-date-picker.js",
-    "min": "concurrently \"npm run min:dpcss\" \"npm run min:dpjs\" \"npm run min:rpcss\" \"npm run min:rpjs\"",
-    "min:dpcss": "uglifycss tiny-date-picker.css > tiny-date-picker.min.css && echo 'Minified CSS:' && cat tiny-date-picker.min.css | gzip -9f | wc -c",
-    "min:dpjs": "uglifyjs dist/tiny-date-picker.js --source-map \"filename='./dist/tiny-date-picker.min.js.map'\" -m -c -o dist/tiny-date-picker.min.js && echo 'Minified JS:' && cat dist/tiny-date-picker.min.js | gzip -9f | wc -c",
-    "min:rpcss": "uglifycss date-range-picker.css > date-range-picker.min.css && echo 'Minified CSS:' && cat date-range-picker.min.css | gzip -9f | wc -c",
-    "min:rpjs": "uglifyjs dist/date-range-picker.js --source-map \"filename='./dist/date-range-picker.min.js.map'\" -m -c -o dist/date-range-picker.min.js && echo 'Minified JS:' && cat dist/date-range-picker.min.js | gzip -9f | wc -c"
+    "test": "jasmine",
+    "test:watch": "onchange -i -k \"src/**/*.{js,jsx,ts,tsx}\" --exclude \"**/dist/**\" -- npm run test",
+    "start": "tsc --noEmit --watch --preserveWatchOutput",
+    "watch:ts": "tsc --noEmit --watch --preserveWatchOutput",
+    "prepare": "rm -rf ./dist && npm test && npm run release:ts && npm run release:es",
+    "release:ts": "tsc --declaration --declarationDir dist/types --declarationMap --emitDeclarationOnly",
+    "release:es": "NODE_ENV=production esbuild --minify --sourcemap=external --format=cjs --bundle src/index.ts --outfile=dist/tiny-date-picker.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chrisdavies/tiny-date-picker.git"
   },
-  "keywords": [
-    "date",
-    "picker",
-    "date",
-    "chooser",
-    "calendar"
-  ],
-  "author": "Chris Davies <ferociousturtle@gmail.com>",
+  "author": "Chris Davies <dev@christophilus.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/chrisdavies/tiny-date-picker/issues"
   },
-  "jest": {
-    "testRegex": ".*\\.test\\.js$",
-    "moduleFileExtensions": [
-      "js"
-    ]
-  },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "babel": "^6.23.0",
-    "babel-jest": "^22.4.3",
-    "babel-preset-es2015": "^6.24.1",
-    "concurrently": "^3.5.1",
-    "http-server": "^0.11.1",
-    "jest": "^22.4.2",
-    "rollup": "^0.57.1",
-    "selenium-webdriver": "^4.0.0-alpha.1",
-    "uglify-js": "^3.3.16",
-    "uglifycss": "0.0.29"
+    "@types/jasmine": "^3.6.6",
+    "esbuild": "^0.9.3",
+    "jasmine": "^3.6.4",
+    "typescript": "^4.2.3"
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true,
+    "printWidth": 100
   }
 }
