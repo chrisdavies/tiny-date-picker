@@ -13,17 +13,7 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
     root.remove();
   };
 
-  root.append(
-    h('.tab-catcher', {
-      tabindex: '0',
-      onfocus() {
-        input.focus();
-        hide();
-      },
-    }),
-  );
-
-  on(input, 'focus', () => {
+  const show = () => {
     if (!root.isConnected) {
       root.classList.add('dp-below', 'dp-is-below');
       opts.appendTo.append(root);
@@ -48,13 +38,29 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
         }),
       ];
     }
-  });
+  };
+
+  root.append(
+    h('.tab-catcher', {
+      tabindex: '0',
+      onfocus() {
+        input.focus();
+        hide();
+      },
+    }),
+  );
+
+  on(input, 'click', show);
+  on(input, 'focus', show);
 
   on(root, 'selecteddatechange', () => {
     input.value = picker.selectedDate ? opts.format(picker.selectedDate) : '';
   });
 
-  on(root, 'apply', hide);
+  on(root, 'apply', () => {
+    input.focus();
+    hide();
+  });
 }
 
 function autoPosition(input: HTMLElement, picker: TinyDatePicker) {
