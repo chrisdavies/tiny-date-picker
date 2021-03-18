@@ -15,7 +15,7 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
 
   const show = () => {
     if (!root.isConnected) {
-      root.classList.add('dp-below', 'dp-is-below');
+      root.classList.add('dp-flyout');
       opts.appendTo.append(root);
       autoPosition(input, picker);
       root.querySelector<HTMLButtonElement>('.dp-current')!.focus();
@@ -25,7 +25,6 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
           'focus',
           (e: any) => {
             if (e.target !== document.body && e.target !== input && !root.contains(e.target)) {
-              console.log('hide', e.target);
               hide();
             }
           },
@@ -95,9 +94,5 @@ function adjustCalY(picker: TinyDatePicker, inputPos: DOMRect) {
   const isAbove = aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight;
   const top = isAbove ? aboveTop : belowTop;
 
-  if (cal.classList) {
-    cal.classList.toggle('dp-is-above', isAbove);
-    cal.classList.toggle('dp-is-below', !isAbove);
-  }
   cal.style.top = top + 'px';
 }

@@ -1,10 +1,22 @@
 .dp-cal {
   border: 1px solid #f3f4f6;
   border-radius: 0.25rem;
+  background: #fff;
+  position: relative;
+}
+
+.dp-cal:focus {
+  outline: none;
 }
 
 .dp-cal button {
   cursor: pointer;
+  border-radius: 0.25rem;
+}
+
+.dp-cal button:active {
+  background: #3b82f6;
+  color: white;
 }
 
 .dp-cal input:focus,
@@ -13,48 +25,12 @@
   box-shadow: 0 0 0 1px #fff, 0 0 0 2px #60a5fa;
 }
 
-.dp-permanent .dp {
-  padding-top: 0;
-  border: 1px solid #eee;
-  box-shadow: none;
-}
-
-.dp-permanent .dp:before {
-  display: none;
-}
-
-.dp-cal {
-  position: relative;
-  min-height: 300px;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  background: #fff;
-  border-radius: 0.25rem;
-}
-
-.dp-cal:focus {
-  outline: none;
-}
-
-.dp-below {
+.dp-flyout {
   position: absolute;
   z-index: 20;
-  font-size: 0.8em;
-  width: 400px;
+  width: 28rem;
   max-width: calc(100vw - 1rem);
   box-shadow: 0.25rem 1rem 1rem rgb(0 0 0 / 25%);
-}
-
-.dp-permanent {
-  position: relative;
-  font-size: 0.8em;
-  width: 400px;
-  max-width: 100vw;
-}
-
-.dp-permanent .dp {
-  z-index: 0;
 }
 
 .dp-months {
@@ -76,12 +52,7 @@
 .dp-day,
 .dp-month,
 .dp-year {
-  box-sizing: border-box;
-  text-align: center;
-  text-decoration: none;
-  position: relative;
-  color: #3b404d;
-  border-radius: 0.25rem;
+  color: #374151;
   border: 0;
   background: transparent;
 }
@@ -92,7 +63,6 @@
   text-align: center;
   height: 3.25rem;
   padding: 0.5rem;
-  margin-bottom: 0.75rem;
 }
 
 .dp-cal-header-placeholder {
@@ -100,6 +70,7 @@
   top: 0;
   left: 0;
   right: 0;
+  background: #f9fafb;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -116,15 +87,12 @@
   width: 2rem;
   background: transparent;
   border: 0;
-  border-radius: 0.25rem;
   top: 0.5rem;
   color: #6b7280;
 }
 
 .dp-next:focus,
-.dp-prev:focus,
-.dp-next:hover,
-.dp-prev:hover {
+.dp-prev:focus {
   outline: none;
   color: inherit;
 }
@@ -153,23 +121,16 @@
 .dp-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  padding: 1rem 0.5rem;
 }
 
 .dp-day-today {
-  font-weight: 600;
+  font-weight: bold;
   color: #3b82f6;
 }
 
-.dp-next:active,
-.dp-prev:active,
-.dp-cal-month:active,
-.dp-cal-year:active {
-  background: #3b82f6;
-  color: white;
-}
-
 .dp-col-header,
-.dp-day {
+button.dp-day {
   text-align: center;
   display: inline-flex;
   align-items: center;
@@ -205,19 +166,15 @@
   color: #aaa;
 }
 
-.dp-day:hover,
-.dp-month:hover,
-.dp-year:hover,
 .dp-day:focus,
 .dp-month:focus,
 .dp-year:focus {
   outline: none;
 }
 
-.dp-selected:hover,
 .dp-selected:focus,
 .dp-selected {
-  background: #3b99fc;
+  background: #3b82f6;
   color: #fff;
 }
 
@@ -226,16 +183,8 @@
   color: #ddd;
 }
 
-.dp-day-disabled:focus,
-.dp-day-disabled:hover {
+.dp-day-disabled:focus {
   background: #ddd;
-}
-
-.dp-focuser {
-  position: absolute;
-  z-index: 0;
-  top: 50%;
-  left: 50%;
 }
 
 .dp-body-next {
@@ -275,24 +224,30 @@ footer.dp-time-footer {
   box-sizing: border-box;
   width: 2.5rem;
   text-align: center;
-  border: 1px solid #f3f4f6;
+  border: 1px solid #e5e7eb;
   border-radius: 0.25rem;
   margin: 0 0.25rem;
 }
 
+.dp-apply,
 .dp-ampm {
   background: transparent;
+}
+
+.dp-ampm {
   text-transform: uppercase;
 }
 
+.dp-cal-month:hover,
+.dp-cal-year:hover,
 .dp-apply:hover,
 .dp-ampm:hover {
+  border-color: #3b82f6;
   background: #3b82f6;
   color: #fff;
 }
 
 .dp-apply {
-  background: #f3f4f6;
   width: auto;
   position: absolute;
   top: 0.5rem;
@@ -329,7 +284,7 @@ footer.dp-time-footer {
 }
 
 @media (max-width: 480px), (max-height: 480px) {
-  .dp-below {
+  .dp-flyout {
     margin-left: -0.5rem;
   }
 }
