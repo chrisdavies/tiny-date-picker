@@ -15,7 +15,7 @@ function demoFlyout(pickTime?: boolean) {
   const input = h('input', { placeholder: 'flyout demo' }) as HTMLInputElement;
   const dp = tinyDatePicker({ pickTime });
   tinyDatePickerFlyout(dp, input);
-  return demoGroup('Flyout', input);
+  return demoGroup(`Flyout ${pickTime ? 'with' : 'without'} time`, input);
 }
 
 function demoModal() {
