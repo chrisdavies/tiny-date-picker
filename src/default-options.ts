@@ -25,8 +25,6 @@ export function defaultOptions() {
 
     timeFormat: 12,
 
-    mode: 'dp-permanent',
-
     highlightedDate: new Date(),
 
     format(dt) {

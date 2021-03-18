@@ -20,7 +20,7 @@ function demoFlyout(pickTime?: boolean) {
 
 function demoModal() {
   const input = h('input', { placeholder: 'modal demo' }) as HTMLInputElement;
-  const dp = tinyDatePicker({ mode: 'dp-permanent' });
+  const dp = tinyDatePicker();
   dp.root = h('.dp-modal', { tabindex: 1 }, dp.root);
   const hide = () => dp.root.remove();
 

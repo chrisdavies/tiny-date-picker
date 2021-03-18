@@ -61,16 +61,6 @@ export interface TinyDatePickerOptions {
   parse(s: string): Date;
 
   /**
-   * The way the date picker should display.
-   * dp-modal is a modal
-   * dp-flyout is a flyout, positioning itself intelligently above / below / beside an input
-   * dp-permanent is an always-on calendar
-   *
-   * Defaults to dp-modal
-   */
-  mode: 'dp-modal' | 'dp-flyout' | 'dp-permanent';
-
-  /**
    * The date that will be highlighted when the date picker is displayed and the associated
    * input (if any) has no value.
    */
