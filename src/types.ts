@@ -58,7 +58,7 @@ export interface TinyDatePickerOptions {
    * a date.
    * @param s
    */
-  parse(s: string): Date;
+  parse(s: string): Date | undefined;
 
   /**
    * The date that will be highlighted when the date picker is displayed and the associated

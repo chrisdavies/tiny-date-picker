@@ -40,7 +40,6 @@ function dpbody(
   const { days, months } = opts.lang;
   const highlightedMonth = currentDate.getMonth();
   const today = now();
-  console.log('dpbody', opts.min);
   return h(
     `.dp-body.${direction}`,
     h(
@@ -132,7 +131,6 @@ function render(picker: TinyDatePicker): HTMLElement {
       '›',
     ),
     dpbody(picker, ''),
-    picker.opts.pickTime ? renderTimePicker(picker) : '',
   );
 }
 
@@ -146,6 +144,11 @@ export class TinyDatePicker {
     this.opts = opts;
     this.currentDate = opts.highlightedDate;
     this.root = render(this);
+
+    if (opts.pickTime) {
+      this.root.append(renderTimePicker(this));
+    }
+
     on(this.root, 'click', () => this.submenu());
   }
 

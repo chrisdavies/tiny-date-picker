@@ -1,5 +1,5 @@
 import { button } from './button';
-import { h } from './dom';
+import { h, on } from './dom';
 import { TinyDatePicker } from './tiny-date-picker';
 import { TinyDatePickerOptions } from './types';
 
@@ -19,22 +19,29 @@ export function toTimeString(dt: Date, opts: TinyDatePickerOptions) {
   return toHH(dt, opts) + ':' + toMM(dt) + suffix;
 }
 
+function extractTime(opts: TinyDatePickerOptions, date: Date) {
+  const hours = date.getHours();
+  const hh = toHH(date, opts);
+  const mm = toMM(date);
+  const ampm = hours >= 12 ? 'pm' : 'am';
+
+  return { hh, mm, ampm };
+}
+
 export function renderTimePicker(picker: TinyDatePicker) {
   const { opts } = picker;
-  const { highlightedDate, lang } = opts;
-  const hours = highlightedDate.getHours();
+  const { lang } = opts;
   const is12Hr = opts.timeFormat === 12;
-  let hh = toHH(highlightedDate, opts);
-  let mm = toMM(highlightedDate);
-  let ampm = hours >= 12 ? 'pm' : 'am';
+  const time = extractTime(opts, picker.selectedDate || picker.currentDate);
   const setCurrentDate = () => {
     const dt = new Date(picker.currentDate);
     dt.setHours(
-      parseInt(hh || '0', 10) + (is12Hr && ampm === 'pm' && hh !== '12' ? 12 : 0),
-      parseInt(mm || '0', 10),
+      parseInt(time.hh || '0', 10) + (is12Hr && time.ampm === 'pm' && time.hh !== '12' ? 12 : 0),
+      parseInt(time.mm || '0', 10),
     );
     picker.goto(dt);
   };
+
   const onkeydown = (e: any) => {
     if (e.code === 'Enter') {
       e.preventDefault();
@@ -42,47 +49,52 @@ export function renderTimePicker(picker: TinyDatePicker) {
       picker.apply();
     }
   };
-  return h(
+
+  const txtHH = h<HTMLInputElement>('input.dp-txt-time.dp-txt-hh', {
+    type: 'text',
+    placeholder: 'hh',
+    maxlength: 2,
+    onfocus,
+    onkeydown,
+    onchange(e: any) {
+      time.hh = e.target.value;
+      setCurrentDate();
+    },
+    value: time.hh,
+  });
+
+  const txtMM = h<HTMLInputElement>('input.dp-txt-time.dp-txt-mm', {
+    placeholder: 'mm',
+    type: 'text',
+    maxlength: 2,
+    onfocus,
+    onkeydown,
+    onchange(e: any) {
+      time.mm = e.target.value;
+      setCurrentDate();
+    },
+    value: time.mm,
+  });
+
+  const btnAMPM = button(
+    'dp-ampm',
+    {
+      tabindex: 'auto',
+      onclick(e: any) {
+        time.ampm = time.ampm === 'pm' ? 'am' : 'pm';
+        e.target.textContent = time.ampm;
+        setCurrentDate();
+      },
+    },
+    time.ampm,
+  );
+
+  const el = h(
     'footer.dp-time-footer',
-    h('input.dp-txt-time.dp-txt-hh', {
-      type: 'text',
-      placeholder: 'hh',
-      maxlength: 2,
-      onfocus,
-      onkeydown,
-      onchange(e: any) {
-        hh = e.target.value;
-        setCurrentDate();
-      },
-      value: hh,
-    }),
+    txtHH,
     ':',
-    h('input.dp-txt-time.dp-txt-mm', {
-      placeholder: 'mm',
-      type: 'text',
-      maxlength: 2,
-      onfocus,
-      onkeydown,
-      onchange(e: any) {
-        mm = e.target.value;
-        setCurrentDate();
-      },
-      value: mm,
-    }),
-    is12Hr
-      ? button(
-          'dp-ampm',
-          {
-            tabindex: 'auto',
-            onclick(e: any) {
-              ampm = ampm === 'pm' ? 'am' : 'pm';
-              e.target.textContent = ampm;
-              setCurrentDate();
-            },
-          },
-          ampm,
-        )
-      : '',
+    txtMM,
+    is12Hr ? btnAMPM : '',
     lang.applyText &&
       button(
         'dp-apply',
@@ -95,4 +107,15 @@ export function renderTimePicker(picker: TinyDatePicker) {
         lang.applyText,
       ),
   );
+
+  on(picker.root, 'selecteddatechange', () => {
+    if (picker.selectedDate) {
+      Object.assign(time, extractTime(picker.opts, picker.selectedDate));
+      txtHH.value = time.hh;
+      txtMM.value = time.mm;
+      btnAMPM.textContent = time.ampm;
+    }
+  });
+
+  return el;
 }

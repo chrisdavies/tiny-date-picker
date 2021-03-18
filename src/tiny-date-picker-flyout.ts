@@ -24,6 +24,7 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
 
   const show = () => {
     if (!root.isConnected) {
+      picker.setSelectedDate(picker.opts.parse(input.value));
       root.classList.add('dp-flyout');
       opts.appendTo.append(root);
       autoPosition(input, picker);
@@ -54,11 +55,8 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
   on(input, 'click', show);
   on(input, 'focus', show);
 
-  on(root, 'selecteddatechange', () => {
-    input.value = picker.selectedDate ? opts.format(picker.selectedDate) : '';
-  });
-
   on(root, 'apply', () => {
+    input.value = picker.selectedDate ? opts.format(picker.selectedDate) : '';
     input.focus();
     hide();
   });

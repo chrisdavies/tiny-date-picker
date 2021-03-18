@@ -67,7 +67,10 @@ function init() {
   const flyoutTo = demoFlyout({ pickTime: true, min: shiftDay(now(), 5) });
 
   on(flyoutFrom.picker.root, 'apply', () => {
-    flyoutTo.picker.setOpts({ ...flyoutTo.picker.opts, min: flyoutFrom.picker.selectedDate });
+    flyoutTo.picker.setOpts({
+      ...flyoutTo.picker.opts,
+      min: flyoutFrom.picker.selectedDate,
+    });
   });
 
   main.append(

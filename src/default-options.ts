@@ -1,4 +1,3 @@
-import { now } from './date-manip';
 import { toTimeString } from './time-picker';
 import { TinyDatePickerOptions } from './types';
 
@@ -41,7 +40,7 @@ export function defaultOptions() {
 
     parse(str) {
       const date: any = new Date(str);
-      return isNaN(date) ? now() : date;
+      return isNaN(date) ? undefined : date;
     },
 
     dateClass() {
