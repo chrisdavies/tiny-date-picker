@@ -13,6 +13,15 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
     root.remove();
   };
 
+  const tabCatcher = () =>
+    h('.tab-catcher', {
+      tabindex: '0',
+      onfocus() {
+        input.focus();
+        hide();
+      },
+    });
+
   const show = () => {
     if (!root.isConnected) {
       root.classList.add('dp-flyout');
@@ -39,15 +48,8 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
     }
   };
 
-  root.append(
-    h('.tab-catcher', {
-      tabindex: '0',
-      onfocus() {
-        input.focus();
-        hide();
-      },
-    }),
-  );
+  root.prepend(tabCatcher());
+  root.append(tabCatcher());
 
   on(input, 'click', show);
   on(input, 'focus', show);
