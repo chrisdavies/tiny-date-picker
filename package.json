@@ -10,7 +10,7 @@
   "scripts": {
     "test": "jasmine",
     "test:watch": "onchange -i -k \"src/**/*.{js,jsx,ts,tsx}\" --exclude \"**/dist/**\" -- npm run test",
-    "start": "tsc --noEmit --watch --preserveWatchOutput",
+    "start": "esbuild public/demo.ts --global-name=minidoc --bundle --servedir=public --outfile=public/dist/demo.js --sourcemap --define:process.env.NODE_ENV=\"'development'\"",
     "watch:ts": "tsc --noEmit --watch --preserveWatchOutput",
     "prepare": "rm -rf ./dist && npm test && npm run release:ts && npm run release:es",
     "release:ts": "tsc --declaration --declarationDir dist/types --declarationMap --emitDeclarationOnly",

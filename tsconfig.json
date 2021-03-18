@@ -1,0 +1,23 @@
+{
+  "ts-node": {
+    "files": true
+  },
+  "compilerOptions": {
+    "lib": ["es2020", "DOM"],
+    "module": "commonjs",
+    "target": "es2020",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "outDir": "build",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "sourceMap": true
+  },
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"]
+}
