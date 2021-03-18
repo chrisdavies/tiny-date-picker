@@ -3,8 +3,7 @@ import { TinyDatePickerOptions } from './types';
 import { TinyDatePicker } from './tiny-date-picker';
 
 import './index.css';
-
-export * from './tiny-date-picker-flyout';
+import { tinyDatePickerFlyout } from './tiny-date-picker-flyout';
 
 /**
  * Create a new instance of the date picker.
@@ -15,6 +14,9 @@ export * from './tiny-date-picker-flyout';
 export default function tinyDatePicker(opts?: Partial<TinyDatePickerOptions>) {
   const options = Object.assign(defaultOptions(), opts);
   options.lang = Object.assign(defaultOptions().lang, opts?.lang);
-
-  return new TinyDatePicker(options);
+  const picker = new TinyDatePicker(options);
+  if (options.input) {
+    tinyDatePickerFlyout(picker, options.input);
+  }
+  return picker;
 }

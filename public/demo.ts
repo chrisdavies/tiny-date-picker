@@ -1,5 +1,4 @@
 import tinyDatePicker from '../src';
-import { tinyDatePickerFlyout } from '../src';
 import { h, on } from '../src/dom';
 import './demo.css';
 
@@ -13,8 +12,7 @@ function demoGroup(title: string, content: Element) {
 
 function demoFlyout(pickTime?: boolean) {
   const input = h('input', { placeholder: 'flyout demo' }) as HTMLInputElement;
-  const dp = tinyDatePicker({ pickTime });
-  tinyDatePickerFlyout(dp, input);
+  const dp = tinyDatePicker({ input, pickTime });
   return demoGroup(`Flyout ${pickTime ? 'with' : 'without'} time`, input);
 }
 
