@@ -27,3 +27,7 @@ tinyDatePicker({ input: document.querySelector('input') });
 ## Options
 
 The options are fairly well commented in [types.ts](./src/types.ts).
+
+## Previous versions
+
+If you're looking for 3.x docs, they can be found [here](https://github.com/chrisdavies/tiny-date-picker/tree/v3.2.8/docs).
