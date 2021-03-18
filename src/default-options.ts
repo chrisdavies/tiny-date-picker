@@ -48,8 +48,9 @@ export function defaultOptions() {
       return '';
     },
 
-    inRange() {
-      return true;
+    inRange(dt) {
+      const { min, max } = opts;
+      return (!min || dt >= min) && (!max || dt <= max);
     },
 
     appendTo: document.body,

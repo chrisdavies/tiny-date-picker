@@ -1,5 +1,5 @@
 import { button } from './button';
-import { datesEq, now, shiftDay, shiftMonth } from './date-manip';
+import { constrainDate, datesEq, now, shiftDay, shiftMonth } from './date-manip';
 import { h, keyboardNav, on } from './dom';
 import { showMonthPicker } from './month-picker';
 import { renderTimePicker } from './time-picker';
@@ -40,6 +40,7 @@ function dpbody(
   const { days, months } = opts.lang;
   const highlightedMonth = currentDate.getMonth();
   const today = now();
+  console.log('dpbody', opts.min);
   return h(
     `.dp-body.${direction}`,
     h(
@@ -148,6 +149,18 @@ export class TinyDatePicker {
     on(this.root, 'click', () => this.submenu());
   }
 
+  private redraw(body: Element) {
+    this.root.querySelector('.dp-body')!.replaceWith(body);
+    this.submenu();
+  }
+
+  setOpts(opts: TinyDatePickerOptions) {
+    Object.assign(this.opts, opts);
+    this.selectedDate = constrainDate(this.selectedDate, opts.min, opts.max);
+    this.currentDate = constrainDate(this.currentDate, opts.min, opts.max)!;
+    this.redraw(dpbody(this, ''));
+  }
+
   submenu(el?: Element) {
     const submenus = this.root.querySelectorAll('.dp-submenu');
     if (!el && !submenus.length) {
@@ -168,10 +181,7 @@ export class TinyDatePicker {
       this.currentDate.getMonth() === date.getMonth() &&
       this.currentDate.getFullYear() === date.getFullYear();
     this.currentDate = date;
-    this.root
-      .querySelector('.dp-body')!
-      .replaceWith(dpbody(this, noTransition ? '' : isNext ? 'dp-body-next' : 'dp-body-prev'));
-    this.submenu();
+    this.redraw(dpbody(this, noTransition ? '' : isNext ? 'dp-body-next' : 'dp-body-prev'));
     changed && this.root.dispatchEvent(new CustomEvent('currentdatechange', { detail: date }));
     setTimeout(() => {
       if (!this.root.contains(document.activeElement)) {
@@ -181,7 +191,7 @@ export class TinyDatePicker {
   }
 
   setSelectedDate(date?: Date) {
-    this.selectedDate = date || this.currentDate;
+    this.selectedDate = constrainDate(date || this.currentDate, this.opts.min, this.opts.max)!;
     this.goto(this.selectedDate);
     this.root.dispatchEvent(new CustomEvent('selecteddatechange', { detail: this.selectedDate }));
   }

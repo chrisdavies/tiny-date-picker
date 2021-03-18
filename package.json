@@ -1,6 +1,6 @@
 {
   "name": "tiny-date-picker",
-  "version": "4.0.0-beta",
+  "version": "4.0.0-beta1",
   "description": "",
   "main": "dist/tiny-date-picker.js",
   "types": "dist/types",

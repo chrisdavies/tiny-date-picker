@@ -69,12 +69,12 @@ export interface TinyDatePickerOptions {
   /**
    * The minimum date that can be selected (inclusive). All earlier dates will be disabled.
    */
-  min?: string | Date;
+  min?: Date;
 
   /**
    * The maximum date that can be selected (inclusive). All later dates will be disabled.
    */
-  max?: string | Date;
+  max?: Date;
 
   /**
    * Determine whether or not a date should be disabled in the date picker.

@@ -1,4 +1,13 @@
-import { now, datesEq, shiftDay, shiftMonth, shiftYear, setYear, setMonth } from './date-manip';
+import {
+  now,
+  datesEq,
+  shiftDay,
+  shiftMonth,
+  shiftYear,
+  setYear,
+  setMonth,
+  constrainDate,
+} from './date-manip';
 
 describe('date-manip', () => {
   const sToDt = (s: string) => new Date(s);
@@ -169,6 +178,32 @@ describe('date-manip', () => {
       const nextMonth = setMonth(dt, 3);
 
       expect(nextMonth).toEqual(sToDt('4/30/2018'));
+    });
+  });
+
+  describe('constrainDate', () => {
+    it('does not change the date if in range', () => {
+      const dt = sToDt('1/2/2003');
+      const min = sToDt('1/1/2003');
+      const max = sToDt('1/1/2020');
+
+      expect(dt).toEqual(constrainDate(dt, min, max)!);
+    });
+
+    it('gives min if dt is too small', () => {
+      const dt = sToDt('1/2/2003');
+      const min = sToDt('2/1/2003');
+      const max = sToDt('1/1/2020');
+
+      expect(min).toEqual(constrainDate(dt, min, max)!);
+    });
+
+    it('gives max if dt is too big', () => {
+      const dt = sToDt('1/2/2033');
+      const min = sToDt('2/1/2003');
+      const max = sToDt('1/1/2020');
+
+      expect(max).toEqual(constrainDate(dt, min, max)!);
     });
   });
 });

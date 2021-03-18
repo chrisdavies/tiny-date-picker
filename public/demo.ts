@@ -1,5 +1,8 @@
 import tinyDatePicker from '../src';
+import { now, shiftDay } from '../src/date-manip';
 import { h, on } from '../src/dom';
+import { TinyDatePicker } from '../src/tiny-date-picker';
+import { TinyDatePickerOptions } from '../src/types';
 import './demo.css';
 
 function demoHeader(title: string) {
@@ -10,10 +13,14 @@ function demoGroup(title: string, content: Element) {
   return h('.demo-group', demoHeader(title), content);
 }
 
-function demoFlyout(pickTime?: boolean) {
+function demoFlyout(
+  opts: Partial<TinyDatePickerOptions> = {},
+): Element & { picker: TinyDatePicker } {
   const input = h('input', { placeholder: 'flyout demo' }) as HTMLInputElement;
-  const dp = tinyDatePicker({ input, pickTime });
-  return demoGroup(`Flyout ${pickTime ? 'with' : 'without'} time`, input);
+  const dp = tinyDatePicker({ input, ...opts });
+  const group: any = demoGroup(`Flyout ${opts.pickTime ? 'with' : 'without'} time`, input);
+  group.picker = dp;
+  return group;
 }
 
 function demoModal() {
@@ -56,11 +63,17 @@ function demoTimePicker() {
 
 function init() {
   const main = document.querySelector('main')!;
+  const flyoutFrom = demoFlyout();
+  const flyoutTo = demoFlyout({ pickTime: true, min: shiftDay(now(), 5) });
+
+  on(flyoutFrom.picker.root, 'apply', () => {
+    flyoutTo.picker.setOpts({ ...flyoutTo.picker.opts, min: flyoutFrom.picker.selectedDate });
+  });
 
   main.append(
     h(
       '.demo-page',
-      h('.demo-inputs', demoFlyout(), demoModal(), demoFlyout(true)),
+      h('.demo-inputs', flyoutFrom, demoModal(), flyoutTo),
       h('.demo-permanent', demoTimePicker()),
     ),
   );

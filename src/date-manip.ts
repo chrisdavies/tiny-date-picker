@@ -100,35 +100,15 @@ export function setMonth(dt: Date, month: number) {
   return shiftMonth(dt, month - dt.getMonth());
 }
 
-// /**
-//  * dateOrParse creates a function which, given a date or string, returns a date
-//  *
-//  * @param {function} parse the function used to parse strings
-//  * @returns {function}
-//  */
-// export function dateOrParse(parse) {
-//   return function (dt) {
-//     return dropTime(typeof dt === 'string' ? parse(dt) : dt);
-//   };
-// }
-
-// /**
-//  * constrainDate returns dt or min/max depending on whether dt is out of bounds (inclusive)
-//  *
-//  * @export
-//  * @param {Date} dt
-//  * @param {Date} min
-//  * @param {Date} max
-//  * @returns {Date}
-//  */
-// export function constrainDate(dt, min, max) {
-//   return (dt < min) ? min :
-//          (dt > max) ? max :
-//          dt;
-// }
-
-// function dropTime(dt) {
-//   dt = new Date(dt);
-//   dt.setHours(0, 0, 0, 0);
-//   return dt;
-// }
+/**
+ * constrainDate returns dt or min/max depending on whether dt is out of bounds (inclusive)
+ *
+ * @export
+ * @param {Date} dt
+ * @param {Date} min
+ * @param {Date} max
+ * @returns {Date}
+ */
+export function constrainDate(dt?: Date, min?: Date, max?: Date) {
+  return !dt ? dt : min && dt < min ? min : max && dt > max ? max : dt;
+}
