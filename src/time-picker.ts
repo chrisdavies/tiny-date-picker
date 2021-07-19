@@ -28,6 +28,19 @@ function extractTime(opts: TinyDatePickerOptions, date: Date) {
   return { hh, mm, ampm };
 }
 
+function adjustHours(time: ReturnType<typeof extractTime>, is12Hr: boolean) {
+  const hh = parseInt(time.hh || '0', 10);
+  if (!is12Hr) {
+    return hh;
+  }
+  if (hh === 12 && time.ampm === 'am') {
+    return 0;
+  } else if (hh !== 12 && time.ampm === 'pm') {
+    return hh + 12;
+  }
+  return hh;
+}
+
 export function renderTimePicker(picker: TinyDatePicker) {
   const { opts } = picker;
   const { lang } = opts;
@@ -36,7 +49,7 @@ export function renderTimePicker(picker: TinyDatePicker) {
   const setCurrentDate = () => {
     const dt = new Date(picker.currentDate);
     dt.setHours(
-      parseInt(time.hh || '0', 10) + (is12Hr && time.ampm === 'pm' && time.hh !== '12' ? 12 : 0),
+      adjustHours(time, is12Hr),
       parseInt(time.mm || '0', 10),
     );
     picker.goto(dt);

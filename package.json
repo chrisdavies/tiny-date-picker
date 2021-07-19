@@ -1,6 +1,6 @@
 {
   "name": "tiny-date-picker",
-  "version": "4.0.0-beta2",
+  "version": "4.0.0-beta3",
   "description": "",
   "main": "dist/tiny-date-picker.js",
   "types": "dist/types",
@@ -27,11 +27,11 @@
   },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "@types/jasmine": "3.6.6",
-    "esbuild": "0.9.3",
-    "jasmine": "3.6.4",
-    "ts-node": "9.1.1",
-    "typescript": "4.2.3"
+    "@types/jasmine": "3.8.1",
+    "esbuild": "0.12.15",
+    "jasmine": "3.8.0",
+    "ts-node": "10.1.0",
+    "typescript": "4.3.5"
   },
   "prettier": {
     "trailingComma": "all",
