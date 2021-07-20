@@ -33,12 +33,7 @@ function adjustHours(time: ReturnType<typeof extractTime>, is12Hr: boolean) {
   if (!is12Hr) {
     return hh;
   }
-  if (hh === 12 && time.ampm === 'am') {
-    return 0;
-  } else if (hh !== 12 && time.ampm === 'pm') {
-    return hh + 12;
-  }
-  return hh;
+  return (hh % 12) + (time.ampm === 'pm' ? 12 : 0);
 }
 
 export function renderTimePicker(picker: TinyDatePicker) {
@@ -48,10 +43,7 @@ export function renderTimePicker(picker: TinyDatePicker) {
   const time = extractTime(opts, picker.selectedDate || picker.currentDate);
   const setCurrentDate = () => {
     const dt = new Date(picker.currentDate);
-    dt.setHours(
-      adjustHours(time, is12Hr),
-      parseInt(time.mm || '0', 10),
-    );
+    dt.setHours(adjustHours(time, is12Hr), parseInt(time.mm || '0', 10));
     picker.goto(dt);
   };
 
