@@ -1,8 +1,6 @@
 import { h, on } from './dom';
 import { TinyDatePicker } from './tiny-date-picker';
 
-const win = window;
-
 export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputElement) {
   const { root, opts } = picker;
   let offs: Array<() => void> = [];
@@ -63,36 +61,24 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
 }
 
 function autoPosition(input: HTMLElement, picker: TinyDatePicker) {
-  var inputPos = input.getBoundingClientRect();
+  const htm = document.documentElement;
+  const el = picker.root;
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+  const inputBounds = input.getBoundingClientRect();
+  const bounds = el.getBoundingClientRect();
+  const left = inputBounds.left + scrollX;
+  const top = inputBounds.bottom + scrollY + 8;
+  let x: Partial<CSSStyleDeclaration> = { left: `${left}px` };
+  let y: Partial<CSSStyleDeclaration> = { top: `${top + 8}px` };
 
-  adjustCalY(picker, inputPos);
-  adjustCalX(picker, inputPos);
+  if (top + bounds.height > htm.clientHeight + scrollY) {
+    y = { top: `${scrollY + inputBounds.top - 8 - bounds.height}px` };
+  }
+  if (left + bounds.width > htm.clientWidth + scrollX) {
+    x = { left: `${scrollX + htm.clientWidth - bounds.width - 8}px` };
+  }
 
+  Object.assign(el.style, y, x);
   picker.root.style.visibility = '';
-}
-
-function adjustCalX(picker: TinyDatePicker, inputPos: DOMRect) {
-  const cal = picker.root;
-  const scrollLeft = win.pageXOffset;
-  const inputLeft = inputPos.left + scrollLeft;
-  const maxRight = win.innerWidth + scrollLeft;
-  const offsetWidth = cal.offsetWidth;
-  const calRight = inputLeft + offsetWidth;
-  const shiftedLeft = maxRight - offsetWidth;
-  const left = calRight > maxRight && shiftedLeft > 0 ? shiftedLeft : inputLeft;
-
-  cal.style.left = left + 'px';
-}
-
-function adjustCalY(picker: TinyDatePicker, inputPos: DOMRect) {
-  const cal = picker.root;
-  const scrollTop = win.pageYOffset;
-  const inputTop = scrollTop + inputPos.top;
-  const calHeight = cal.offsetHeight;
-  const belowTop = inputTop + inputPos.height + 8;
-  const aboveTop = inputTop - calHeight - 8;
-  const isAbove = aboveTop > 0 && belowTop + calHeight > scrollTop + win.innerHeight;
-  const top = isAbove ? aboveTop : belowTop;
-
-  cal.style.top = top + 'px';
 }
