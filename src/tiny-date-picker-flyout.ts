@@ -61,6 +61,7 @@ export function tinyDatePickerFlyout(picker: TinyDatePicker, input: HTMLInputEle
 }
 
 function autoPosition(input: HTMLElement, picker: TinyDatePicker) {
+  const margin = 8;
   const htm = document.documentElement;
   const el = picker.root;
   const scrollX = window.scrollX;
@@ -68,15 +69,15 @@ function autoPosition(input: HTMLElement, picker: TinyDatePicker) {
   const inputBounds = input.getBoundingClientRect();
   const bounds = el.getBoundingClientRect();
   const left = inputBounds.left + scrollX;
-  const top = inputBounds.bottom + scrollY + 8;
+  const top = inputBounds.bottom + scrollY + margin;
   let x: Partial<CSSStyleDeclaration> = { left: `${left}px` };
-  let y: Partial<CSSStyleDeclaration> = { top: `${top + 8}px` };
+  let y: Partial<CSSStyleDeclaration> = { top: `${top + margin}px` };
 
   if (top + bounds.height > htm.clientHeight + scrollY) {
-    y = { top: `${scrollY + inputBounds.top - 8 - bounds.height}px` };
+    y = { top: `${Math.max(margin, scrollY + inputBounds.top - margin - bounds.height)}px` };
   }
   if (left + bounds.width > htm.clientWidth + scrollX) {
-    x = { left: `${scrollX + htm.clientWidth - bounds.width - 8}px` };
+    x = { left: `${Math.max(margin, scrollX + htm.clientWidth - bounds.width - margin)}px` };
   }
 
   Object.assign(el.style, y, x);
