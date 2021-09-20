@@ -1,3 +1,4 @@
+export { defaultOptions } from './default-options';
 import { defaultOptions } from './default-options';
 import { TinyDatePickerOptions } from './types';
 import { TinyDatePicker } from './tiny-date-picker';
