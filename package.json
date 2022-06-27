@@ -27,11 +27,11 @@
   },
   "homepage": "https://github.com/chrisdavies/tiny-date-picker#readme",
   "devDependencies": {
-    "@types/jasmine": "3.8.1",
-    "esbuild": "0.12.15",
+    "@types/jasmine": "4.0.3",
+    "esbuild": "0.14.47",
+    "esbuild-runner": "2.2.1",
     "jasmine": "3.8.0",
-    "ts-node": "10.1.0",
-    "typescript": "4.3.5"
+    "typescript": "4.7.4"
   },
   "prettier": {
     "trailingComma": "all",

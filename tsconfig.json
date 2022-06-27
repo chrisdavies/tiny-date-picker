@@ -1,7 +1,4 @@
 {
-  "ts-node": {
-    "files": true
-  },
   "compilerOptions": {
     "lib": ["es2020", "DOM"],
     "module": "commonjs",
